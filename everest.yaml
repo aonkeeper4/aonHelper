@@ -1,4 +1,4 @@
-- DLL: bin/Release/aonHelper.dll
+- DLL: bin/aonHelper.dll
   Name: aonHelper
   Version: 0.0.1
   Dependencies:

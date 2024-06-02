@@ -17,3 +17,5 @@ current features:
   - makes vanilla flingbirds not run away when you're too far past the node
 
 note that most of these do not have sprites in loenn (womp womp) i will add these later hopefulyl
+
+also i reallly need to go back and not use reflection for everything i dont use a publicised celeste for this yet oopsie
