@@ -25,10 +25,27 @@ entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This 
 
 # Rebound Modify Controller
 entities.aonHelper/ReboundModifyController.placements.name.reboundModifyController=Rebound Modify Controller
-entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeed=Whether to reflect the speed that the player currently has.
-entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeedMultiplier=The multiplier that will be applied to the reflected speed.\nFor example, if this is 0.5, then a player coming in will be reflected with half their speed.\nNote that this does not do anything if Reflect Speed is off. To make the rebound affect momentum in the player's current direction, turn Reflect Speed on, then use a negative value here.
+entities.aonHelper/ReboundModifyController.attributes.name.leftRightXMode=Left-Right Collision X Mode
+entities.aonHelper/ReboundModifyController.attributes.name.leftRightYMode=Left-Right Collision Y Mode
+entities.aonHelper/ReboundModifyController.attributes.name.leftRightXModifier=Left-Right Collision X Modifier
+entities.aonHelper/ReboundModifyController.attributes.name.leftRightYModifier=Left-Right Collision Y Modifier
+entities.aonHelper/ReboundModifyController.attributes.name.topXMode=Top Collision X Mode
+entities.aonHelper/ReboundModifyController.attributes.name.topYMode=Top Collision Y Mode
+entities.aonHelper/ReboundModifyController.attributes.name.topXModifier=Top Collision X Modifier
+entities.aonHelper/ReboundModifyController.attributes.name.topYModifier=Top Collision Y Modifier
+entities.aonHelper/ReboundModifyController.attributes.description.leftRightXMode=Whether to interpret the Left-Right Collision X Modifier as a multiplier to the player's current X speed or as a value to set its X speed to. Affects rebounds on the left or right of entities only.
+entities.aonHelper/ReboundModifyController.attributes.description.leftRightYMode=Whether to interpret the Left-Right Collision Y Modifier as a multiplier to the player's current Y speed or as a value to set its Y speed to. Affects rebounds on the left or right of entities only.
+entities.aonHelper/ReboundModifyController.attributes.description.leftRightXModifier=Either a multiplier to the player's current X speed or a value to set it to, depending on the Left-Right Collision X Mode.
+entities.aonHelper/ReboundModifyController.attributes.description.leftRightYModifier=Either a multiplier to the player's current Y speed or a value to set it to, depending on the Left-Right Collision Y Mode.
+entities.aonHelper/ReboundModifyController.attributes.description.topXMode=Whether to interpret the Top Collision X Modifier as a multiplier to the player's current X speed or as a value to set its X speed to. Affects rebounds on the top of entities only.
+entities.aonHelper/ReboundModifyController.attributes.description.topYMode=Whether to interpret the Top Collision Y Modifier as a multiplier to the player's current Y speed or as a value to set its Y speed to. Affects rebounds on the top of entities only.
+entities.aonHelper/ReboundModifyController.attributes.description.topXModifier=Either a multiplier to the player's current X speed or a value to set it to, depending on the Top Collision X Mode.
+entities.aonHelper/ReboundModifyController.attributes.description.topYModifier=Either a multiplier to the player's current Y speed or a value to set it to, depending on the Top Collision Y Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.refillDash=Whether to refill dash on rebound.
 entities.aonHelper/ReboundModifyController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+# Legacy Attributes
+entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeed=Whether to reflect the speed that the player currently has.
+entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeedMultiplier=The multiplier that will be applied to the reflected speed.\nFor example, if this is 0.5, then a player coming in will be reflected with half their speed.\nNote that this does not do anything if Reflect Speed is off. To make the rebound affect momentum in the player's current direction, turn Reflect Speed on, then use a negative value here.
 
 # Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.name.flingBirdNoSkipController=Fling Bird No Skip Controller

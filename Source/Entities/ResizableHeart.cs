@@ -1,13 +1,6 @@
 using Celeste.Mod.Entities;
-using Celeste;
 using Monocle;
-using Celeste.Mod.aonHelper;
 using Microsoft.Xna.Framework;
-using MonoMod.Utils;
-using System.Collections;
-using System;
-using MonoMod.RuntimeDetour;
-using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities
 {

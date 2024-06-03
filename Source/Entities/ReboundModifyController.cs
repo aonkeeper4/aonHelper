@@ -1,8 +1,6 @@
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
-using MonoMod.Utils;
-using System;
 using System.Diagnostics;
 
 namespace Celeste.Mod.aonHelper.Entities
