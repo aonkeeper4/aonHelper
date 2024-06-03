@@ -17,13 +17,9 @@ namespace Celeste.Mod.aonHelper.Entities
     {
         private Sprite spriteOutline;
 
-        private EntityID entityID;
-
         private Color color;
 
         private readonly string spriteId;
-
-        private readonly DynamicData baseData;
 
         private readonly int width, height;
 
@@ -35,7 +31,6 @@ namespace Celeste.Mod.aonHelper.Entities
 
         public ResizableHeart(EntityData data, Vector2 offset) : base(data, offset)
         {
-            baseData = new DynamicData(typeof(HeartGem), this);
             entityID = new EntityID(data.Level.Name, data.ID);
             color = Calc.HexToColor(data.Attr("color", "00a81f"));
             spriteId = data.Attr("path");
@@ -50,8 +45,7 @@ namespace Celeste.Mod.aonHelper.Entities
             base.Awake(scene);
             AreaKey area = (scene as Level).Session.Area;
             IsGhost = !IsFake && !fake && SaveData.Instance.Areas_Safe[area.ID].Modes[(int)area.Mode].HeartGem;
-            baseData.Set("Collider", new Hitbox(width, height, -width / 2, -height / 2));
-            Sprite sprite = baseData.Get<Sprite>("sprite");
+            Collider = new Hitbox(width, height, -width / 2, -height / 2);
             Remove(sprite);
             if (!string.IsNullOrWhiteSpace(spriteId))
             {
@@ -65,25 +59,25 @@ namespace Celeste.Mod.aonHelper.Entities
                 {
                     case "heartgem0":
                         color = Color.Aqua;
-                        baseData.Set("shineParticle", P_BlueShine);
+                        shineParticle = P_BlueShine;
                         break;
                     case "heartgem1":
                         color = Color.Red;
-                        baseData.Set("shineParticle", P_RedShine);
+                        shineParticle = P_RedShine;
                         break;
                     case "heartgem2":
                         color = Color.Gold;
-                        baseData.Set("shineParticle", P_GoldShine);
+                        shineParticle = P_GoldShine;
                         break;
                     case "heartgem3":
                         color = Calc.HexToColor("dad8cc");
-                        baseData.Set("shineParticle", P_FakeShine);
+                        shineParticle = P_FakeShine;
                         break;
                     default:
-                        baseData.Set("shineParticle", new ParticleType(P_BlueShine)
+                        shineParticle = new ParticleType(P_BlueShine)
                         {
                             Color = color
-                        });
+                        };
                         break;
                 }
             }
@@ -91,15 +85,15 @@ namespace Celeste.Mod.aonHelper.Entities
             {
                 sprite = aonHelperModule.SpriteBank.Create("aonHelper_resizableHeart");
                 spriteOutline = aonHelperModule.SpriteBank.Create("aonHelper_resizableHeartOutline");
-                sprite.Color = (IsGhost && !fake ? (Color.Lerp(color, Color.White, 0.8f) * 0.8f) : color);
-                baseData.Set("shineParticle", new ParticleType(HeartGem.P_BlueShine)
+                sprite.Color = IsGhost && !fake ? (Color.Lerp(color, Color.White, 0.8f) * 0.8f) : color;
+                shineParticle = new ParticleType(P_BlueShine)
                 {
                     Color = color
-                });
+                };
             }
             sprite.OnLoop = delegate (string anim)
             {
-                if (Visible && anim == "spin" && baseData.Get<bool>("autoPulse"))
+                if (Visible && anim == "spin" && autoPulse)
                 {
                     if (IsFake)
                     {
@@ -119,18 +113,18 @@ namespace Celeste.Mod.aonHelper.Entities
                 sprite.Scale = Vector2.One * (1f + f * 0.25f);
             });
             Add(ScaleWiggler);
-            baseData.Set("sprite", sprite);
             Add(sprite);
             if (spriteOutline != null)
             {
                 Add(spriteOutline);
             }
-            baseData.Get<VertexLight>("light").Color = Color.Lerp(color, Color.White, 0.5f);
+            light.Color = Color.Lerp(color, Color.White, 0.5f);
         }
 
         public override void Update()
         {
-            if (fake) { baseData.Set("collected", respawnTimer > 0f); }
+            if (fake)
+                collected = respawnTimer > 0f;
             base.Update();
 
             if (respawnTimer > 0f)
@@ -142,7 +136,6 @@ namespace Celeste.Mod.aonHelper.Entities
                     ScaleWiggler.Start();
                 }
             }
-            Sprite sprite = baseData.Get<Sprite>("sprite");
             if (spriteOutline != null)
             {
                 spriteOutline.Position = sprite.Position;
@@ -171,12 +164,11 @@ namespace Celeste.Mod.aonHelper.Entities
         {
             if (self is ResizableHeart resizable)
             {
-                DynamicData data = DynamicData.For(resizable);
                 Player entity = resizable.Scene.Tracker.GetEntity<Player>();
                 if (resizable.fake)
                 {
 
-                    if (resizable.Visible && h.Dangerous(data.Get<HoldableCollider>("holdableCollider")))
+                    if (resizable.Visible && h.Dangerous(resizable.holdableCollider))
                     {
                         resizable.CollectFake(entity, h.GetSpeed().Angle());
                     }
@@ -196,7 +188,6 @@ namespace Celeste.Mod.aonHelper.Entities
         {
             if (self is ResizableHeart resizable)
             {
-                DynamicData data = DynamicData.For(resizable);
                 if (resizable.fake)
                 {
                     if (!resizable.Visible || (resizable.Scene as Level).Frozen)
@@ -209,15 +200,15 @@ namespace Celeste.Mod.aonHelper.Entities
                         resizable.CollectFake(player, player.Speed.Angle());
                         return;
                     }
-                    if (data.Get<float>("bounceSfxDelay") <= 0f)
+                    if (resizable.bounceSfxDelay <= 0f)
                     {
                         Audio.Play("event:/game/general/crystalheart_bounce", resizable.Position);
-                        data.Set("bounceSfxDelay", 0.1f);
+                        resizable.bounceSfxDelay = 0.1f;
                     }
                     player.PointBounce(resizable.Center);
-                    data.Get<Wiggler>("moveWiggler").Start();
+                    resizable.moveWiggler.Start();
                     resizable.ScaleWiggler.Start();
-                    data.Set("moveWiggleDir", (resizable.Center - player.Center).SafeNormalize(Vector2.UnitY));
+                    resizable.moveWiggleDir = (resizable.Center - player.Center).SafeNormalize(Vector2.UnitY);
                     Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                 }
                 else

@@ -11,14 +11,11 @@ namespace Celeste.Mod.aonHelper.Entities
     [CustomEntity("aonHelper/FeatherDashSwitch")]
     public class FeatherDashSwitch : DashSwitch
     {
-        private DynamicData baseData;
-
-        private new ParticleType P_PressA;
-        private new ParticleType P_PressB;
+        private readonly new ParticleType P_PressA;
+        private readonly new ParticleType P_PressB;
 
         public FeatherDashSwitch(EntityData data, Vector2 offset) : base(data.Position + offset, (Sides)data.Int("side", 0), false, false, new EntityID(data.Level.Name, data.ID), "default")
         {
-            baseData = new DynamicData(typeof(DashSwitch), this);
             P_PressA = new ParticleType
             {
                 Color = Calc.HexToColor(data.Attr("particleColor1")),
@@ -42,7 +39,6 @@ namespace Celeste.Mod.aonHelper.Entities
             OnDashCollide = OnDashed;
             // OnCollide = OnFeatherHit;
 
-            Sprite sprite = baseData.Get<Sprite>("sprite");
             Vector2 spritePos = sprite.Position;
             float spriteRot = sprite.Rotation;
             sprite.Stop();
@@ -50,7 +46,6 @@ namespace Celeste.Mod.aonHelper.Entities
             sprite = aonHelperModule.SpriteBank.Create("aonHelper_featherDashSwitch");
             sprite.Position = spritePos;
             sprite.Rotation = spriteRot;
-            baseData.Set("sprite", sprite);
             Add(sprite);
             sprite.Play("idle");
         }
@@ -63,25 +58,23 @@ namespace Celeste.Mod.aonHelper.Entities
 
             // Logger.Log("aonHelper/OnFeatherHit", $"we hit the dash switch with feather timer {playerData.Get<float>("starFlyTimer")}");
 
-            Vector2 pressDirection = baseData.Get<Vector2>("pressDirection");
-            Sprite sprite = baseData.Get<Sprite>("sprite");
-            if (!baseData.Get<bool>("pressed") && Vector2.Dot(direction, pressDirection) > 0)
+            if (!pressed && Vector2.Dot(direction, pressDirection) > 0)
             {
                 Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                 Audio.Play("event:/game/05_mirror_temple/button_activate", Position);
                 sprite.Play("push");
-                baseData.Set("pressed", true);
-                MoveTo(baseData.Get<Vector2>("pressedTarget"));
+                pressed = true;
+                MoveTo(pressedTarget);
                 Collidable = false;
                 Position -= pressDirection * 2f;
                 SceneAs<Level>().ParticlesFG.Emit(P_PressA, 10, Position + sprite.Position, direction.Perpendicular() * 6f, sprite.Rotation - (float)Math.PI);
                 SceneAs<Level>().ParticlesFG.Emit(P_PressB, 4, Position + sprite.Position, direction.Perpendicular() * 6f, sprite.Rotation - (float)Math.PI);
             }
-            if (baseData.Get<bool>("allGates"))
+            if (allGates)
             {
                 foreach (TempleGate entity in Scene.Tracker.GetEntities<TempleGate>())
                 {
-                    if (entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == baseData.Get<EntityID>("id").Level)
+                    if (entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level)
                     {
                         entity.SwitchOpen();
                     }
@@ -89,11 +82,11 @@ namespace Celeste.Mod.aonHelper.Entities
             }
             else
             {
-                baseData.Invoke<TempleGate>("GetGate", [])?.SwitchOpen();
+                GetGate()?.SwitchOpen();
             }
-            if (baseData.Get<bool>("persistent"))
+            if (persistent)
             {
-                SceneAs<Level>().Session.SetFlag(baseData.Get<string>("FlagName"));
+                SceneAs<Level>().Session.SetFlag(FlagName);
             }
 
             // make it work with crystalline all dash switch temple gates (whenever they update that helper)

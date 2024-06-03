@@ -3,6 +3,7 @@ using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Utils;
 using System;
+using System.Diagnostics;
 
 namespace Celeste.Mod.aonHelper.Entities
 {
@@ -18,16 +19,15 @@ namespace Celeste.Mod.aonHelper.Entities
                 Multiplier,
                 Constant,
             }
-            public Mode xMode;
-            public Mode yMode;
+            public Mode xMode, yMode;
 
             public float xModifier, yModifier;
         }
 
-        private ReboundData leftRightData;
-        private ReboundData topData;
+        private readonly ReboundData leftRightData;
+        private readonly ReboundData topData;
 
-        private bool refillDash;
+        private readonly bool refillDash;
 
         private readonly string flag;
 
@@ -35,17 +35,17 @@ namespace Celeste.Mod.aonHelper.Entities
         {
             leftRightData = new ReboundData
             {
-                xMode = (ReboundData.Mode)data.Int("leftRightXMode"),
-                yMode = (ReboundData.Mode)data.Int("leftRightYMode"),
-                xModifier = data.Float("leftRightXModifier"),
-                yModifier = data.Float("leftRightYModifier"),
+                xMode = (ReboundData.Mode)data.Int("leftRightXMode", 0),
+                yMode = (ReboundData.Mode)data.Int("leftRightYMode", 1),
+                xModifier = data.Float("leftRightXModifier", data.Bool("reflectSpeed") ? -data.Float("reflectSpeedMultiplier", 0.5f) : 1f),
+                yModifier = data.Float("leftRightYModifier", -120f),
             };
             topData = new ReboundData
             {
-                xMode = (ReboundData.Mode)data.Int("topXMode"),
-                yMode = (ReboundData.Mode)data.Int("topYMode"),
-                xModifier = data.Float("topXModifier"),
-                yModifier = data.Float("topYModifier"),
+                xMode = (ReboundData.Mode)data.Int("topXMode", 1),
+                yMode = (ReboundData.Mode)data.Int("topYMode", 0),
+                xModifier = data.Float("topXModifier", 0f),
+                yModifier = data.Float("topYModifier", 1f),
             };
             refillDash = data.Bool("refillDash");
             flag = data.Attr("flag");
@@ -75,7 +75,18 @@ namespace Celeste.Mod.aonHelper.Entities
                 return;
             }
 
-            // logic here
+            switch (direction)
+            {
+                case 0:
+                    self.Speed = UpdateSpeed(self.Speed, controller.topData);
+                    break;
+                case 1:
+                case -1:
+                    self.Speed = UpdateSpeed(self.Speed, controller.leftRightData);
+                    break;
+            }
+            if (controller.refillDash)
+                self.RefillDash();
 
             self.dashAttackTimer = 0f;
             self.gliderBoostTimer = 0f;
@@ -85,6 +96,24 @@ namespace Celeste.Mod.aonHelper.Entities
             self.lowFrictionStopTimer = 0.15f;
             self.forceMoveXTimer = 0f;
             self.StateMachine.State = 0;
+        }
+
+        private static Vector2 UpdateSpeed(Vector2 input, ReboundData data)
+        {
+            return new(
+                data.xMode switch
+                {
+                    ReboundData.Mode.Multiplier => input.X * data.xModifier,
+                    ReboundData.Mode.Constant => data.xModifier,
+                    _ => throw new UnreachableException(),
+                },
+                data.yMode switch
+                {
+                    ReboundData.Mode.Multiplier => input.Y * data.yModifier,
+                    ReboundData.Mode.Constant => data.yModifier,
+                    _ => throw new UnreachableException(),
+                }
+            );
         }
     }
 }

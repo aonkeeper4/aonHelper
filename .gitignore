@@ -355,3 +355,6 @@ MigrationBackup/
 # JetBrains Rider
 .idea
 
+# Visual Studio Code
+.vscode/
+
