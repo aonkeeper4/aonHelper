@@ -4,8 +4,9 @@ entities.aonHelper/ResizableHeart.placements.name.blue=Resizable Heart (Blue)
 entities.aonHelper/ResizableHeart.placements.name.red=Resizable Heart (Red)
 entities.aonHelper/ResizableHeart.placements.name.gold=Resizable Heart (Gold)
 entities.aonHelper/ResizableHeart.placements.name.white=Resizable Heart (White)
+entities.aonHelper/ResizableHeart.attributes.name.path=Sprite ID
 entities.aonHelper/ResizableHeart.attributes.description.color=Color of the heart for when no path is selected. If a custom (non-vanilla) path is selected, this sets the color of the heart's particles.
-entities.aonHelper/ResizableHeart.attributes.description.path=Path to heart sprites relative to Graphics/Atlases/Gameplay.
+entities.aonHelper/ResizableHeart.attributes.description.path=Sprite ID of the heart. Leave empty to use the template heart.\nCustom sprites can be used (by adding to the vanilla Sprites.xml) if they include the required animations. See "heartgem0" in the vanilla Sprites.xml for an example.
 entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the heart will respawn. Only works if Is Fake is on.
 entities.aonHelper/ResizableHeart.attributes.description.isFake=WHether the heart acts like a Fake Heart.
 
