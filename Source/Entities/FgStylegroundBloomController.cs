@@ -2,10 +2,7 @@ using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
-using System;
-using Iced.Intel;
 using Mono.Cecil.Cil;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 
