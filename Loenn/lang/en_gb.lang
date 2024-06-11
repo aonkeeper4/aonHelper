@@ -51,3 +51,7 @@ entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeedMu
 # Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.name.flingBirdNoSkipController=Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+
+# Fg Styleground Bloom Controller
+entities.aonHelper/FgStylegroundBloomController.placements.name.fgStylegroundBloomController=Fg Styleground Bloom Controller
+entities.aonHelper/FgStylegroundBloomController.attributes.description.bloomTag=Foreground stylegrounds with this tag will be affected by bloom. They will also render under all other foreground stylegrounds.\nLeave blank for all foreground stylegrounds to be affected.

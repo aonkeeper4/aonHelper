@@ -38,6 +38,7 @@ namespace Celeste.Mod.aonHelper
             ReboundModifyController.Load();
             FeatherBounceScamController.Load();
             FlingBirdNoSkipController.Load();
+            FgStylegroundBloomController.Load();
         }
 
         public override void Unload()
@@ -47,6 +48,7 @@ namespace Celeste.Mod.aonHelper
             ReboundModifyController.Unload();
             FeatherBounceScamController.Unload();
             FlingBirdNoSkipController.Unload();
+            FgStylegroundBloomController.Unload();
         }
 
         public override void LoadContent(bool firstLoad)
