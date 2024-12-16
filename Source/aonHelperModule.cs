@@ -1,6 +1,7 @@
 ﻿using System;
 using Monocle;
 using Celeste.Mod.aonHelper.Entities;
+using Celeste.Mod.aonHelper.States;
 
 namespace Celeste.Mod.aonHelper
 {
@@ -39,6 +40,9 @@ namespace Celeste.Mod.aonHelper
             FeatherBounceScamController.Load();
             FlingBirdNoSkipController.Load();
             FgStylegroundBloomController.Load();
+            ClampLightColorController.Load();
+
+            St.Load();
         }
 
         public override void Unload()
@@ -49,6 +53,9 @@ namespace Celeste.Mod.aonHelper
             FeatherBounceScamController.Unload();
             FlingBirdNoSkipController.Unload();
             FgStylegroundBloomController.Unload();
+            ClampLightColorController.Unload();
+
+            St.Unload();
         }
 
         public override void LoadContent(bool firstLoad)
@@ -56,6 +63,8 @@ namespace Celeste.Mod.aonHelper
             base.LoadContent(firstLoad);
 
             SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
+
+            St.Initialize();
         }
     }
 }

@@ -56,8 +56,6 @@ namespace Celeste.Mod.aonHelper.Entities
             if (player is null) { return; }
             DynamicData playerData = DynamicData.For(player);
 
-            // Logger.Log("aonHelper/OnFeatherHit", $"we hit the dash switch with feather timer {playerData.Get<float>("starFlyTimer")}");
-
             if (!pressed && Vector2.Dot(direction, pressDirection) > 0)
             {
                 Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
