@@ -17,7 +17,11 @@ current features:
   - makes vanilla flingbirds not run away when you're too far past the node
 - Fg Styleground Bloom Controller
   - allows you to apply bloom to foreground stylegrounds (either all of them or only ones with a certain tag)
- 
+- Unforgiving Spikes
+  - spikes that kill you no matter what. basically pretty killboxes
+- Clamp Light Color Controller
+  - allows you to set the "maximum" light color, i.e. no light is allowed to have a color brighter than this. useful for when you want overlapping light sources to not blend into white
+
 for all of the controllers listed here, just place it in the room where you want its effect. most of them have flag fields to only be active when a certain flag is set, if they dont or you want to report any other bugs or feature requests then ping me in celestecord (@aonkeeper4)
 
 happy modding :glumbsup:
