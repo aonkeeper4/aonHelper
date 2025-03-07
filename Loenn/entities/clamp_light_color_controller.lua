@@ -1,6 +1,6 @@
 local clampLightColorController = {}
 
-local clampModes = {
+local clampMethods = {
     "Clamp",
     "Tint"
 }
@@ -12,7 +12,7 @@ clampLightColorController.placements = {
         name = "clampLightColorController",
         data = {
             color = "ffffff",
-            clampMode = "Clamp"
+            clampMethod = "Clamp"
         }
     }
 }
@@ -20,14 +20,14 @@ clampLightColorController.fieldInformation = {
     color = {
         fieldType = "color"
     },
-    clampMode = {
-        options = clampModes,
+    clampMethod = {
+        options = clampMethods,
         editable = false
     }
 }
 
 clampLightColorController.texture = function(room, entity)
-    return "objects/aonHelper/clampLightColorController/" .. string.lower(entity.clampMode or "clamp")
+    return "objects/aonHelper/clampLightColorController/" .. string.lower(entity.clampMethod or "clamp")
 end
 
 return clampLightColorController
