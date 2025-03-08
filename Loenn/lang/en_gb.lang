@@ -1,3 +1,5 @@
+### Entities
+
 # Resizable Heart
 entities.aonHelper/ResizableHeart.placements.name.custom=Resizable Heart (Custom)
 entities.aonHelper/ResizableHeart.placements.name.blue=Resizable Heart (Blue)
@@ -90,3 +92,20 @@ entities.aonHelper/UnforgivingSpikesLeft.attributes.description.type=Determines 
 entities.aonHelper/ClampLightColorController.placements.name.clampLightColorController=Clamp Light Color Controller
 entities.aonHelper/ClampLightColorController.attributes.description.color=The color to clamp the light color to.\nThis means that all light will "cap out" at this color, i.e. if this is set to pure red (#ff0000) and there is a white light source, that light source will appear red instead.
 entities.aonHelper/ClampLightColorController.attributes.description.clampMethod=The method with which to clamp the light color.\nClamp: no light values below the specified color will be affected, all light values above the specified color will be clamped to the clamp color (newLightColor = min(lightColor, clampColor)).\nTint: All light values will be modified such that white light will appear as the clamp color, and everything else will be darker (newLightColor = lightColor * clampColor).
+
+
+### Triggers
+
+# Parallax Alpha Fade
+triggers.aonHelper/ParallaxAlphaFadeTrigger.placements.name.parallaxAlphaFade=Parallax Alpha Fade
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The end alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.positionMode=Determines how the styleground alpha fades as the player moves across the trigger.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
+
+# Parallax Color Fade
+triggers.aonHelper/ParallaxColorFadeTrigger.placements.name.parallaxColorFade=Parallax Color Fade
+triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds.
+triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.colorFrom=The end color of the affected stylegrounds.
+triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
+triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
