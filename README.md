@@ -20,7 +20,9 @@ current features:
 - Unforgiving Spikes
   - spikes that kill you no matter what. basically pretty killboxes (wehh this already existsss go use habitat helper crusher spikes instead or something idk)
 - Clamp Light Color Controller
-  - allows you to set the "maximum" light color, i.e. no light is allowed to have a color brighter than this. useful for when you want overlapping light sources to not blend into white
+  - allows you to set the "maximum" light color, i.e. no light is allowed to have a color brighter than this. useful for when you want overlapping light sources to not blend into white or when you want to make white stuff a different color. allows both "clamp" and "tint" options
+- Parallax Alpha Fade and Parallax Color Fade Triggers
+  - allows you to fade alpha/color of a parallax. note that you do need to reset it after every save and quit because i don't understand what black magic frosthelper is doing to make styleground blend modes persist
 
 for all of the controllers listed here, just place it in the room where you want its effect. most of them have flag fields to only be active when a certain flag is set, if they dont or you want to report any other bugs or feature requests then ping me in celestecord (@aonkeeper4)
 
