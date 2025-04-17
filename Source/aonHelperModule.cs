@@ -42,7 +42,7 @@ namespace Celeste.Mod.aonHelper
             FgStylegroundBloomController.Load();
             ClampLightColorController.Load();
 
-            St.Load();
+            DarkerMatter.Load();
         }
 
         public override void Unload()
@@ -55,7 +55,7 @@ namespace Celeste.Mod.aonHelper
             FgStylegroundBloomController.Unload();
             ClampLightColorController.Unload();
 
-            St.Unload();
+            DarkerMatter.Unload();
         }
 
         public override void LoadContent(bool firstLoad)
@@ -63,8 +63,6 @@ namespace Celeste.Mod.aonHelper
             base.LoadContent(firstLoad);
 
             SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
-
-            St.Initialize();
         }
     }
 }

@@ -1,8 +1,6 @@
-using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
 using System.Collections;
-using MonoMod.Utils;
 using System;
 using DarkerMatterEntity = Celeste.Mod.aonHelper.Entities.DarkerMatter.DarkerMatter;
 using Celeste.Mod.aonHelper.Entities.DarkerMatter;
@@ -12,140 +10,149 @@ using Celeste.Mod.aonHelper.Entities.DarkerMatter;
 // what if it like  muffled everything like water
 // more visual stuff, similar to dream block with displacements maybe
 // add feather interaction (separate state?)
-namespace Celeste.Mod.aonHelper.States
+namespace Celeste.Mod.aonHelper.States;
+
+public static class DarkerMatter
 {
-    public static class DarkerMatter
+    public static int StDarkerMatter { get; private set; }  = -1;
+
+    public class DarkerMatterComponent() : Component(false, false)
     {
-        private static DarkerMatterController controller = null;
+        public DarkerMatterController Controller;
+        public DarkerMatterEntity LastDarkerMatter;
+        public float StopGraceTimer;
+        
+        public Sprite WarpSprite;
+        public static readonly Vector2 WarpSpriteOffset = new(16f, 24f);
+    }
 
-        private const string f_Player_lastDarkerMatter = nameof(f_Player_lastDarkerMatter); // DarkerMatterEntity
-        private const string f_Player_warpSprite = nameof(f_Player_warpSprite); // Sprite
+    private static void DarkerMatterBegin(this Player player)
+    {
+        if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
+            return;
+        
+        darkerMatterComponent.LastDarkerMatter = null;
+        darkerMatterComponent.StopGraceTimer = darkerMatterComponent.Controller.StopGraceTime;
+        darkerMatterComponent.WarpSprite.Visible = true;
+    }
 
-        private static readonly Vector2 warpSpriteOffset = new(16f, 24f); // todo: gravityhelper support
+    private static void DarkerMatterEnd(this Player player)
+    {
+        if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
+            return;
 
-        private static float stopGraceTimer;
+        player.RefillDash();
+        darkerMatterComponent.WarpSprite.Visible = false;
+    }
 
-        public static void DarkerMatterBegin(this Player player)
+    private static int DarkerMatterUpdate(this Player player)
+    {
+        if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
+            return Player.StNormal;
+
+        darkerMatterComponent.WarpSprite.Play("boost");
+
+        bool shouldEnterDarkerMatterState = false;
+
+        if (player.CollideFirst<DarkerMatterEntity>() is { } darkerMatter)
         {
-            DynamicData data = DynamicData.For(player);
-
-            data.Get<Sprite>(f_Player_warpSprite).Visible = true;
-            data.Set(f_Player_lastDarkerMatter, null);
-
-            stopGraceTimer = controller.StopGraceTimer;
+            darkerMatterComponent.LastDarkerMatter = darkerMatter;
+            shouldEnterDarkerMatterState = true;
         }
 
-        public static void DarkerMatterEnd(this Player player)
+        // wrap check
+        DarkerMatterEntity last = darkerMatterComponent.LastDarkerMatter;
+        if (last is { WrapHorizontal: true })
         {
-            DynamicData data = DynamicData.For(player);
-
-            player.RefillDash();
-            data.Get<Sprite>(f_Player_warpSprite).Visible = false;
-        }
-
-        public static int DarkerMatterUpdate(this Player player)
-        {
-            DynamicData data = DynamicData.For(player);
-
-            Sprite warpSprite = data.Get<Sprite>(f_Player_warpSprite);
-            warpSprite.Play("boost");
-
-            bool shouldEnterDarkerMatterState = false;
-
-            if (player.CollideFirst<DarkerMatterEntity>() is DarkerMatterEntity darkerMatter)
+            if (player.Center.X <= last.Left && player.Speed.X < 0)
             {
-                data.Set(f_Player_lastDarkerMatter, darkerMatter);
+                player.NaiveMove(last.Width * Vector2.UnitX);
                 shouldEnterDarkerMatterState = true;
             }
-
-            // wrap check
-            DarkerMatterEntity last = data.Get<DarkerMatterEntity>(f_Player_lastDarkerMatter);
-            if (last is DarkerMatterEntity { wrapHorizontal: true })
+            else if (player.Center.X >= last.Right && player.Speed.X > 0)
             {
-                if (player.Center.X <= last.Left && player.Speed.X < 0)
-                {
-                    player.NaiveMove(last.Width * Vector2.UnitX);
-                    shouldEnterDarkerMatterState = true;
-                }
-                else if (player.Center.X >= last.Right && player.Speed.X > 0)
-                {
-                    player.NaiveMove(-last.Width * Vector2.UnitX);
-                    shouldEnterDarkerMatterState = true;
-                }
+                player.NaiveMove(-last.Width * Vector2.UnitX);
+                shouldEnterDarkerMatterState = true;
             }
-            if (last is DarkerMatterEntity { wrapVertical: true })
+        }
+        if (last is { WrapVertical: true })
+        {
+            if (player.Center.Y <= last.Top && player.Speed.Y < 0)
             {
-                if (player.Center.Y <= last.Top && player.Speed.Y < 0)
-                {
-                    player.NaiveMove(last.Height * Vector2.UnitY);
-                    shouldEnterDarkerMatterState = true;
-                }
-                else if (player.Center.Y >= last.Bottom && player.Speed.Y > 0)
-                {
-                    player.NaiveMove(-last.Height * Vector2.UnitY);
-                    shouldEnterDarkerMatterState = true;
-                }
+                player.NaiveMove(last.Height * Vector2.UnitY);
+                shouldEnterDarkerMatterState = true;
             }
-
-            if (shouldEnterDarkerMatterState)
+            else if (player.Center.Y >= last.Bottom && player.Speed.Y > 0)
             {
-                if (stopGraceTimer <= 0f)
-                    player.Die(Vector2.Zero, true);
-
-                if (player.Speed == Vector2.Zero)
-                    stopGraceTimer -= Engine.DeltaTime;
-                else
-                    stopGraceTimer = controller.StopGraceTimer;
-
-                float amplitude = Math.Clamp(player.Speed.Length(), 0f, controller.SpeedLimit);
-                Vector2 unitMovement = player.Speed.SafeNormalize();
-                player.Speed = unitMovement * amplitude;
-
-                return St.DarkerMatter;
+                player.NaiveMove(-last.Height * Vector2.UnitY);
+                shouldEnterDarkerMatterState = true;
             }
+        }
+
+        if (shouldEnterDarkerMatterState)
+        {
+            if (darkerMatterComponent.StopGraceTimer <= 0f)
+                player.Die(Vector2.Zero, true);
+
+            if (player.Speed == Vector2.Zero)
+                darkerMatterComponent.StopGraceTimer -= Engine.DeltaTime;
             else
-            {
-                return Player.StNormal;
-            }
+                darkerMatterComponent.StopGraceTimer = darkerMatterComponent.Controller.StopGraceTime;
+
+            float amplitude = Math.Clamp(player.Speed.Length(), 0f, darkerMatterComponent.Controller.SpeedLimit);
+            Vector2 unitMovement = player.Speed.SafeNormalize();
+            player.Speed = unitMovement * amplitude;
+
+            return StDarkerMatter;
         }
 
-        public static IEnumerator DarkerMatterRoutine(this Player _)
-        {
-            yield return null;
-        }
-
-        public static void Initialize()
-        {
-
-        }
-
-        public static void Load()
-        {
-            On.Celeste.Player.ctor += Player_ctor;
-        }
-
-        public static void Unload()
-        {
-            On.Celeste.Player.ctor -= Player_ctor;
-        }
-
-        private static void Player_ctor(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode)
-        {
-            orig(self, position, spriteMode);
-
-            DynamicData data = DynamicData.For(self);
-            Sprite warpSprite = aonHelperModule.SpriteBank.Create("aonHelper_darkerMatterWarp");
-            warpSprite.Visible = false;
-            warpSprite.Origin = warpSpriteOffset;
-            data.Set(f_Player_warpSprite, warpSprite);
-            self.Add(warpSprite);
-
-            data.Set(f_Player_lastDarkerMatter, null);
-        }
-
-        public static void SetController(DarkerMatterController controller)
-        {
-            DarkerMatter.controller ??= controller;
-        }
+        return Player.StNormal;
     }
+
+    private static IEnumerator DarkerMatterRoutine(this Player _)
+    {
+        yield return null;
+    }
+    
+    #region Hooks
+
+    public static void Load()
+    {
+        Everest.Events.Player.OnRegisterStates += OnRegisterStates;
+        Everest.Events.Player.OnSpawn += OnSpawn;
+        Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload;
+    }
+
+    public static void Unload()
+    {
+        Everest.Events.Player.OnRegisterStates -= OnRegisterStates;
+        Everest.Events.Player.OnSpawn -= OnSpawn;
+        Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
+    }
+
+    private static void OnRegisterStates(Player player)
+    {
+        StDarkerMatter = player.AddState("StDarkerMatter", DarkerMatterUpdate, DarkerMatterRoutine, DarkerMatterBegin, DarkerMatterEnd);
+    }
+
+    private static void OnSpawn(Player player)
+    {
+        DarkerMatterComponent darkerMatterComponent = new()
+        {
+            WarpSprite = aonHelperModule.SpriteBank.Create("aonHelper_darkerMatterWarp")
+        };
+        darkerMatterComponent.WarpSprite.Visible = false;
+        darkerMatterComponent.WarpSprite.Origin = DarkerMatterComponent.WarpSpriteOffset;
+        
+        player.Add(darkerMatterComponent);
+        player.Add(darkerMatterComponent.WarpSprite);
+    }
+
+    private static void OnBeforeReload(bool silent)
+    {
+        if (Engine.Scene?.Tracker?.GetEntity<Player>() is { } player)
+            player.Remove(player.Get<DarkerMatterComponent>());
+    }
+    
+    #endregion
 }

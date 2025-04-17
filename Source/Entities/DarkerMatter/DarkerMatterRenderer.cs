@@ -81,7 +81,7 @@ public class DarkerMatterRenderer : Entity
         {
             for (int j = (int)block.Y / 8; j < ((int)block.Y + block.Height) / 8; j++)
             {
-                tiles[i - levelTileBounds.X, j - levelTileBounds.Y] = !(block.wrapHorizontal || block.wrapVertical);
+                tiles[i - levelTileBounds.X, j - levelTileBounds.Y] = !(block.WrapHorizontal || block.WrapVertical);
             }
         }
 
@@ -271,7 +271,7 @@ public class DarkerMatterRenderer : Entity
 
     private bool Inside(DarkerMatter block, int tx, int ty)
     {
-        return (block.wrapHorizontal || block.wrapVertical) ? block.Collider.Bounds.Contains(tx * 8, ty * 8) : tiles[tx - levelTileBounds.X, ty - levelTileBounds.Y];
+        return (block.WrapHorizontal || block.WrapVertical) ? block.Collider.Bounds.Contains(tx * 8, ty * 8) : tiles[tx - levelTileBounds.X, ty - levelTileBounds.Y];
     }
 
     public override void Render()

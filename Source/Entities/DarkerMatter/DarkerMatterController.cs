@@ -12,20 +12,21 @@ public class DarkerMatterController : Entity
     public readonly float SpeedThreshold;
     public readonly float SpeedLimit;
 
-    public readonly float StopGraceTimer;
+    public readonly float StopGraceTime;
 
     public readonly Color[] DarkerMatterColors;
     public readonly Color[] DarkerMatterWarpColors;
 
-    public DarkerMatterController(EntityData data, Vector2 offset) : this(data.Position + offset, data.Attr("darkerMatterColors"), data.Attr("darkerMatterWarpColors"), data.Float("speedThreshold", 0f), data.Float("speedLimit", 200f), data.Float("stopGraceTimer", 0.05f))
+    public DarkerMatterController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.Attr("darkerMatterColors"), data.Attr("darkerMatterWarpColors"), data.Float("speedThreshold", 0f), data.Float("speedLimit", 200f), data.Float("stopGraceTimer", 0.05f))
     {
     }
 
-    public DarkerMatterController(Vector2 pos, string mainColors, string warpColors, float speedThreshold, float speedLimit, float stopGraceTimer) : base(pos)
+    public DarkerMatterController(Vector2 pos, string mainColors, string warpColors, float speedThreshold, float speedLimit, float stopGraceTime) : base(pos)
     {
         SpeedThreshold = speedThreshold;
         SpeedLimit = speedLimit < 0 ? float.MaxValue : speedLimit;
-        StopGraceTimer = stopGraceTimer;
+        StopGraceTime = stopGraceTime;
         DarkerMatterColors = mainColors.Split(",").Select(Calc.HexToColor).ToArray();
         DarkerMatterWarpColors = warpColors.Split(",").Select(Calc.HexToColor).ToArray();
     }
