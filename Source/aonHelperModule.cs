@@ -1,7 +1,6 @@
 ﻿using System;
 using Monocle;
 using Celeste.Mod.aonHelper.Entities;
-using Celeste.Mod.aonHelper.States;
 
 namespace Celeste.Mod.aonHelper
 {
@@ -41,7 +40,6 @@ namespace Celeste.Mod.aonHelper
             FlingBirdNoSkipController.Load();
             FgStylegroundBloomController.Load();
             ClampLightColorController.Load();
-
             DarkerMatter.Load();
         }
 
@@ -54,7 +52,6 @@ namespace Celeste.Mod.aonHelper
             FlingBirdNoSkipController.Unload();
             FgStylegroundBloomController.Unload();
             ClampLightColorController.Unload();
-
             DarkerMatter.Unload();
         }
 

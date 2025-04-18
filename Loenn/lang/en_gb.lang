@@ -93,6 +93,15 @@ entities.aonHelper/ClampLightColorController.placements.name.clampLightColorCont
 entities.aonHelper/ClampLightColorController.attributes.description.color=The color to clamp the light color to.\nThis means that all light will "cap out" at this color, i.e. if this is set to pure red (#ff0000) and there is a white light source, that light source will appear red instead.
 entities.aonHelper/ClampLightColorController.attributes.description.clampMethod=The method with which to clamp the light color.\nClamp: no light values below the specified color will be affected, all light values above the specified color will be clamped to the clamp color (newLightColor = min(lightColor, clampColor)).\nTint: All light values will be modified such that white light will appear as the clamp color, and everything else will be darker (newLightColor = lightColor * clampColor).
 
+# Darker Matter
+entities.aonHelper/DarkerMatter.placements.name.darkerMatter=Darker Matter
+entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the darker matter when exiting horizontally. 
+entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the darker matter when exiting vertically.
+entities.aonHelper/DarkerMatter.attributes.description.speedThreshold=The speed threshold for entering the darker matter state.
+entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limit for the darker matter state.
+entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use for the darker matter.
+entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the darker matter.
+
 
 ### Triggers
 
