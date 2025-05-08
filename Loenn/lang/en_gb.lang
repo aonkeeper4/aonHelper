@@ -10,7 +10,7 @@ entities.aonHelper/ResizableHeart.attributes.name.path=Sprite ID
 entities.aonHelper/ResizableHeart.attributes.description.color=Color of the heart for when no path is selected. If a custom (non-vanilla) path is selected, this sets the color of the heart's particles.
 entities.aonHelper/ResizableHeart.attributes.description.path=Sprite ID of the heart. Leave empty to use the template heart.\nCustom sprites can be used (by adding to the vanilla Sprites.xml) if they include the required animations. See "heartgem0" in the vanilla Sprites.xml for an example.
 entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the heart will respawn. Only works if Is Fake is on.
-entities.aonHelper/ResizableHeart.attributes.description.isFake=WHether the heart acts like a Fake Heart.
+entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the heart acts like a Fake Heart.
 
 # Feather Dash Switch
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchDown=Feather Dash Switch (Down)
@@ -97,8 +97,9 @@ entities.aonHelper/ClampLightColorController.attributes.description.clampMethod=
 entities.aonHelper/DarkerMatter.placements.name.darkerMatter=Darker Matter
 entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the darker matter when exiting horizontally. 
 entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the darker matter when exiting vertically.
+entities.aonHelper/DarkerMatter.attributes.description.refillDash=Whether the player's dash should be refilled on exit.
 entities.aonHelper/DarkerMatter.attributes.description.speedThreshold=The speed threshold for entering the darker matter state.
-entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limit for the darker matter state.
+entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limit for the darker matter state. Negative values mean the player's speed will never be limited.
 entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use for the darker matter.
 entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the darker matter.
 

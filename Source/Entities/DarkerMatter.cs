@@ -95,6 +95,7 @@ public class DarkerMatter : Entity
     private ParticleType P_DarkerMatter;
     
     private readonly bool warpHorizontal, warpVertical;
+    private readonly bool refillDash;
     
     private readonly float speedThreshold;
     private readonly float speedLimit;
@@ -108,12 +109,13 @@ public class DarkerMatter : Entity
     private float totalTime;
 
     public DarkerMatter(Vector2 position, int width, int height,
-        bool warpHorizontal, bool warpVertical,
+        bool warpHorizontal, bool warpVertical, bool refillDash,
         float speedThreshold, float speedLimit,
         Color[] colors, Color[] warpColors) : base(position)
     {
         this.warpHorizontal = warpHorizontal;
         this.warpVertical = warpVertical;
+        this.refillDash = refillDash;
         this.speedThreshold = speedThreshold;
         this.speedLimit = speedLimit;
         this.colors = colors;
@@ -136,12 +138,13 @@ public class DarkerMatter : Entity
             Color2 = Calc.Random.Choose(colors) * 0.6f,
         };
         
+        Add(new PlayerCollider(OnPlayer));
         Add(new CustomBloom(OnRenderBloom));
     }
 
     public DarkerMatter(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height,
-            data.Bool("warpHorizontal"), data.Bool("warpVertical"),
+            data.Bool("warpHorizontal"), data.Bool("warpVertical"), data.Bool("refillDash", true),
             data.Float("speedThreshold"), data.Float("speedLimit"),
             data.Attr("colors").Split(",").Select(Calc.HexToColor).ToArray(), data.Attr("warpColors").Split(",").Select(Calc.HexToColor).ToArray())
     { }
@@ -149,9 +152,6 @@ public class DarkerMatter : Entity
     public override void Update()
     {
         base.Update();
-
-        if (CollideFirst<Player>() is { } player && player.Speed.Length() >= speedThreshold && player.StateMachine.State != StDarkerMatter)
-            player.StateMachine.State = StDarkerMatter;
         
         totalTime += Engine.DeltaTime;
         if (Scene.OnInterval(0.1f))
@@ -199,6 +199,12 @@ public class DarkerMatter : Entity
             ? Color.Lerp(warpColors[timeInt % warpColors.Length], warpColors[(timeInt + 1) % warpColors.Length], time % 1f)
             : default;
     }
+    
+    private void OnPlayer(Player player)
+    {
+        if (player.Speed.Length() >= speedThreshold && player.StateMachine.State != StDarkerMatter)
+            player.StateMachine.State = StDarkerMatter;
+    }
 
     private void OnRenderBloom()
     { 
@@ -237,8 +243,10 @@ public class DarkerMatter : Entity
         {
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
-
-            player.RefillDash();
+            
+            if (darkerMatterComponent.LastDarkerMatter.refillDash)
+                player.RefillDash();
+            
             darkerMatterComponent.WarpSprite.Visible = false;
         }
 
@@ -296,7 +304,8 @@ public class DarkerMatter : Entity
                 else
                     darkerMatterComponent.StopGraceTimer = DarkerMatterComponent.StopGraceTime;
 
-                float amplitude = Math.Clamp(player.Speed.Length(), 0f, darkerMatterComponent.LastDarkerMatter.speedLimit);
+                float speedLimit = darkerMatterComponent.LastDarkerMatter.speedLimit;
+                float amplitude = speedLimit >= 0 ? Math.Clamp(player.Speed.Length(), 0f, speedLimit) : player.Speed.Length();
                 Vector2 unitMovement = player.Speed.SafeNormalize();
                 player.Speed = unitMovement * amplitude;
 

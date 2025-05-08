@@ -14,6 +14,7 @@ darkerMatter.placements = {
             height = 16,
             warpHorizontal = false,
             warpVertical = false,
+            refillDash = true,
             speedThreshold = 0,
             speedLimit = 200,
             colors = "5e0824,47134c",
@@ -30,9 +31,6 @@ darkerMatter.fieldOrder = {
 }
 darkerMatter.fieldInformation = {
     speedThreshold = {
-        minimumValue = 0
-    },
-    speedLimit = {
         minimumValue = 0
     },
     colors = {
