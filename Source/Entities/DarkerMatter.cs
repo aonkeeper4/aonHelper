@@ -257,7 +257,7 @@ public class DarkerMatter : Entity
 
             darkerMatterComponent.WarpSprite.Play("boost");
 
-            DarkerMatter last = darkerMatterComponent.LastDarkerMatter = player.CollideFirst<DarkerMatter>();
+            DarkerMatter last = player.CollideFirst<DarkerMatter>();
             if (last is null)
                 return Player.StNormal;
 
@@ -296,7 +296,9 @@ public class DarkerMatter : Entity
             float amplitude = last.speedLimit >= 0 ? Math.Clamp(player.Speed.Length(), 0f, last.speedLimit) : player.Speed.Length();
             Vector2 unitMovement = player.Speed.SafeNormalize();
             player.Speed = unitMovement * amplitude;
-
+            
+            darkerMatterComponent.LastDarkerMatter = last;
+            
             return StDarkerMatter;
         }
     }
