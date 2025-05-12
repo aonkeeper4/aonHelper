@@ -41,6 +41,7 @@ namespace Celeste.Mod.aonHelper
             FgStylegroundBloomController.Load();
             ClampLightColorController.Load();
             DarkerMatter.Load();
+            LightningCornerboostController.Load();
         }
 
         public override void Unload()
@@ -53,6 +54,7 @@ namespace Celeste.Mod.aonHelper
             FgStylegroundBloomController.Unload();
             ClampLightColorController.Unload();
             DarkerMatter.Unload();
+            LightningCornerboostController.Unload();
         }
 
         public override void LoadContent(bool firstLoad)

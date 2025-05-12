@@ -103,6 +103,9 @@ entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limi
 entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use for the darker matter.
 entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the darker matter.
 
+# Lightning Cornerboost Controller
+entities.aonHelper/LightningCornerboostController.placements.name.lightningCornerboostController=Lightning Cornerboost Controller
+
 
 ### Triggers
 
