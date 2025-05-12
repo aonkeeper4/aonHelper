@@ -2,6 +2,7 @@ using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Celeste.Mod.aonHelper.Entities;
@@ -22,15 +23,15 @@ public class DarkerMatter : Entity
 
         private readonly EdgeType type;
 
-        private Vector2 a;
-        private Vector2 b;
+        public Vector2 Start;
+        public Vector2 End;
 
-        public Edge(DarkerMatter parent, EdgeType type, Vector2 a, Vector2 b)
+        public Edge(DarkerMatter parent, EdgeType type, Vector2 start, Vector2 end)
         {
             this.parent = parent;
             this.type = type;
-            this.a = a;
-            this.b = b;
+            Start = start;
+            End = end;
         }
         
         public Color Color(Level level, int cycleOffset)
@@ -45,13 +46,13 @@ public class DarkerMatter : Entity
         
         public void Draw(uint seed, Color color)
         {
-            seed += (uint)(a.GetHashCode() + b.GetHashCode());
+            seed += (uint)(Start.GetHashCode() + End.GetHashCode());
         
-            float length = (b - a).Length();
-            Vector2 dir = (b - a) / length;
+            float length = (End - Start).Length();
+            Vector2 dir = (End - Start) / length;
             Vector2 offsetDir = dir.TurnRight();
-            Vector2 offsetA = a + offsetDir;
-            Vector2 offsetB = b + offsetDir;
+            Vector2 offsetA = Start + offsetDir;
+            Vector2 offsetB = End + offsetDir;
         
             Vector2 currentLineStart = offsetA;
             int offsetSign = PseudoRand(ref seed) % 2u != 0 ? 1 : -1;
@@ -103,7 +104,8 @@ public class DarkerMatter : Entity
     private readonly Color[] colors;
     private readonly Color[] warpColors;
     
-    private readonly Edge[] edges;
+    private readonly bool lonely;
+    private List<Edge> edges;
     private uint edgeSeed;
     
     private float totalTime;
@@ -116,8 +118,11 @@ public class DarkerMatter : Entity
         this.warpHorizontal = warpHorizontal;
         this.warpVertical = warpVertical;
         this.refillDash = refillDash;
+        lonely = this.warpHorizontal || this.warpVertical;
+        
         this.speedThreshold = speedThreshold;
         this.speedLimit = speedLimit;
+        
         this.colors = colors;
         this.warpColors = warpColors;
 
@@ -125,21 +130,14 @@ public class DarkerMatter : Entity
         Depth = -8000;
         Collider = new Hitbox(width, height);
         
-        edges = [
-            new Edge(this, this.warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Bottom), new Vector2(Left, Top)),
-            new Edge(this, this.warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Right, Top), new Vector2(Right, Bottom)),
-            new Edge(this, this.warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Top), new Vector2(Right, Top)),
-            new Edge(this, this.warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Right, Bottom), new Vector2(Left, Bottom)),
-        ];
-
-        P_DarkerMatter = new(Glider.P_Glow)
+        Add(new PlayerCollider(OnPlayer));
+        Add(new CustomBloom(OnRenderBloom));
+        
+        P_DarkerMatter = new ParticleType(Glider.P_Glow)
         {
             Color = Calc.Random.Choose(colors),
             Color2 = Calc.Random.Choose(colors) * 0.6f,
         };
-        
-        Add(new PlayerCollider(OnPlayer));
-        Add(new CustomBloom(OnRenderBloom));
     }
 
     public DarkerMatter(EntityData data, Vector2 offset)
@@ -148,6 +146,47 @@ public class DarkerMatter : Entity
             data.Float("speedThreshold"), data.Float("speedLimit"),
             data.Attr("colors").Split(",").Select(Calc.HexToColor).ToArray(), data.Attr("warpColors").Split(",").Select(Calc.HexToColor).ToArray())
     { }
+
+    public override void Awake(Scene scene)
+    {
+        edges = [];
+        edges.AddRange(WalkEdge(warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Top), Vector2.UnitY, -Vector2.UnitX * 8, Height));
+        edges.AddRange(WalkEdge(warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Right, Top), Vector2.UnitY, Vector2.Zero, Height));
+        edges.AddRange(WalkEdge(warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Top), Vector2.UnitX, -Vector2.UnitY * 8, Width));
+        edges.AddRange(WalkEdge(warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Bottom), Vector2.UnitX, Vector2.Zero, Width));
+    }
+
+    private List<Edge> WalkEdge(Edge.EdgeType type, Vector2 start, Vector2 walkDir, Vector2 checkOffset, float distance)
+    {
+        List<Edge> builtEdges = [];
+        Edge currentEdge = null;
+
+        for (int i = 0; i < distance; i += 8)
+        {
+            Vector2 segmentStart = start + i * walkDir;
+            Vector2 segmentEnd = start + (i + 8) * walkDir;
+
+            if (!CheckForDarkerMatter(segmentStart + checkOffset)) {
+                if (currentEdge is null)
+                    currentEdge = new Edge(this, type, segmentStart, segmentEnd);
+                else
+                    currentEdge.End = segmentEnd;
+            }
+            else if (currentEdge is not null)
+            {
+                builtEdges.Add(currentEdge);
+                currentEdge = null;
+            }
+        }
+        
+        if (currentEdge is not null)
+            builtEdges.Add(currentEdge);
+        return builtEdges;
+    }
+    
+    private bool CheckForDarkerMatter(Vector2 pos)
+        => !lonely && Scene.Tracker.GetEntities<DarkerMatter>().Cast<DarkerMatter>().Any(entity =>
+            !entity.lonely && entity.Collider.Collide(new Rectangle((int) pos.X, (int) pos.Y, 8, 8)));
 
     public override void Update()
     {
