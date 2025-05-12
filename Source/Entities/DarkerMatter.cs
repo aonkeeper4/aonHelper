@@ -213,7 +213,7 @@ public class DarkerMatter : Entity
     
     #region States
     
-    public static int StDarkerMatter { get; private set; }  = -1;
+    public static int StDarkerMatter { get; private set; } = -1;
 
     private class DarkerMatterComponent() : Component(false, false)
     {
