@@ -215,7 +215,7 @@ public class DarkerMatter : Entity
     
     public static int StDarkerMatter { get; private set; }  = -1;
 
-    public class DarkerMatterComponent() : Component(false, false)
+    private class DarkerMatterComponent() : Component(false, false)
     {
         public DarkerMatter LastDarkerMatter;
         
@@ -228,13 +228,12 @@ public class DarkerMatter : Entity
 
     private static class DarkerMatterState
     {
-
         public static void DarkerMatterBegin(Player player)
         {
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
 
-            darkerMatterComponent.LastDarkerMatter = null;
+            darkerMatterComponent.LastDarkerMatter = player.CollideFirst<DarkerMatter>();
             darkerMatterComponent.StopGraceTimer = DarkerMatterComponent.StopGraceTime;
             darkerMatterComponent.WarpSprite.Visible = true;
         }
@@ -244,9 +243,10 @@ public class DarkerMatter : Entity
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
             
-            if (darkerMatterComponent.LastDarkerMatter.refillDash)
+            if (darkerMatterComponent.LastDarkerMatter?.refillDash ?? false)
                 player.RefillDash();
-            
+
+            darkerMatterComponent.LastDarkerMatter = null;
             darkerMatterComponent.WarpSprite.Visible = false;
         }
 
@@ -257,27 +257,20 @@ public class DarkerMatter : Entity
 
             darkerMatterComponent.WarpSprite.Play("boost");
 
-            bool shouldEnterDarkerMatterState = false;
-
-            if (player.CollideFirst<DarkerMatter>() is { } darkerMatter)
-            {
-                darkerMatterComponent.LastDarkerMatter = darkerMatter;
-                shouldEnterDarkerMatterState = true;
-            }
+            DarkerMatter last = darkerMatterComponent.LastDarkerMatter = player.CollideFirst<DarkerMatter>();
+            if (last is null)
+                return Player.StNormal;
 
             // wrap check
-            DarkerMatter last = darkerMatterComponent.LastDarkerMatter;
             if (last is { warpHorizontal: true })
             {
                 if (player.Center.X <= last.Left && player.Speed.X < 0)
                 {
                     player.NaiveMove(last.Width * Vector2.UnitX);
-                    shouldEnterDarkerMatterState = true;
                 }
                 else if (player.Center.X >= last.Right && player.Speed.X > 0)
                 {
                     player.NaiveMove(-last.Width * Vector2.UnitX);
-                    shouldEnterDarkerMatterState = true;
                 }
             }
             if (last is { warpVertical: true })
@@ -285,34 +278,26 @@ public class DarkerMatter : Entity
                 if (player.Center.Y <= last.Top && player.Speed.Y < 0)
                 {
                     player.NaiveMove(last.Height * Vector2.UnitY);
-                    shouldEnterDarkerMatterState = true;
                 }
                 else if (player.Center.Y >= last.Bottom && player.Speed.Y > 0)
                 {
                     player.NaiveMove(-last.Height * Vector2.UnitY);
-                    shouldEnterDarkerMatterState = true;
                 }
             }
+            
+            if (darkerMatterComponent.StopGraceTimer <= 0f)
+                player.Die(Vector2.Zero, true);
 
-            if (shouldEnterDarkerMatterState)
-            {
-                if (darkerMatterComponent.StopGraceTimer <= 0f)
-                    player.Die(Vector2.Zero, true);
+            if (player.Speed == Vector2.Zero)
+                darkerMatterComponent.StopGraceTimer -= Engine.DeltaTime;
+            else
+                darkerMatterComponent.StopGraceTimer = DarkerMatterComponent.StopGraceTime;
 
-                if (player.Speed == Vector2.Zero)
-                    darkerMatterComponent.StopGraceTimer -= Engine.DeltaTime;
-                else
-                    darkerMatterComponent.StopGraceTimer = DarkerMatterComponent.StopGraceTime;
+            float amplitude = last.speedLimit >= 0 ? Math.Clamp(player.Speed.Length(), 0f, last.speedLimit) : player.Speed.Length();
+            Vector2 unitMovement = player.Speed.SafeNormalize();
+            player.Speed = unitMovement * amplitude;
 
-                float speedLimit = darkerMatterComponent.LastDarkerMatter.speedLimit;
-                float amplitude = speedLimit >= 0 ? Math.Clamp(player.Speed.Length(), 0f, speedLimit) : player.Speed.Length();
-                Vector2 unitMovement = player.Speed.SafeNormalize();
-                player.Speed = unitMovement * amplitude;
-
-                return StDarkerMatter;
-            }
-
-            return Player.StNormal;
+            return StDarkerMatter;
         }
     }
 
