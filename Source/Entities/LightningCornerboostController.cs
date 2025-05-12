@@ -9,8 +9,8 @@ using System.Runtime.CompilerServices;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
-[Tracked]
 [CustomEntity("aonHelper/LightningCornerboostController")]
+[Tracked]
 public class LightningCornerboostController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 { 
     private readonly ConditionalWeakTable<Lightning, Solid> lightningSolids = new();
