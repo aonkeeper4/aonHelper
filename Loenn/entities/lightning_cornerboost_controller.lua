@@ -6,7 +6,9 @@ lightningCornerboostController.depth = 0
 lightningCornerboostController.placements = {
     {
         name = "lightningCornerboostController",
-        data = {}
+        data = {
+            always = false
+        }
     }
 }
 

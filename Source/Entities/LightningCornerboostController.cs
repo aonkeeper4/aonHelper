@@ -1,11 +1,7 @@
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
@@ -13,13 +9,77 @@ namespace Celeste.Mod.aonHelper.Entities;
 [Tracked]
 public class LightningCornerboostController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 { 
-    private readonly ConditionalWeakTable<Lightning, Solid> lightningSolids = new();
+    private const string LogId = $"{nameof(aonHelperModule)}/{nameof(LightningCornerboostController)}";
+    
+    private class LightningSolidComponent(LightningCornerboostController controller) : Component(true, false)
+    {
+        private Lightning lightning;
+        private Solid solid;
+
+        private static readonly Vector2 Offset = new(3f, 4f);
+
+        public override void Added(Entity entity)
+        {
+            if (entity is not Lightning lightningEntity)
+                throw new Exception("LightningSolidComponent added to non-Lightning entity!");
+            
+            base.Added(entity);
+
+            lightning = lightningEntity;
+            solid = new Solid(lightning.Position + Offset, lightning.Width - 4f, lightning.Height - 5f, safe: false);
+            
+            // is this just a Monocle bug?
+            if (entity.Scene is { } scene)
+                EntityAdded(scene);
+        }
+        
+        public override void EntityAdded(Scene scene)
+        {
+            base.EntityAdded(scene);
+            
+            scene.Add(solid);
+        }
+
+        public override void Update()
+        {
+            solid.Position = lightning.Position + Offset;
+
+            bool inView = lightning.InView();
+            bool playerHasDashAttack = SceneAs<Level>().Tracker.GetEntity<Player>()?.DashAttacking ?? false;
+            solid.Collidable = inView && (controller.always || playerHasDashAttack);
+            solid.Visible = inView;
+        }
+
+        private void RemoveSolid()
+        {
+            if (Scene is not { } scene || solid.Scene is null)
+                return;
+            
+            scene.Remove(solid);
+        }
+        
+        public override void Removed(Entity entity)
+        {
+            base.Removed(entity);
+            
+            RemoveSolid();
+        }
+        
+        public override void EntityRemoved(Scene scene)
+        {
+            base.EntityRemoved(scene);
+            
+            RemoveSolid();
+        }
+    }
+
+    private readonly bool always = data.Bool("always");
 
     public override void Added(Scene scene)
     {
         if (scene.Tracker.GetEntities<LightningCornerboostController>().Count >= 1)
         {
-            Logger.Warn(nameof(aonHelperModule), "tried to load LightningCornerboostController when one was already present!");
+            Logger.Warn(LogId, "tried to load LightningCornerboostController when one was already present!");
             RemoveSelf();
             return;
         }
@@ -29,29 +89,14 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
 
     #region Hooks
 
-    private static ILHook ilHook_Lightning_Move;
-
     internal static void Load()
     {
-        // entity hooks
         On.Monocle.Entity.Awake += Entity_Awake;
-        On.Monocle.Entity.RemoveSelf += Entity_RemoveSelf;
-
-        // lightning hooks
-        On.Celeste.Lightning.ToggleCheck += Lightning_ToggleCheck;
-        
-        ilHook_Lightning_Move = new ILHook(typeof(Lightning).GetMethod("Move", BindingFlags.NonPublic | BindingFlags.Instance)!.GetStateMachineTarget()!, Lightning_Move);
     }
 
     internal static void Unload()
     {
         On.Monocle.Entity.Awake -= Entity_Awake;
-        On.Monocle.Entity.RemoveSelf -= Entity_RemoveSelf;
-        
-        On.Celeste.Lightning.ToggleCheck -= Lightning_ToggleCheck;
-        
-        ilHook_Lightning_Move?.Dispose();
-        ilHook_Lightning_Move = null;
     }
 
     private static void Entity_Awake(On.Monocle.Entity.orig_Awake orig, Entity self, Scene scene)
@@ -61,51 +106,8 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
         if (self is not Lightning lightning || scene.Tracker.GetEntity<LightningCornerboostController>() is not { } controller)
             return;
 
-        Solid solid = new(lightning.Position + new Vector2(3f, 4f), lightning.Width - 4f, lightning.Height - 5f, safe: false);
-        controller.lightningSolids.Add(lightning, solid);
-        scene.Add(solid);
+        lightning.Add(new LightningSolidComponent(controller));
     }
 
-    private static void Entity_RemoveSelf(On.Monocle.Entity.orig_RemoveSelf orig, Entity self)
-    {
-        if (self is Lightning lightning &&
-            (lightning.Scene.Tracker.GetEntity<LightningCornerboostController>()?.lightningSolids?.TryGetValue(lightning, out Solid solid) ?? false))
-        {
-            solid!.RemoveSelf();
-        }
-
-        orig(self);
-    }
-    
-    private static void Lightning_ToggleCheck(On.Celeste.Lightning.orig_ToggleCheck orig, Lightning self)
-    {
-        orig(self);
-        
-        if (!(self.Scene.Tracker.GetEntity<LightningCornerboostController>()?.lightningSolids?.TryGetValue(self, out Solid solid) ?? false) || solid is null)
-            return;
-
-        solid.Collidable = solid.Visible = self.InView();
-    }
-
-    private static void Lightning_Move(ILContext il)
-    {
-        ILCursor cursor = new(il);
-
-        if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld<Entity>(nameof(Position))))
-            return;
-
-        cursor.EmitDup();
-        cursor.EmitLdloc1();
-        cursor.EmitDelegate(SetSolidPosition);
-    }
-
-    private static void SetSolidPosition(Vector2 pos, Lightning lightning)
-    {
-        if (!(lightning.Scene.Tracker.GetEntity<LightningCornerboostController>()?.lightningSolids?.TryGetValue(lightning, out Solid solid) ?? false) || solid is null)
-            return;
-        
-        solid.Position = pos + new Vector2(3f, 4f);
-    }
-    
     #endregion
 }
