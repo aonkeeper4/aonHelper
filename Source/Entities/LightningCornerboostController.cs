@@ -73,7 +73,7 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
         }
     }
 
-    private readonly bool always = data.Bool("always");
+    private readonly bool always = data.Bool("always", true); // backwards compatibility
 
     public override void Added(Scene scene)
     {

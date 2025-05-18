@@ -25,6 +25,8 @@ current features:
   - allows you to fade alpha/color of a parallax. note that you do need to reset it after every save and quit because i don't understand what black magic frosthelper is doing to make styleground blend modes persist
 - Darker Matter
   - basically a port of the Ahorn-only entity Dark Matter, but with 2000% less crashes
+- Lightning Cornerboost Controller
+  - should really be called "Lightning Wallbounce Controller" but . gives lightning solid hitboxes like fire and ice barriers while the player is dashing (or always)
 
 for all of the controllers listed here, just place it in the room where you want its effect. most of them have flag fields to only be active when a certain flag is set, if they dont or you want to report any other bugs or feature requests then ping me in celestecord (@aonkeeper4)
 
