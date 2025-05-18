@@ -45,7 +45,7 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
             solid.Position = lightning.Position + Offset;
 
             bool inView = lightning.InView();
-            bool playerHasDashAttack = SceneAs<Level>().Tracker.GetEntity<Player>()?.DashAttacking ?? false;
+            bool playerHasDashAttack = Scene.Tracker.GetEntity<Player>()?.DashAttacking ?? false;
             solid.Collidable = inView && (controller.always || playerHasDashAttack);
             solid.Visible = inView;
         }
