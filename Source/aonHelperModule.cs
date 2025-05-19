@@ -17,7 +17,7 @@ namespace Celeste.Mod.aonHelper
         public override Type SaveDataType => typeof(aonHelperModuleSaveData);
         public static aonHelperModuleSaveData SaveData => (aonHelperModuleSaveData)Instance._SaveData;
 
-        public static SpriteBank SpriteBank { get; set; }
+        public static SpriteBank SpriteBank { get; private set; }
 
         public aonHelperModule()
         {
@@ -42,6 +42,7 @@ namespace Celeste.Mod.aonHelper
             ClampLightColorController.Load();
             DarkerMatter.Load();
             LightningCornerboostController.Load();
+            UnforgivingSpikes.Load();
         }
 
         public override void Unload()
@@ -55,6 +56,7 @@ namespace Celeste.Mod.aonHelper
             ClampLightColorController.Unload();
             DarkerMatter.Unload();
             LightningCornerboostController.Unload();
+            UnforgivingSpikes.Unload();
         }
 
         public override void LoadContent(bool firstLoad)

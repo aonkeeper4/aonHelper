@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
+using On.Celeste.Pico8;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -348,9 +349,13 @@ public class DarkerMatter : Entity
 
     public static void Load()
     {
+        // everest events
         Everest.Events.Player.OnRegisterStates += OnRegisterStates;
         Everest.Events.Player.OnSpawn += OnSpawn;
         Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload;
+
+        // player hooks
+        On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
     }
 
     public static void Unload()
@@ -358,8 +363,12 @@ public class DarkerMatter : Entity
         Everest.Events.Player.OnRegisterStates -= OnRegisterStates;
         Everest.Events.Player.OnSpawn -= OnSpawn;
         Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
+        
+        On.Celeste.Player.UnderwaterMusicCheck -= Player_UnderwaterMusicCheck;
     }
 
+    #region Events
+    
     private static void OnRegisterStates(Player player)
     {
         StDarkerMatter = player.AddState("DarkerMatter", DarkerMatterState.DarkerMatterUpdate, null, DarkerMatterState.DarkerMatterBegin, DarkerMatterState.DarkerMatterEnd);
@@ -384,5 +393,14 @@ public class DarkerMatter : Entity
             player.Remove(player.Get<DarkerMatterComponent>());
     }
     
+    #endregion
+    
+    #region Player
+
+    private static bool Player_UnderwaterMusicCheck(On.Celeste.Player.orig_UnderwaterMusicCheck orig, Player self)
+        => orig(self) || self.StateMachine.State == StDarkerMatter;
+    
+    #endregion
+
     #endregion
 }
