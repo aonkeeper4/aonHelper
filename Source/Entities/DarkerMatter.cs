@@ -1,10 +1,12 @@
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
+using MonoMod.RuntimeDetour;
 using On.Celeste.Pico8;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
@@ -258,9 +260,13 @@ public class DarkerMatter : Entity
     private class DarkerMatterComponent() : Component(false, false)
     {
         public DarkerMatter LastDarkerMatter;
-        
+
+        public const float StopGraceThreshold = 0.01f;
         public const float StopGraceTime = 0.05f;
         public float StopGraceTimer;
+
+        public Vector2 PreviousExactPosition;
+        public Vector2 LastNonZeroSpeed;
         
         public Sprite WarpSprite;
         public static readonly Vector2 WarpSpriteOffset = new(16f, 24f);
@@ -272,9 +278,12 @@ public class DarkerMatter : Entity
         {
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
+            
+            Vector2 playerVelocity = (player.ExactPosition - darkerMatterComponent.PreviousExactPosition) / Engine.DeltaTime;
 
             darkerMatterComponent.LastDarkerMatter = player.CollideFirst<DarkerMatter>();
             darkerMatterComponent.StopGraceTimer = DarkerMatterComponent.StopGraceTime;
+            darkerMatterComponent.LastNonZeroSpeed = player.Speed != Vector2.Zero ? player.Speed : playerVelocity;
             darkerMatterComponent.WarpSprite.Visible = true;
         }
 
@@ -324,22 +333,39 @@ public class DarkerMatter : Entity
                     player.NaiveMove(-last.Height * Vector2.UnitY);
                 }
             }
-            
-            if (darkerMatterComponent.StopGraceTimer <= 0f)
-                player.Die(Vector2.Zero, true);
 
-            if (player.Speed == Vector2.Zero)
+            if (darkerMatterComponent.StopGraceTimer <= 0f)
+            {
+                if (SaveData.Instance.Assists.Invincible)
+                    DarkerMatterAssistBounce(player);
+                else
+                    player.Die(Vector2.Zero);
+            }
+            
+            if (player.Speed.Length() < DarkerMatterComponent.StopGraceThreshold)
                 darkerMatterComponent.StopGraceTimer -= Engine.DeltaTime;
             else
+            {
                 darkerMatterComponent.StopGraceTimer = DarkerMatterComponent.StopGraceTime;
+                darkerMatterComponent.LastNonZeroSpeed = player.Speed;
+            }
 
-            float amplitude = last.speedLimit >= 0 ? Math.Clamp(player.Speed.Length(), 0f, last.speedLimit) : player.Speed.Length();
-            Vector2 unitMovement = player.Speed.SafeNormalize();
-            player.Speed = unitMovement * amplitude;
+            Vector2 speed = darkerMatterComponent.LastNonZeroSpeed;
+            float magnitude = last.speedLimit >= 0 ? Math.Clamp(speed.Length(), 0f, last.speedLimit) : speed.Length();
+            Vector2 direction = speed.SafeNormalize();
+            player.Speed = direction * magnitude;
             
             darkerMatterComponent.LastDarkerMatter = last;
             
             return StDarkerMatter;
+        }
+        
+        private static void DarkerMatterAssistBounce(Player player) {
+            if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
+                return;
+            
+            player.Speed = darkerMatterComponent.LastNonZeroSpeed * -1f;
+            player.Play(SFX.game_assist_dreamblockbounce);
         }
     }
 
@@ -347,6 +373,8 @@ public class DarkerMatter : Entity
     
     #region Hooks
 
+    private static Hook hook_Player_get_InControl;
+    
     public static void Load()
     {
         // everest events
@@ -356,6 +384,8 @@ public class DarkerMatter : Entity
 
         // player hooks
         On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
+        On.Celeste.Player.Update += Player_Update;
+        hook_Player_get_InControl = new Hook(typeof(Player).GetMethod("get_InControl", BindingFlags.Public | BindingFlags.Instance)!, Player_get_InControl);
     }
 
     public static void Unload()
@@ -365,6 +395,9 @@ public class DarkerMatter : Entity
         Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
         
         On.Celeste.Player.UnderwaterMusicCheck -= Player_UnderwaterMusicCheck;
+        On.Celeste.Player.Update -= Player_Update;
+        hook_Player_get_InControl.Dispose();
+        hook_Player_get_InControl = null;
     }
 
     #region Events
@@ -399,7 +432,22 @@ public class DarkerMatter : Entity
 
     private static bool Player_UnderwaterMusicCheck(On.Celeste.Player.orig_UnderwaterMusicCheck orig, Player self)
         => orig(self) || self.StateMachine.State == StDarkerMatter;
-    
+
+    private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
+    {
+        if (self.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
+        {
+            orig(self);
+            return;
+        }
+        
+        orig(self);
+        darkerMatterComponent.PreviousExactPosition = self.ExactPosition;
+    }
+
+    private static bool Player_get_InControl(Func<Player, bool> orig, Player self)
+        => orig(self) && self.StateMachine.State != StDarkerMatter;
+
     #endregion
 
     #endregion
