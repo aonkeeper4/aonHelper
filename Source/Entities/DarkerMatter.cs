@@ -1,7 +1,11 @@
+using Celeste.Mod.aonHelper.Utils;
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using On.Celeste.Pico8;
 using System;
 using System.Collections.Generic;
@@ -373,7 +377,8 @@ public class DarkerMatter : Entity
     
     #region Hooks
 
-    private static Hook hook_Player_get_InControl;
+    private static ILHook ilHook_Player_orig_Update;
+    private static ILHook ilHook_Player_orig_UpdateSprite;
     
     public static void Load()
     {
@@ -385,7 +390,9 @@ public class DarkerMatter : Entity
         // player hooks
         On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
         On.Celeste.Player.Update += Player_Update;
-        hook_Player_get_InControl = new Hook(typeof(Player).GetMethod("get_InControl", BindingFlags.Public | BindingFlags.Instance)!, Player_get_InControl);
+        
+        ilHook_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookUtils.Bind.PublicInstance)!, Player_orig_Update);
+        ilHook_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookUtils.Bind.NonPublicInstance)!, Player_orig_UpdateSprite);
     }
 
     public static void Unload()
@@ -396,8 +403,9 @@ public class DarkerMatter : Entity
         
         On.Celeste.Player.UnderwaterMusicCheck -= Player_UnderwaterMusicCheck;
         On.Celeste.Player.Update -= Player_Update;
-        hook_Player_get_InControl.Dispose();
-        hook_Player_get_InControl = null;
+        
+        HookUtils.DisposeAndSetNull(ref ilHook_Player_orig_Update);
+        HookUtils.DisposeAndSetNull(ref ilHook_Player_orig_UpdateSprite);
     }
 
     #region Events
@@ -442,11 +450,67 @@ public class DarkerMatter : Entity
         }
         
         orig(self);
+        
         darkerMatterComponent.PreviousExactPosition = self.ExactPosition;
     }
 
-    private static bool Player_get_InControl(Func<Player, bool> orig, Player self)
-        => orig(self) && self.StateMachine.State != StDarkerMatter;
+    private static void Player_orig_Update(ILContext il) => CheckState(new ILCursor(il), Player.StHitSquash, false);
+    private static void Player_orig_UpdateSprite(ILContext il) => CheckState(new ILCursor(il), Player.StCassetteFly, false);
+    
+    private static void CheckState(ILCursor cursor, int state, bool equal)
+    {
+        if (!cursor.TryGotoNextFirstFitReversed(MoveType.AfterLabel, 0x10,
+            instr => instr.MatchLdfld<Player>("StateMachine"),
+            instr => instr.MatchCallvirt<StateMachine>("get_State"),
+            instr => instr.MatchLdcI4(state)))
+            return;
+        
+        bool matchedBeqOrBne = false, matchedCeq = false;
+        ILLabel failedCheck = null;
+        Instruction checkInstr = null;
+        
+        ILCursor cloned = cursor.Clone();
+        if (!cloned.TryGotoNext(MoveType.After, instr =>
+        {
+            matchedBeqOrBne = equal ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck);
+            matchedCeq = instr.MatchCeq();
+            checkInstr = instr;
+            
+            return matchedBeqOrBne || matchedCeq;
+        })) return;
+        Instruction afterMatch = cloned.Next!;
+        
+        cursor.EmitDup();
+        
+        if (matchedBeqOrBne)
+        {
+            ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
+            
+            cursor.EmitDelegate(StateCheck);
+            cursor.EmitBrtrue(cleanUpPlayer);
+
+            cursor.Goto(equal ? afterMatch : failedCheck.Target);
+            cursor.EmitBr(pastCleanUpPlayer);
+            cursor.EmitPop();
+            cursor.MarkLabel(pastCleanUpPlayer);
+            cursor.Index--;
+            cursor.MarkLabel(cleanUpPlayer);
+        }
+        else if (matchedCeq)
+        {
+            cursor.Goto(checkInstr, MoveType.After);
+            cursor.EmitDelegate(ModifyCeqReturnValue);
+        }
+
+        cursor.Goto(afterMatch, MoveType.After);
+        return;
+
+        static bool StateCheck(Player player)
+            => player.StateMachine.State == StDarkerMatter;
+        
+        static bool ModifyCeqReturnValue(Player player, bool orig) 
+            => orig || StateCheck(player);
+    }
 
     #endregion
 
