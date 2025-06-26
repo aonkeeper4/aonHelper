@@ -1,4 +1,6 @@
+using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using System;
 using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Utils;
@@ -41,5 +43,10 @@ public class HookUtils
         ///   Shorthand for <see cref="BindingFlags.NonPublic"/> and <see cref="BindingFlags.Instance"/>.
         /// </summary>
         public static readonly BindingFlags NonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+    }
+    
+    public class HookException(string message, Exception inner = null) : Exception($"Hook application failed: {message}", inner)
+    {
+        public HookException(ILContext il, string message, Exception inner = null) : this($"ILHook application on method {il.Method.FullName} failed: {message}", inner) { }
     }
 }
