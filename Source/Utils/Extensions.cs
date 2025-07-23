@@ -67,7 +67,7 @@ public static class Extensions
 
         return true;
     }
-
+    
     /// <summary>
     /// Go to the previous match of a given IL sequence, allowing up to <paramref name="maxInstructionSpread"/> instructions of tolerance if the instructions are not sequential (i.e. if something else hooks the same sequence).
     /// </summary>
@@ -86,7 +86,7 @@ public static class Extensions
             throw new ArgumentException("No predicates given.");
 
         if (predicates.Length == 1)
-            return cursor.TryGotoNext(moveType, predicates[0]);
+            return cursor.TryGotoPrev(moveType, predicates[0]);
 
         int matchFrom = -1, matchTo = -1;
         while (cursor.TryGotoPrev(MoveType.Before, predicates[0]))
@@ -214,7 +214,7 @@ public static class Extensions
             throw new ArgumentException("No predicates given.");
 
         if (predicates.Length == 1)
-            return cursor.TryGotoNext(moveType, predicates[0]);
+            return cursor.TryGotoPrev(moveType, predicates[0]);
 
         int matchFrom = -1, matchTo = -1;
         while (cursor.TryGotoPrev(MoveType.Before, predicates[^1]))

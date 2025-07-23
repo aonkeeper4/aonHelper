@@ -72,13 +72,9 @@ public class DarkerMatter : Entity
                 Vector2 currentLineEnd = offsetA + dir * drawnEdgeLength;
             
                 if (drawnEdgeLength < length)
-                {
                     currentLineEnd += offsetSign * offsetDir * currentLineEndOffset - offsetDir;
-                }
                 else
-                {
                     currentLineEnd = offsetB;
-                }
             
                 Monocle.Draw.Line(currentLineStart, currentLineEnd, color, 1f);
                 currentLineStart = currentLineEnd;
@@ -95,9 +91,7 @@ public class DarkerMatter : Entity
         }
 
         private static float PseudoRandRange(ref uint seed, float min, float max)
-        {
-            return min + (PseudoRand(ref seed) & 0x3FFu) / 1024f * (max - min);
-        }
+            => min + (PseudoRand(ref seed) & 0x3FFu) / 1024f * (max - min);
     }
 
     private ParticleType P_DarkerMatter;
@@ -318,24 +312,16 @@ public class DarkerMatter : Entity
             if (last is { warpHorizontal: true })
             {
                 if (player.Center.X <= last.Left && player.Speed.X < 0)
-                {
                     player.NaiveMove(last.Width * Vector2.UnitX);
-                }
                 else if (player.Center.X >= last.Right && player.Speed.X > 0)
-                {
                     player.NaiveMove(-last.Width * Vector2.UnitX);
-                }
             }
             if (last is { warpVertical: true })
             {
                 if (player.Center.Y <= last.Top && player.Speed.Y < 0)
-                {
                     player.NaiveMove(last.Height * Vector2.UnitY);
-                }
                 else if (player.Center.Y >= last.Bottom && player.Speed.Y > 0)
-                {
                     player.NaiveMove(-last.Height * Vector2.UnitY);
-                }
             }
 
             if (darkerMatterComponent.StopGraceTimer <= 0f)
@@ -454,62 +440,41 @@ public class DarkerMatter : Entity
         darkerMatterComponent.PreviousExactPosition = self.ExactPosition;
     }
 
-    private static void Player_orig_Update(ILContext il) => CheckState(new ILCursor(il), Player.StHitSquash, false);
-    private static void Player_orig_UpdateSprite(ILContext il) => CheckState(new ILCursor(il), Player.StCassetteFly, false);
+    private static void Player_orig_Update(ILContext il) => CheckState(new ILCursor(il), Player.StHitSquash, false, false);
+    private static void Player_orig_UpdateSprite(ILContext il) => CheckState(new ILCursor(il), Player.StCassetteFly, false, false);
     
-    private static void CheckState(ILCursor cursor, int state, bool equal)
+    private static void CheckState(ILCursor cursor, int state, bool equal, bool canShortCircuit)
     {
         if (!cursor.TryGotoNextFirstFitReversed(MoveType.AfterLabel, 0x10,
             instr => instr.MatchLdfld<Player>("StateMachine"),
             instr => instr.MatchCallvirt<StateMachine>("get_State"),
             instr => instr.MatchLdcI4(state)))
             return;
-        
-        bool matchedBeqOrBne = false, matchedCeq = false;
+
         ILLabel failedCheck = null;
-        Instruction checkInstr = null;
-        
+
         ILCursor cloned = cursor.Clone();
-        if (!cloned.TryGotoNext(MoveType.After, instr =>
-        {
-            matchedBeqOrBne = equal ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck);
-            matchedCeq = instr.MatchCeq();
-            checkInstr = instr;
-            
-            return matchedBeqOrBne || matchedCeq;
-        })) return;
+        if (!cloned.TryGotoNext(MoveType.After, instr => equal ^ canShortCircuit ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck)))
+            return;
         Instruction afterMatch = cloned.Next!;
-        
-        cursor.EmitDup();
-        
-        if (matchedBeqOrBne)
-        {
-            ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
-            
-            cursor.EmitDelegate(StateCheck);
-            cursor.EmitBrtrue(cleanUpPlayer);
 
-            cursor.Goto(equal ? afterMatch : failedCheck.Target);
-            cursor.EmitBr(pastCleanUpPlayer);
-            cursor.EmitPop();
-            cursor.MarkLabel(pastCleanUpPlayer);
-            cursor.Index--;
-            cursor.MarkLabel(cleanUpPlayer);
-        }
-        else if (matchedCeq)
-        {
-            cursor.Goto(checkInstr, MoveType.After);
-            cursor.EmitDelegate(ModifyCeqReturnValue);
-        }
+        ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
 
+        cursor.Emit(OpCodes.Dup);
+        cursor.EmitDelegate(StateCheck);
+        cursor.Emit(OpCodes.Brtrue, cleanUpPlayer);
+
+        cursor.Goto(equal ^ canShortCircuit ? afterMatch : failedCheck.Target);
+        cursor.Emit(OpCodes.Br, pastCleanUpPlayer);
+        cursor.Emit(OpCodes.Pop);
+        cursor.MarkLabel(pastCleanUpPlayer);
+        cursor.Index--;
+        cursor.MarkLabel(cleanUpPlayer);
+        
         cursor.Goto(afterMatch, MoveType.After);
         return;
-
-        static bool StateCheck(Player player)
-            => player.StateMachine.State == StDarkerMatter;
         
-        static bool ModifyCeqReturnValue(Player player, bool orig) 
-            => orig || StateCheck(player);
+        static bool StateCheck(Player player) => player.StateMachine.State == StDarkerMatter;
     }
 
     #endregion
