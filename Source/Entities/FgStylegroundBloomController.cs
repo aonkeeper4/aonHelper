@@ -1,81 +1,120 @@
+using Celeste.Mod.aonHelper.Utils;
 using Celeste.Mod.Entities;
+using Celeste.Mod.Helpers;
 using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
-using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FgStylegroundBloomController")]
 [Tracked]
-public class FgStylegroundBloomController : Entity
+public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 {
-    private readonly string bloomTag;
+    private readonly string bloomTag = data.Attr("bloomTag");
 
-    public FgStylegroundBloomController(EntityData data, Vector2 offset) : base(data.Position + offset)
+    #region Hooks
+    
+    private static FieldInfo f_GameplayBuffers_Level = typeof(GameplayBuffers).GetField("Level", BindingFlags.Public | BindingFlags.Static);
+    
+    internal static void Load()
     {
-        bloomTag = data.Attr("bloomTag");
+        IL.Celeste.Level.Render += Level_Render;
     }
 
-    public static void Load()
+    internal static void Unload()
     {
-        IL.Celeste.Level.Render += mod_LevelRender;
+        IL.Celeste.Level.Render -= Level_Render;
     }
 
-    public static void Unload()
-    {
-        IL.Celeste.Level.Render -= mod_LevelRender;
-    }
-
-    private static void mod_LevelRender(ILContext il)
+    private static void Level_Render(ILContext il)
     {
         ILCursor cursor = new(il);
-        ILLabel normalBehavior = cursor.DefineLabel();
-        ILLabel pastNormalBehavior = cursor.DefineLabel();
-        cursor.GotoNext(MoveType.After, instr => instr.MatchCallOrCallvirt(typeof(BloomRenderer), "Apply"));
-        cursor.GotoPrev(MoveType.Before, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld(typeof(Level), "Bloom"));
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(determineFgBloom);
-        cursor.Emit(OpCodes.Brfalse, normalBehavior);
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(customBloomBehavior);
-        cursor.Emit(OpCodes.Br, pastNormalBehavior);
-        cursor.GotoNext(instr => instr.MatchLdarg0(), instr => instr.MatchLdfld(typeof(Level), "Bloom"));
-        cursor.MarkLabel(normalBehavior);
-        cursor.GotoNext(MoveType.After, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld(typeof(Level), "Foreground"));
-        cursor.GotoNext(MoveType.After, instr => instr.MatchCallOrCallvirt(typeof(Renderer), "Render"));
-        cursor.MarkLabel(pastNormalBehavior);
-    }
+        
+        /*
+         * IL_00a4: ldarg.0
+         * IL_00a5: ldfld class Celeste.BloomRenderer Celeste.Level::Bloom
+         * IL_00aa: ldsfld class Monocle.VirtualRenderTarget Celeste.GameplayBuffers::Level
+         * IL_00af: ldarg.0
+         * IL_00b0: callvirt instance void Celeste.BloomRenderer::Apply(class Monocle.VirtualRenderTarget, class Monocle.Scene)
+         */
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Level>("Bloom"),
+            instr => instr.MatchLdsfld(f_GameplayBuffers_Level),
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchCallvirt<BloomRenderer>("Apply")))
+            throw new HookUtils.HookException(il, "Unable to find bloom application to modify.");
+        
+        ILLabel skipBloomRendering = cursor.DefineLabel();
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(UseCustomBloomRendering);
+        cursor.EmitBrtrue(skipBloomRendering);
 
-    private static bool determineFgBloom(Level level)
-    {
-        return level.Tracker.GetEntity<FgStylegroundBloomController>() is not null;
-    }
+        cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<BloomRenderer>("Apply"));
+        cursor.MarkLabel(skipBloomRendering);
+        cursor.EmitNop(); // to ensure our label is inserted before other people's additions
+        
+        /*
+         * IL_00b5: ldarg.0
+         * IL_00b6: ldfld class Celeste.BackdropRenderer Celeste.Level::Foreground
+         * IL_00bb: ldarg.0
+         * IL_00bc: callvirt instance void Monocle.Renderer::Render(class Monocle.Scene)
+         */
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Level>("Foreground"),
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchCallvirt<Renderer>("Render")))
+            throw new HookUtils.HookException(il, "Unable to find foreground styleground rendering to modify.");
+        
+        ILLabel skipForegroundRendering = cursor.DefineLabel();
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(UseCustomForegroundRendering);
+        cursor.EmitBrtrue(skipForegroundRendering);
+        
+        cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<Renderer>("Render"));
+        cursor.MarkLabel(skipForegroundRendering);
+        cursor.EmitNop(); // to ensure our label is inserted before other people's additions
 
-    private static void customBloomBehavior(Level level)
-    {
-        if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not FgStylegroundBloomController controller)
-            return;
-
-        if (controller.bloomTag != "")
+        return;
+        
+        static bool UseCustomBloomRendering(Level level)
+            => level.Tracker.GetEntity<FgStylegroundBloomController>() is not null;
+        
+        static bool UseCustomForegroundRendering(Level level)
         {
-            // i really don't like assigning to level.Foreground.Backdrops every 2 seconds but  ehh
-            List<Backdrop> all = level.Foreground.Backdrops;
-            List<Backdrop> affected = level.Foreground.GetEach<Backdrop>(controller.bloomTag).ToList();
-            List<Backdrop> unaffected = level.Foreground.Backdrops.Except(affected).ToList();
-            level.Foreground.Backdrops = affected;
-            level.Foreground.Render(level);
-            level.Bloom.Apply(GameplayBuffers.Level, level);
-            level.Foreground.Backdrops = unaffected;
-            level.Foreground.Render(level);
-            level.Foreground.Backdrops = all;
-        }
-        else
-        {
-            level.Foreground.Render(level);
-            level.Bloom.Apply(GameplayBuffers.Level, level);
+            if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller)
+                return false;
+
+            if (string.IsNullOrEmpty(controller.bloomTag))
+            {
+                level.Foreground.Render(level);
+                level.Bloom.Apply(GameplayBuffers.Level, level);
+            }
+            else
+            {
+                List<Backdrop> all = level.Foreground.Backdrops;
+                List<Backdrop> affected = level.Foreground.GetEach<Backdrop>(controller.bloomTag).ToList();
+                List<Backdrop> unaffected = level.Foreground.Backdrops.Except(affected).ToList();
+                
+                // i really don't like assigning to level.Foreground.Backdrops every 2 seconds but  ehh
+                level.Foreground.Backdrops = affected;
+                level.Foreground.Render(level);
+                level.Bloom.Apply(GameplayBuffers.Level, level);
+                
+                level.Foreground.Backdrops = unaffected;
+                level.Foreground.Render(level);
+                
+                level.Foreground.Backdrops = all;
+            }
+
+            return true;
         }
     }
+    
+    #endregion
 }
