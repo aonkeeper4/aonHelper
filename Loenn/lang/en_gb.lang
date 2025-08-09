@@ -110,6 +110,9 @@ entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to 
 entities.aonHelper/LightningCornerboostController.placements.name.lightningCornerboostController=Lightning Cornerboost Controller
 entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether lightning should always have solid hitboxes instead of only while the player is dashing.
 
+# Seamless Lightning Controller
+entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightningController=Seamless Lightning Controller
+
 
 ### Triggers
 

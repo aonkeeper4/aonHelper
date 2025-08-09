@@ -27,6 +27,8 @@ current features:
   - basically a port of the Ahorn-only entity Dark Matter, but with 2000% less crashes
 - Lightning Cornerboost Controller
   - should really be called "Lightning Wallbounce Controller" but . gives lightning solid hitboxes like fire and ice barriers while the player is dashing (or always)
+- Seamless Lightning Controller
+  - ever gotten really pissed when trying to connect lightning between rooms? me too! makes lightning visually connect to the edges of rooms so u dont have to fiddle with eeveehelper global modifiers not working
 
 for all of the controllers listed here, just place it in the room where you want its effect. most of them have flag fields to only be active when a certain flag is set, if they dont or you want to report any other bugs or feature requests then ping me in celestecord (@aonkeeper4)
 

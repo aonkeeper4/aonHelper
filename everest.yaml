@@ -1,6 +1,6 @@
 - DLL: bin/aonHelper.dll
   Name: aonHelper
-  Version: 0.6.6
+  Version: 0.7.0
   Dependencies:
     - Name: EverestCore
       Version: 1.5577.0
