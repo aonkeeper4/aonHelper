@@ -51,7 +51,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
         
         ILLabel skipBloomRendering = cursor.DefineLabel();
         cursor.EmitLdarg0();
-        cursor.EmitDelegate(UseCustomBloomRendering);
+        cursor.EmitDelegate(CustomBloomRendering);
         cursor.EmitBrtrue(skipBloomRendering);
 
         cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<BloomRenderer>("Apply"));
@@ -73,7 +73,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
         
         ILLabel skipForegroundRendering = cursor.DefineLabel();
         cursor.EmitLdarg0();
-        cursor.EmitDelegate(UseCustomForegroundRendering);
+        cursor.EmitDelegate(CustomForegroundRendering);
         cursor.EmitBrtrue(skipForegroundRendering);
         
         cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<Renderer>("Render"));
@@ -82,10 +82,10 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
 
         return;
         
-        static bool UseCustomBloomRendering(Level level)
+        static bool CustomBloomRendering(Level level)
             => level.Tracker.GetEntity<FgStylegroundBloomController>() is not null;
         
-        static bool UseCustomForegroundRendering(Level level)
+        static bool CustomForegroundRendering(Level level)
         {
             if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller)
                 return false;

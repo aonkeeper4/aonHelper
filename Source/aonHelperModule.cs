@@ -43,6 +43,7 @@ namespace Celeste.Mod.aonHelper
             DarkerMatter.Load();
             LightningCornerboostController.Load();
             UnforgivingSpikes.Load();
+            SeamlessLightningController.Load();
         }
 
         public override void Unload()
@@ -57,6 +58,7 @@ namespace Celeste.Mod.aonHelper
             DarkerMatter.Unload();
             LightningCornerboostController.Unload();
             UnforgivingSpikes.Unload();
+            SeamlessLightningController.Unload();
         }
 
         public override void LoadContent(bool firstLoad)
