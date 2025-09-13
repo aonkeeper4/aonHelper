@@ -44,6 +44,8 @@ namespace Celeste.Mod.aonHelper
             LightningCornerboostController.Load();
             UnforgivingSpikes.Load();
             SeamlessLightningController.Load();
+            
+            aonHelperExports.Initialize();
         }
 
         public override void Unload()

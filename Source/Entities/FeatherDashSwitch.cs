@@ -1,4 +1,4 @@
-using Celeste.Mod.aonHelper.Utils;
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
@@ -119,7 +119,7 @@ public class FeatherDashSwitch : DashSwitch
         if (!cursor.TryGotoNext(MoveType.Before,
                 instr => instr.MatchLdarg0(),
                 instr => instr.MatchLdfld<Player>("starFlyTimer")))
-            throw new HookUtils.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
+            throw new HookHelper.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
         
         cursor.Emit(OpCodes.Ldarg_1);
         cursor.EmitDelegate(checkOnFeather);
@@ -132,7 +132,7 @@ public class FeatherDashSwitch : DashSwitch
         if (!cursor.TryGotoNext(MoveType.Before,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Player>("starFlyTimer")))
-            throw new HookUtils.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
+            throw new HookHelper.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
         
         cursor.Emit(OpCodes.Ldarg_1);
         cursor.EmitDelegate(checkOnFeather);

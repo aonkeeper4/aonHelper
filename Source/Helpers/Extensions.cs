@@ -1,8 +1,9 @@
+using Celeste.Mod.Helpers;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 
-namespace Celeste.Mod.aonHelper.Utils;
+namespace Celeste.Mod.aonHelper.Helpers;
 
 public static class Extensions
 {
@@ -15,7 +16,7 @@ public static class Extensions
     /// <param name="predicates">The IL instructions to match against.</param>
     /// <remarks>
     /// This function picks the first match, which might not have the least possible instruction spread.<br/>
-    /// For that, see <see cref="Helpers.ILCursorExtensions.TryGotoNextBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.
+    /// For that, see <see cref="ILCursorExtensions.TryGotoNextBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.
     /// </remarks>
     /// <returns>Whether a match has been found, and the cursor has been moved.</returns>
     public static bool TryGotoNextFirstFit(this ILCursor cursor, MoveType moveType, int maxInstructionSpread, params Func<Instruction, bool>[] predicates)
@@ -77,7 +78,7 @@ public static class Extensions
     /// <param name="predicates">The IL instructions to match against.</param>
     /// <remarks>
     /// This function picks the first match, which might not have the least possible instruction spread.<br/>
-    /// For that, see <see cref="Helpers.ILCursorExtensions.TryGotoPrevBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.
+    /// For that, see <see cref="ILCursorExtensions.TryGotoPrevBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.
     /// </remarks>
     /// <returns>Whether a match has been found, and the cursor has been moved.</returns>
     public static bool TryGotoPrevFirstFit(this ILCursor cursor, MoveType moveType, int maxInstructionSpread, params Func<Instruction, bool>[] predicates)
@@ -139,7 +140,7 @@ public static class Extensions
     /// <param name="predicates">The IL instructions to match against.</param>
     /// <remarks>
     /// This function picks the first match, which might not have the least possible instruction spread.<br/>
-    /// For that, see <see cref="Helpers.ILCursorExtensions.TryGotoNextBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.<br/>
+    /// For that, see <see cref="ILCursorExtensions.TryGotoNextBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.<br/>
     /// This function also checks its match predicates in reverse order, starting from the last.<br/>
     /// If you do not want this behavior, see <see cref="TryGotoNextFirstFit"/>.
     /// </remarks>
@@ -203,7 +204,7 @@ public static class Extensions
     /// <param name="predicates">The IL instructions to match against.</param>
     /// <remarks>
     /// This function picks the first match, which might not have the least possible instruction spread.<br/>
-    /// For that, see <see cref="Helpers.ILCursorExtensions.TryGotoPrevBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.<br/>
+    /// For that, see <see cref="ILCursorExtensions.TryGotoPrevBestFit(ILCursor,MoveType,int,Func&lt;Instruction,bool&gt;[])"/>.<br/>
     /// This function also checks its match predicates in reverse order, starting from the last.<br/>
     /// If you do not want this behavior, see <see cref="TryGotoNextFirstFit"/>.
     /// </remarks>

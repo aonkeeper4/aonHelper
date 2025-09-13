@@ -1,9 +1,11 @@
-using Celeste.Mod.aonHelper.Utils;
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
 using Celeste.Mod.Helpers;
 using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,16 +20,46 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
 
     #region Hooks
     
-    private static FieldInfo f_GameplayBuffers_Level = typeof(GameplayBuffers).GetField("Level", BindingFlags.Public | BindingFlags.Static);
+    private static readonly List<Action<bool>> BeforeForegroundRenderActions = [], AfterForegroundRenderActions = [];
+    
+    internal static void AddBeforeForegroundRenderAction(Action<bool> action)
+        => BeforeForegroundRenderActions.Add(action);
+    internal static void RemoveBeforeForegroundRenderAction(Action<bool> action)
+        => BeforeForegroundRenderActions.Remove(action);
+    
+    internal static void AddAfterForegroundRenderAction(Action<bool> action)
+        => AfterForegroundRenderActions.Add(action);
+    internal static void RemoveAfterForegroundRenderAction(Action<bool> action)
+        => AfterForegroundRenderActions.Remove(action);
+
+    internal static string GetCurrentBloomTag(Level level)
+        => level.Tracker.GetEntity<FgStylegroundBloomController>() is { } controller
+            && !string.IsNullOrEmpty(controller.bloomTag)
+                ? controller.bloomTag
+                : null;
+
+    private static void RenderForeground(Level level, bool applyBloom)
+    {
+        BeforeForegroundRenderActions.ForEach(action => action(applyBloom));
+        level.Foreground.Render(level);
+        AfterForegroundRenderActions.ForEach(action => action(applyBloom));
+    }
+
+    private const string StyleMaskHelperDetourConfigName = "StyleMaskHelper";
+    
+    private static FieldInfo f_GameplayBuffers_Level = typeof(GameplayBuffers).GetField("Level", HookHelper.Bind.PublicStatic)!;
+    private static MethodInfo m_Level_Render = typeof(Level).GetMethod("Render", HookHelper.Bind.PublicInstance)!;
+
+    private static ILHook ilHook_Level_Render;
     
     internal static void Load()
     {
-        IL.Celeste.Level.Render += Level_Render;
+        ilHook_Level_Render = new ILHook(m_Level_Render, Level_Render, HookHelper.GetDetourConfig(before: [StyleMaskHelperDetourConfigName]));
     }
 
     internal static void Unload()
     {
-        IL.Celeste.Level.Render -= Level_Render;
+        HookHelper.DisposeAndSetNull(ref ilHook_Level_Render);
     }
 
     private static void Level_Render(ILContext il)
@@ -47,7 +79,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
             instr => instr.MatchLdsfld(f_GameplayBuffers_Level),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchCallvirt<BloomRenderer>("Apply")))
-            throw new HookUtils.HookException(il, "Unable to find bloom application to modify.");
+            throw new HookHelper.HookException(il, "Unable to find bloom application to modify.");
         
         ILLabel skipBloomRendering = cursor.DefineLabel();
         cursor.EmitLdarg0();
@@ -69,7 +101,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
             instr => instr.MatchLdfld<Level>("Foreground"),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchCallvirt<Renderer>("Render")))
-            throw new HookUtils.HookException(il, "Unable to find foreground styleground rendering to modify.");
+            throw new HookHelper.HookException(il, "Unable to find foreground styleground rendering to modify.");
         
         ILLabel skipForegroundRendering = cursor.DefineLabel();
         cursor.EmitLdarg0();
@@ -92,7 +124,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
 
             if (string.IsNullOrEmpty(controller.bloomTag))
             {
-                level.Foreground.Render(level);
+                RenderForeground(level, true);
                 level.Bloom.Apply(GameplayBuffers.Level, level);
             }
             else
@@ -103,11 +135,11 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
                 
                 // i really don't like assigning to level.Foreground.Backdrops every 2 seconds but  ehh
                 level.Foreground.Backdrops = affected;
-                level.Foreground.Render(level);
+                RenderForeground(level, true);
                 level.Bloom.Apply(GameplayBuffers.Level, level);
                 
                 level.Foreground.Backdrops = unaffected;
-                level.Foreground.Render(level);
+                RenderForeground(level, false);
                 
                 level.Foreground.Backdrops = all;
             }

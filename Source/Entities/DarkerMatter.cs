@@ -1,4 +1,4 @@
-using Celeste.Mod.aonHelper.Utils;
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
@@ -58,8 +58,8 @@ public class DarkerMatter : Entity
             float length = (End - Start).Length();
             Vector2 dir = (End - Start) / length;
             Vector2 offsetDir = dir.TurnRight();
-            Vector2 offsetA = Start + offsetDir;
-            Vector2 offsetB = End + offsetDir;
+            Vector2 offsetA = parent.Position + Start + offsetDir;
+            Vector2 offsetB = parent.Position + End + offsetDir;
         
             Vector2 currentLineStart = offsetA;
             int offsetSign = PseudoRand(ref seed) % 2u != 0 ? 1 : -1;
@@ -151,10 +151,10 @@ public class DarkerMatter : Entity
     public override void Awake(Scene scene)
     {
         edges = [];
-        edges.AddRange(WalkEdge(warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Top), Vector2.UnitY, -Vector2.UnitX * 8, Height));
-        edges.AddRange(WalkEdge(warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Right, Top), Vector2.UnitY, Vector2.Zero, Height));
-        edges.AddRange(WalkEdge(warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Top), Vector2.UnitX, -Vector2.UnitY * 8, Width));
-        edges.AddRange(WalkEdge(warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, new Vector2(Left, Bottom), Vector2.UnitX, Vector2.Zero, Width));
+        edges.AddRange(WalkEdge(warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, Vector2.Zero, Vector2.UnitY, -Vector2.UnitX * 8, Height));
+        edges.AddRange(WalkEdge(warpHorizontal ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, Vector2.UnitX * Width, Vector2.UnitY, Vector2.Zero, Height));
+        edges.AddRange(WalkEdge(warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, Vector2.Zero, Vector2.UnitX, -Vector2.UnitY * 8, Width));
+        edges.AddRange(WalkEdge(warpVertical ? Edge.EdgeType.Warp : Edge.EdgeType.Normal, Vector2.UnitY * Height, Vector2.UnitX, Vector2.Zero, Width));
     }
 
     private List<Edge> WalkEdge(Edge.EdgeType type, Vector2 start, Vector2 walkDir, Vector2 checkOffset, float distance)
@@ -377,8 +377,8 @@ public class DarkerMatter : Entity
         On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
         On.Celeste.Player.Update += Player_Update;
         
-        ilHook_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookUtils.Bind.PublicInstance)!, Player_orig_Update);
-        ilHook_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookUtils.Bind.NonPublicInstance)!, Player_orig_UpdateSprite);
+        ilHook_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, Player_orig_Update);
+        ilHook_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookHelper.Bind.NonPublicInstance)!, Player_orig_UpdateSprite);
     }
 
     public static void Unload()
@@ -390,8 +390,8 @@ public class DarkerMatter : Entity
         On.Celeste.Player.UnderwaterMusicCheck -= Player_UnderwaterMusicCheck;
         On.Celeste.Player.Update -= Player_Update;
         
-        HookUtils.DisposeAndSetNull(ref ilHook_Player_orig_Update);
-        HookUtils.DisposeAndSetNull(ref ilHook_Player_orig_UpdateSprite);
+        HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_Update);
+        HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_UpdateSprite);
     }
 
     #region Events

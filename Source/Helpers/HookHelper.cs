@@ -1,12 +1,15 @@
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
-namespace Celeste.Mod.aonHelper.Utils;
+namespace Celeste.Mod.aonHelper.Helpers;
 
-public class HookUtils
+public class HookHelper
 {
+    private const string DetourConfigName = "aonHelper";
+    
     public static void DisposeAndSetNull(ref Hook hook)
     {
         hook.Dispose();
@@ -18,30 +21,28 @@ public class HookUtils
         ilHook.Dispose();
         ilHook = null;
     }
+
+    public static DetourConfig GetDetourConfig(List<string> before = null, List<string> after = null)
+    {
+        bool beforeAll = HasWildcard(before);
+        bool afterAll = HasWildcard(after);
+        int priority = beforeAll
+            ? int.MaxValue
+            : afterAll
+                ? int.MinValue
+                : 0;
+
+        return new DetourConfig(DetourConfigName, priority, before, after);
+
+        static bool HasWildcard(List<string> list)
+            => (list?.RemoveAll(s => s.Equals("*")) ?? 0) != 0;
+    }
     
-    /// <summary>
-    ///   Contains commonly used <see cref="BindingFlags"/>.
-    /// </summary>
     public static class Bind
     {
-        /// <summary>
-        ///   Shorthand for <see cref="BindingFlags.Public"/> and <see cref="BindingFlags.Static"/>.
-        /// </summary>
         public static readonly BindingFlags PublicStatic = BindingFlags.Public | BindingFlags.Static;
-
-        /// <summary>
-        ///   Shorthand for <see cref="BindingFlags.NonPublic"/> and <see cref="BindingFlags.Static"/>.
-        /// </summary>
         public static readonly BindingFlags NonPublicStatic = BindingFlags.NonPublic | BindingFlags.Static;
-
-        /// <summary>
-        ///   Shorthand for <see cref="BindingFlags.Public"/> and <see cref="BindingFlags.Instance"/>.
-        /// </summary>
         public static readonly BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
-
-        /// <summary>
-        ///   Shorthand for <see cref="BindingFlags.NonPublic"/> and <see cref="BindingFlags.Instance"/>.
-        /// </summary>
         public static readonly BindingFlags NonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
     }
     
