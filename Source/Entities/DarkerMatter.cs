@@ -5,12 +5,9 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
-using On.Celeste.Pico8;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
@@ -167,7 +164,7 @@ public class DarkerMatter : Entity
             Vector2 segmentStart = start + i * walkDir;
             Vector2 segmentEnd = start + (i + 8) * walkDir;
 
-            if (!CheckForDarkerMatter(segmentStart + checkOffset)) {
+            if (!CheckForDarkerMatter(Position + segmentStart + checkOffset)) {
                 if (currentEdge is null)
                     currentEdge = new Edge(this, type, segmentStart, segmentEnd);
                 else
