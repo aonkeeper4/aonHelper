@@ -20,16 +20,16 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
 
     #region Hooks
     
-    private static readonly List<Action<bool>> BeforeForegroundRenderActions = [], AfterForegroundRenderActions = [];
+    private static readonly List<Action<Level, bool>> BeforeForegroundRenderActions = [], AfterForegroundRenderActions = [];
     
-    internal static void AddBeforeForegroundRenderAction(Action<bool> action)
+    internal static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
         => BeforeForegroundRenderActions.Add(action);
-    internal static void RemoveBeforeForegroundRenderAction(Action<bool> action)
+    internal static void RemoveBeforeForegroundRenderAction(Action<Level, bool> action)
         => BeforeForegroundRenderActions.Remove(action);
     
-    internal static void AddAfterForegroundRenderAction(Action<bool> action)
+    internal static void AddAfterForegroundRenderAction(Action<Level, bool> action)
         => AfterForegroundRenderActions.Add(action);
-    internal static void RemoveAfterForegroundRenderAction(Action<bool> action)
+    internal static void RemoveAfterForegroundRenderAction(Action<Level, bool> action)
         => AfterForegroundRenderActions.Remove(action);
 
     internal static string GetCurrentBloomTag(Level level)
@@ -40,26 +40,21 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
 
     private static void RenderForeground(Level level, bool applyBloom)
     {
-        BeforeForegroundRenderActions.ForEach(action => action(applyBloom));
+        BeforeForegroundRenderActions.ForEach(action => action(level, applyBloom));
         level.Foreground.Render(level);
-        AfterForegroundRenderActions.ForEach(action => action(applyBloom));
+        AfterForegroundRenderActions.ForEach(action => action(level, applyBloom));
     }
-
-    private const string StyleMaskHelperDetourConfigName = "StyleMaskHelper";
     
     private static FieldInfo f_GameplayBuffers_Level = typeof(GameplayBuffers).GetField("Level", HookHelper.Bind.PublicStatic)!;
-    private static MethodInfo m_Level_Render = typeof(Level).GetMethod("Render", HookHelper.Bind.PublicInstance)!;
-
-    private static ILHook ilHook_Level_Render;
     
     internal static void Load()
     {
-        ilHook_Level_Render = new ILHook(m_Level_Render, Level_Render, HookHelper.GetDetourConfig(before: [StyleMaskHelperDetourConfigName]));
+        IL.Celeste.Level.Render += Level_Render;
     }
 
     internal static void Unload()
     {
-        HookHelper.DisposeAndSetNull(ref ilHook_Level_Render);
+        IL.Celeste.Level.Render -= Level_Render;
     }
 
     private static void Level_Render(ILContext il)
@@ -83,7 +78,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
         
         ILLabel skipBloomRendering = cursor.DefineLabel();
         cursor.EmitLdarg0();
-        cursor.EmitDelegate(CustomBloomRendering);
+        cursor.EmitDelegate(SkipBloomRendering);
         cursor.EmitBrtrue(skipBloomRendering);
 
         cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<BloomRenderer>("Apply"));
@@ -107,44 +102,57 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
         cursor.EmitLdarg0();
         cursor.EmitDelegate(CustomForegroundRendering);
         cursor.EmitBrtrue(skipForegroundRendering);
-        
+
         cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<Renderer>("Render"));
         cursor.MarkLabel(skipForegroundRendering);
         cursor.EmitNop(); // to ensure our label is inserted before other people's additions
 
+        /*
+         * IL_00c1: ldsfld class Monocle.VirtualRenderTarget Celeste.GameplayBuffers::Level
+         * IL_00c6: ldarg.0
+         * IL_00c7: ldfld float32 Celeste.Level::glitchTimer
+         */
+        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+            instr => instr.MatchLdsfld(typeof(GameplayBuffers), "Level"),
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Level>("glitchTimer")))
+            throw new HookHelper.HookException(il, "Unable to find glitch effect rendering to insert bloom pass before.");
+
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(DelayedBloomRendering);
+
         return;
         
-        static bool CustomBloomRendering(Level level)
+        static bool SkipBloomRendering(Level level)
             => level.Tracker.GetEntity<FgStylegroundBloomController>() is not null;
         
         static bool CustomForegroundRendering(Level level)
         {
-            if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller)
+            if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller || string.IsNullOrEmpty(controller.bloomTag))
                 return false;
 
-            if (string.IsNullOrEmpty(controller.bloomTag))
-            {
-                RenderForeground(level, true);
-                level.Bloom.Apply(GameplayBuffers.Level, level);
-            }
-            else
-            {
-                List<Backdrop> all = level.Foreground.Backdrops;
-                List<Backdrop> affected = level.Foreground.GetEach<Backdrop>(controller.bloomTag).ToList();
-                List<Backdrop> unaffected = level.Foreground.Backdrops.Except(affected).ToList();
-                
-                // i really don't like assigning to level.Foreground.Backdrops every 2 seconds but  ehh
-                level.Foreground.Backdrops = affected;
-                RenderForeground(level, true);
-                level.Bloom.Apply(GameplayBuffers.Level, level);
-                
-                level.Foreground.Backdrops = unaffected;
-                RenderForeground(level, false);
-                
-                level.Foreground.Backdrops = all;
-            }
+            List<Backdrop> all = level.Foreground.Backdrops;
+            List<Backdrop> affected = level.Foreground.GetEach<Backdrop>(controller.bloomTag).ToList();
+            List<Backdrop> unaffected = level.Foreground.Backdrops.Except(affected).ToList();
+
+            level.Foreground.Backdrops = affected;
+            RenderForeground(level, true);
+            level.Bloom.Apply(GameplayBuffers.Level, level);
+
+            level.Foreground.Backdrops = unaffected;
+            RenderForeground(level, false);
+
+            level.Foreground.Backdrops = all;
 
             return true;
+        }
+
+        static void DelayedBloomRendering(Level level)
+        {
+            if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller || !string.IsNullOrEmpty(controller.bloomTag))
+                return;
+
+            level.Bloom.Apply(GameplayBuffers.Level, level);
         }
     }
     
