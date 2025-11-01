@@ -11,6 +11,7 @@ entities.aonHelper/ResizableHeart.attributes.description.color=Color of the hear
 entities.aonHelper/ResizableHeart.attributes.description.path=Sprite ID of the heart. Leave empty to use the template heart.\nCustom sprites can be used (by adding to the vanilla Sprites.xml) if they include the required animations. See "heartgem0" in the vanilla Sprites.xml for an example.
 entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the heart will respawn. Only works if Is Fake is on.
 entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the heart acts like a Fake Heart.
+entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this heart if it has already been collected.
 
 # Feather Dash Switch
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchDown=Feather Dash Switch (Down)
@@ -30,7 +31,7 @@ entities.aonHelper/FeatherBounceScamController.attributes.description.featherBou
 entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Rebound Modify Controller
-entities.aonHelper/ReboundModifyController.placements.name.reboundModifyController=Rebound Modify Controller
+entities.aonHelper/ReboundModifyController.placements.name.reboundModifyController=Modify Rebound Controller
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXMode=Left-Right Collision X Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightYMode=Left-Right Collision Y Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXModifier=Left-Right Collision X Modifier
