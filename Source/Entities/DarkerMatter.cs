@@ -363,7 +363,7 @@ public class DarkerMatter : Entity
     private static ILHook ilHook_Player_orig_Update;
     private static ILHook ilHook_Player_orig_UpdateSprite;
     
-    public static void Load()
+    internal static void Load()
     {
         // everest events
         Everest.Events.Player.OnRegisterStates += OnRegisterStates;
@@ -378,7 +378,7 @@ public class DarkerMatter : Entity
         ilHook_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookHelper.Bind.NonPublicInstance)!, Player_orig_UpdateSprite);
     }
 
-    public static void Unload()
+    internal static void Unload()
     {
         Everest.Events.Player.OnRegisterStates -= OnRegisterStates;
         Everest.Events.Player.OnSpawn -= OnSpawn;
@@ -400,6 +400,9 @@ public class DarkerMatter : Entity
 
     private static void OnSpawn(Player player)
     {
+        if (player.Get<DarkerMatterComponent>() is not null)
+            return;
+        
         DarkerMatterComponent darkerMatterComponent = new()
         {
             WarpSprite = aonHelperModule.SpriteBank.Create("aonHelper_darkerMatterWarp")

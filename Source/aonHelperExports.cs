@@ -24,7 +24,7 @@ public static class aonHelperExports
         public static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
             => FgStylegroundBloomController.AddBeforeForegroundRenderAction(action);
         /// <summary>
-        /// Removes a callback to be invoked before the `Foregound.Render` call in `Level.Render`.
+        /// Removes a callback from being invoked before the `Foregound.Render` call in `Level.Render`.
         /// </summary>
         /// <param name="action">The callback to remove.</param>
         public static void RemoveBeforeForegroundRenderAction(Action<Level, bool> action)
@@ -37,7 +37,7 @@ public static class aonHelperExports
         public static void AddAfterForegroundRenderAction(Action<Level, bool> action)
             => FgStylegroundBloomController.AddAfterForegroundRenderAction(action);
         /// <summary>
-        /// Removes a callback to be invoked after the `Foregound.Render` call in `Level.Render`.
+        /// Removes a callback from being invoked after the `Foregound.Render` call in `Level.Render`.
         /// </summary>
         /// <param name="action">The callback to remove.</param>
         public static void RemoveAfterForegroundRenderAction(Action<Level, bool> action)

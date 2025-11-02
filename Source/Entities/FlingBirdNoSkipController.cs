@@ -1,4 +1,6 @@
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
+using Celeste.Mod.Helpers;
 using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
@@ -8,43 +10,57 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FlingBirdNoSkipController")]
 [Tracked]
-public class FlingBirdNoSkipController : Entity
+public class FlingBirdNoSkipController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 {
-    private readonly string flag;
+    private readonly string flag = data.Attr("flag");
 
-    public FlingBirdNoSkipController(EntityData data, Vector2 offset) : base(data.Position + offset)
+    #region Hooks
+    
+    internal static void Load()
     {
-        flag = data.Attr("flag");
+        IL.Celeste.FlingBird.Update += FlingBird_Update;
     }
 
-    public static void Load()
+    internal static void Unload()
     {
-        IL.Celeste.FlingBird.Update += mod_FlingBirdUpdate;
+        IL.Celeste.FlingBird.Update -= FlingBird_Update;
     }
 
-    public static void Unload()
-    {
-        IL.Celeste.FlingBird.Update -= mod_FlingBirdUpdate;
-    }
-
-    private static void mod_FlingBirdUpdate(ILContext il)
+    private static void FlingBird_Update(ILContext il)
     {
         ILCursor cursor = new(il);
-        cursor.GotoNext(MoveType.After, instr => instr.MatchSwitch(out _)); // inside the switch statement
-        cursor.GotoNext(MoveType.Before, instr => instr.MatchLdarg0(), instr => instr.MatchCallOrCallvirt<FlingBird>("Skip")); // go to first place where Skip is called
-        ILLabel ret = cursor.DefineLabel(); // define label to break to return early
-        cursor.Emit(OpCodes.Ldarg_0); // get bird instance
-        cursor.EmitDelegate(determineIfBirdSkipControllerActivated); // is there a controller?
-        cursor.Emit(OpCodes.Brtrue, ret); // if controller, jump to ret so we don't call Skip
-        cursor.GotoNext(instr => instr.MatchRet()); // go to the ret after call to Skip
-        cursor.MarkLabel(ret); // mark the label
-    }
+        
+        /*
+         * IL_0080: ldarg.0
+         * IL_0081: callvirt instance void Celeste.FlingBird::Skip()
+         * IL_0086: ret
+         */
+        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchCallvirt<FlingBird>("Skip"),
+            instr => instr.MatchRet()))
+            throw new HookHelper.HookException(il, "Unable to find call to `FlingBird.Skip`.");
+        
+        ILLabel ret = cursor.DefineLabel();
+        
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitDelegate(ShouldNotSkipNode);
+        cursor.Emit(OpCodes.Brtrue, ret);
+        
+        cursor.GotoNext(MoveType.Before, instr => instr.MatchRet());
+        cursor.MarkLabel(ret);
 
-    private static bool determineIfBirdSkipControllerActivated(FlingBird bird)
-    {
-        Level level = bird.SceneAs<Level>();
-        if (level.Tracker.GetEntity<FlingBirdNoSkipController>() is not FlingBirdNoSkipController controller)
-            return false;
-        return level.Session.GetFlag(controller.flag) || controller.flag == "";
+        return;
+        
+        static bool ShouldNotSkipNode(FlingBird bird)
+        {
+            Level level = bird.SceneAs<Level>();
+            if (level.Tracker.GetEntity<FlingBirdNoSkipController>() is not { } controller)
+                return false;
+            
+            return level.Session.GetFlag(controller.flag) || controller.flag == "";
+        }
     }
+    
+    #endregion
 }

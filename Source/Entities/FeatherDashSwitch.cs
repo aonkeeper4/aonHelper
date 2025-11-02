@@ -87,18 +87,22 @@ public class FeatherDashSwitch : DashSwitch
             
             sprite.Play("push");
             pressed = true;
+            
             MoveTo(pressedTarget);
             Collidable = false;
             Position -= pressDirection * 2f;
-            
-            SceneAs<Level>().ParticlesFG.Emit(P_PressA, 10, Position + sprite.Position, direction.Perpendicular() * 6f, sprite.Rotation - (float)Math.PI);
-            SceneAs<Level>().ParticlesFG.Emit(P_PressB, 4, Position + sprite.Position, direction.Perpendicular() * 6f, sprite.Rotation - (float)Math.PI);
+
+            Vector2 particlePos = Position + sprite.Position;
+            Vector2 particleSpread = direction.Perpendicular() * 6f;
+            float particleRot = sprite.Rotation - (float) Math.PI;
+            SceneAs<Level>().ParticlesFG.Emit(P_PressA, 10, particlePos, particleSpread, particleRot);
+            SceneAs<Level>().ParticlesFG.Emit(P_PressB, 4, particlePos, particleSpread, particleRot);
         }
         
         if (allGates)
             foreach (TempleGate entity in Scene.Tracker.GetEntities<TempleGate>()
-                                               .Cast<TempleGate>()
-                                               .Where(entity => entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level))
+                                                       .Cast<TempleGate>()
+                                                       .Where(entity => entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level))
                 entity.SwitchOpen();
         else
             GetGate()?.SwitchOpen();
@@ -106,13 +110,28 @@ public class FeatherDashSwitch : DashSwitch
         if (persistent)
             SceneAs<Level>().Session.SetFlag(FlagName);
 
-        // make it work with crystalline all dash switch temple gates (whenever they update that helper)
+        // make it work with crystalline all dash switch temple gates
         OnDashCollide(player, direction);
     }
 
-    private static new DashCollisionResults OnDashed(Player player, Vector2 direction) => DashCollisionResults.NormalCollision;
+    private static new DashCollisionResults OnDashed(Player player, Vector2 direction)
+        => DashCollisionResults.NormalCollision;
+    
+    #region Hooks
+    
+    internal static void Load()
+    {
+        IL.Celeste.Player.OnCollideH += Player_OnCollideH;
+        IL.Celeste.Player.OnCollideV += Player_OnCollideV;
+    }
 
-    private static void mod_PlayerOnCollideH(ILContext il)
+    internal static void Unload()
+    {
+        IL.Celeste.Player.OnCollideH -= Player_OnCollideH;
+        IL.Celeste.Player.OnCollideV -= Player_OnCollideV;
+    }
+
+    private static void Player_OnCollideH(ILContext il)
     {
         ILCursor cursor = new(il);
         
@@ -122,10 +141,10 @@ public class FeatherDashSwitch : DashSwitch
             throw new HookHelper.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
         
         cursor.Emit(OpCodes.Ldarg_1);
-        cursor.EmitDelegate(checkOnFeather);
+        cursor.EmitDelegate(CheckOnFeather);
     }
 
-    private static void mod_PlayerOnCollideV(ILContext il)
+    private static void Player_OnCollideV(ILContext il)
     {
         ILCursor cursor = new(il);
         
@@ -135,10 +154,10 @@ public class FeatherDashSwitch : DashSwitch
             throw new HookHelper.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
         
         cursor.Emit(OpCodes.Ldarg_1);
-        cursor.EmitDelegate(checkOnFeather);
+        cursor.EmitDelegate(CheckOnFeather);
     }
 
-    private static void checkOnFeather(CollisionData data)
+    private static void CheckOnFeather(CollisionData data)
     {
         switch (data.Hit)
         {
@@ -150,16 +169,6 @@ public class FeatherDashSwitch : DashSwitch
                 break;
         }
     }
-
-    internal static void Load()
-    {
-        IL.Celeste.Player.OnCollideH += mod_PlayerOnCollideH;
-        IL.Celeste.Player.OnCollideV += mod_PlayerOnCollideV;
-    }
-
-    internal static void Unload()
-    {
-        IL.Celeste.Player.OnCollideH -= mod_PlayerOnCollideH;
-        IL.Celeste.Player.OnCollideV -= mod_PlayerOnCollideV;
-    }
+    
+    #endregion
 }

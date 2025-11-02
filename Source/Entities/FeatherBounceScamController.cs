@@ -1,4 +1,6 @@
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
+using Celeste.Mod.Helpers;
 using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
@@ -8,64 +10,56 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FeatherBounceScamController")]
 [Tracked]
-public class FeatherBounceScamController : Entity
+public class FeatherBounceScamController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 {
-    private float featherBounceScamThresholdMultiplier = 1f;
+    private readonly float featherBounceScamThresholdMultiplier = data.Float("featherBounceScamThreshold") / Player.StarFlyEndNoBounceTime;
 
-    private readonly string flag;
+    private readonly string flag = data.Attr("flag");
 
-    public FeatherBounceScamController(EntityData data, Vector2 offset) : base(data.Position + offset)
+    #region Hooks
+    
+    internal static void Load()
     {
-        featherBounceScamThresholdMultiplier = data.Float("featherBounceScamThreshold") / 0.2f;
-        flag = data.Attr("flag");
+        IL.Celeste.Player.OnCollideH += ControlFeatherBounceScam;
+        IL.Celeste.Player.OnCollideV += ControlFeatherBounceScam;
     }
 
-    public static void Load()
+    internal static void Unload()
     {
-        IL.Celeste.Player.OnCollideH += mod_PlayerOnCollideH;
-        IL.Celeste.Player.OnCollideV += mod_PlayerOnCollideV;
+        IL.Celeste.Player.OnCollideH -= ControlFeatherBounceScam;
+        IL.Celeste.Player.OnCollideV -= ControlFeatherBounceScam;
     }
 
-    public static void Unload()
+    private static void ControlFeatherBounceScam(ILContext il)
     {
-        IL.Celeste.Player.OnCollideH -= mod_PlayerOnCollideH;
-        IL.Celeste.Player.OnCollideV -= mod_PlayerOnCollideV;
-    }
+        ILCursor cursor = new(il);
 
-    private static void mod_PlayerOnCollideH(ILContext il)
-    {
-        ILCursor cursor = new ILCursor(il);
-        cursor.GotoNext(MoveType.After, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld(typeof(Player), "starFlyTimer"), instr => instr.MatchLdcR4(0.2f));
+        if (!cursor.TryGotoNextBestFit(MoveType.After,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Player>("starFlyTimer"),
+            instr => instr.MatchLdcR4(Player.StarFlyEndNoBounceTime)))
+            throw new HookHelper.HookException(il, "Unable to find check on `Player.starFlyTimer` to modify.");
+        
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(determineFeatherBounceScamThreshold);
+        cursor.EmitDelegate(FeatherBounceScamThreshold);
         cursor.Emit(OpCodes.Mul);
-    }
 
-    private static void mod_PlayerOnCollideV(ILContext il)
-    {
-        ILCursor cursor = new ILCursor(il);
-        cursor.GotoNext(MoveType.After, instr => instr.MatchLdarg0(), instr => instr.MatchLdfld(typeof(Player), "starFlyTimer"), instr => instr.MatchLdcR4(0.2f));
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(determineFeatherBounceScamThreshold);
-        cursor.Emit(OpCodes.Mul);
-    }
+        return;
+        
+        static float FeatherBounceScamThreshold(Player player)
+        {
+            Level level = player.SceneAs<Level>();
 
-    private static float determineFeatherBounceScamThreshold(Player player)
-    {
-        Level level = player.SceneAs<Level>();
-
-        FeatherBounceScamController controller = level.Tracker.GetEntity<FeatherBounceScamController>();
-        if (controller is null)
-        {
-            return 1f;
-        }
-        else if (level.Session.GetFlag(controller.flag) || controller.flag == "")
-        {
-            return controller.featherBounceScamThresholdMultiplier;
-        }
-        else
-        {
+            FeatherBounceScamController controller = level.Tracker.GetEntity<FeatherBounceScamController>();
+            if (controller is null)
+                return 1f;
+            
+            if (level.Session.GetFlag(controller.flag) || controller.flag == "")
+                return controller.featherBounceScamThresholdMultiplier;
+            
             return 1f;
         }
     }
+    
+    #endregion
 }

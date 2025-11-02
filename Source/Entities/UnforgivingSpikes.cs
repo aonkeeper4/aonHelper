@@ -16,6 +16,21 @@ namespace Celeste.Mod.aonHelper.Entities;
 [Tracked]
 public class UnforgivingSpikes : Spikes
 {
+    private class UnforgivingSpikesComponent() : Component(false, false)
+    {
+        public Vector2? PreviousExactPosition;
+
+        public override void Added(Entity entity)
+        {
+            if (entity is not Player)
+                throw new Exception($"{nameof(UnforgivingSpikesComponent)} added to non-{nameof(Player)} entity!");
+            
+            base.Added(entity);
+        }
+    }
+
+    private readonly bool checkVelocity;
+    
     public static Entity LoadUp(Level level, LevelData levelData, Vector2 offset, EntityData entityData)
         => new UnforgivingSpikes(entityData, offset, Directions.Up);
     public static Entity LoadDown(Level level, LevelData levelData, Vector2 offset, EntityData entityData)
@@ -28,26 +43,43 @@ public class UnforgivingSpikes : Spikes
     public UnforgivingSpikes(EntityData data, Vector2 offset, Directions dir)
         : base(data.Position + offset, GetSize(data, dir), dir, data.Attr("type", "default"))
     {
+        checkVelocity = data.Bool("checkVelocity");
+        
         Remove(Get<PlayerCollider>());
         Add(pc = new PlayerCollider(OnCollide));
     }
 
     private new void OnCollide(Player player)
     {
+        Vector2? previousExactPosition = checkVelocity
+            ? player.Get<UnforgivingSpikesComponent>()?.PreviousExactPosition
+            : null;
+        Vector2? velocity = previousExactPosition is { } previous
+            ? player.ExactPosition - previous
+            : null;
+        
         switch (Direction)
         {
             case Directions.Up:
-                player.Die(-Vector2.UnitY);
+                if ((velocity?.Y ?? 1f) >= 0f)
+                    player.Die(-Vector2.UnitY);
                 break;
+            
             case Directions.Down:
-                player.Die(Vector2.UnitY);
+                if ((velocity?.Y ?? -1f) <= 0f)
+                    player.Die(Vector2.UnitY);
                 break;
+            
             case Directions.Left:
-                player.Die(-Vector2.UnitX);
+                if ((velocity?.X ?? 1f) >= 0f)
+                    player.Die(-Vector2.UnitX);
                 break;
+            
             case Directions.Right:
-                player.Die(Vector2.UnitX);
+                if ((velocity?.X ?? -1f) <= 0f)
+                    player.Die(-Vector2.UnitX);
                 break;
+            
             default:
                 throw new Exception($"collided with {nameof(UnforgivingSpikes)} with an unknown {nameof(Direction)}!");
         }
@@ -59,14 +91,42 @@ public class UnforgivingSpikes : Spikes
     
     internal static void Load()
     {
+        Everest.Events.Player.OnSpawn += OnSpawn;
+        Everest.Events.Player.OnAfterUpdate += OnAfterUpdate;
+        Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload;
+        
         IL.Celeste.Actor.MoveHExact += Actor_MoveHExact;
         IL.Celeste.Actor.MoveVExact += Actor_MoveVExact;
     }
 
     internal static void Unload()
     {
+        Everest.Events.Player.OnSpawn -= OnSpawn;
+        Everest.Events.Player.OnAfterUpdate += OnAfterUpdate;
+        Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
+        
         IL.Celeste.Actor.MoveHExact -= Actor_MoveHExact;
         IL.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
+    }
+
+    private static void OnSpawn(Player player)
+    {
+        if (player.Get<UnforgivingSpikesComponent>() is null)
+            player.Add(new UnforgivingSpikesComponent());
+    }
+
+    private static void OnAfterUpdate(Player player)
+    {
+        if (player.Get<UnforgivingSpikesComponent>() is not { } component)
+            return;
+
+        component.PreviousExactPosition = player.ExactPosition;
+    }
+    
+    private static void OnBeforeReload(bool silent)
+    {
+        if (Engine.Scene?.Tracker?.GetEntity<Player>() is { } player)
+            player.Remove(player.Get<UnforgivingSpikesComponent>());
     }
 
     private static void Actor_MoveHExact(ILContext il) => UnforgivingSpikesCheck(new ILCursor(il), true);

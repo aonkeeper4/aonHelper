@@ -40,14 +40,17 @@ public class HookHelper
     
     public static class Bind
     {
-        public static readonly BindingFlags PublicStatic = BindingFlags.Public | BindingFlags.Static;
-        public static readonly BindingFlags NonPublicStatic = BindingFlags.NonPublic | BindingFlags.Static;
-        public static readonly BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
-        public static readonly BindingFlags NonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+        public const BindingFlags PublicStatic = BindingFlags.Public | BindingFlags.Static;
+        public const BindingFlags NonPublicStatic = BindingFlags.NonPublic | BindingFlags.Static;
+        public const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
+        public const BindingFlags NonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
     }
     
-    public class HookException(string message, Exception inner = null) : Exception($"Hook application failed: {message}", inner)
+    public class HookException(string message, Exception inner = null)
+        : Exception($"Hook application failed: {message}", inner)
     {
-        public HookException(ILContext il, string message, Exception inner = null) : this($"ILHook application on method {il.Method.FullName} failed: {message}", inner) { }
+        public HookException(ILContext il, string message, Exception inner = null)
+            : this($"ILHook application on method {il.Method.FullName} failed: {message}", inner)
+        { }
     }
 }

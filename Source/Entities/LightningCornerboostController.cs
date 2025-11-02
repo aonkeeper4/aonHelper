@@ -9,7 +9,7 @@ namespace Celeste.Mod.aonHelper.Entities;
 [Tracked]
 public class LightningCornerboostController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 { 
-    private const string LogId = $"{nameof(aonHelperModule)}/{nameof(LightningCornerboostController)}";
+    private const string LogID = $"{nameof(aonHelperModule)}/{nameof(LightningCornerboostController)}";
     
     private class LightningSolidComponent(LightningCornerboostController controller) : Component(true, false)
     {
@@ -21,7 +21,7 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
         public override void Added(Entity entity)
         {
             if (entity is not Lightning lightningEntity)
-                throw new Exception("LightningSolidComponent added to non-Lightning entity!");
+                throw new Exception($"{nameof(LightningSolidComponent)} added to non-{nameof(Lightning)} entity!");
             
             base.Added(entity);
 
@@ -79,7 +79,7 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
     {
         if (scene.Tracker.GetEntities<LightningCornerboostController>().Count >= 1)
         {
-            Logger.Warn(LogId, "tried to load LightningCornerboostController when one was already present!");
+            Logger.Warn(LogID, $"Tried to load a {nameof(LightningCornerboostController)} when one was already present!");
             RemoveSelf();
             return;
         }

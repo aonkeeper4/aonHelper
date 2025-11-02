@@ -19,6 +19,8 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
 
     #region Hooks
     
+    #region ModInterop
+    
     private static readonly List<Action<Level, bool>> BeforeForegroundRenderActions = [], AfterForegroundRenderActions = [];
     
     internal static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
@@ -43,6 +45,8 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
         level.Foreground.Render(level);
         AfterForegroundRenderActions.ForEach(action => action(level, applyBloom));
     }
+    
+    #endregion
     
     private static FieldInfo f_GameplayBuffers_Level = typeof(GameplayBuffers).GetField("Level", HookHelper.Bind.PublicStatic)!;
     
@@ -76,6 +80,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
             throw new HookHelper.HookException(il, "Unable to find bloom application to modify.");
         
         ILLabel skipBloomRendering = cursor.DefineLabel();
+        
         cursor.EmitLdarg0();
         cursor.EmitDelegate(SkipBloomRendering);
         cursor.EmitBrtrue(skipBloomRendering);
@@ -98,6 +103,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
             throw new HookHelper.HookException(il, "Unable to find foreground styleground rendering to modify.");
         
         ILLabel skipForegroundRendering = cursor.DefineLabel();
+        
         cursor.EmitLdarg0();
         cursor.EmitDelegate(CustomForegroundRendering);
         cursor.EmitBrtrue(skipForegroundRendering);

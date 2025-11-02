@@ -5,7 +5,7 @@ using System;
 
 namespace Celeste.Mod.aonHelper.Helpers;
 
-public static class Extensions
+public static class ILCursorExtensions
 {
     /// <summary>
     /// Go to the next match of a given IL sequence, allowing up to <paramref name="maxInstructionSpread"/> instructions of tolerance if the instructions are not sequential (i.e. if something else hooks the same sequence).

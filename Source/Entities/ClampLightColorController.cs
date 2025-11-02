@@ -8,18 +8,18 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/ClampLightColorController")]
 [Tracked]
-public class ClampLightColorController : Entity
+public class ClampLightColorController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
 {
-    private Color clampColor;
+    private readonly Color clampColor = data.HexColor("color", Color.White);
 
-    public enum ClampMethod {
+    private enum ClampMethod {
         Clamp,
         Tint,
     }
-    private readonly ClampMethod clampMethod;
+    private readonly ClampMethod clampMethod = data.Enum("clampMethod", ClampMethod.Clamp);
 
     // this might be wrongg but it looks fine to me
-    private static readonly BlendState clampColorState = new()
+    private static readonly BlendState ClampColorState = new()
     {
         ColorBlendFunction = BlendFunction.Min,
         ColorSourceBlend = Blend.One,
@@ -27,7 +27,7 @@ public class ClampLightColorController : Entity
         AlphaSourceBlend = Blend.Zero,
         AlphaDestinationBlend = Blend.One,
     };
-    private static readonly BlendState tintColorState = new()
+    private static readonly BlendState TintColorState = new()
     {
         ColorBlendFunction = BlendFunction.Add,
         ColorSourceBlend = Blend.DestinationColor,
@@ -36,18 +36,14 @@ public class ClampLightColorController : Entity
         AlphaDestinationBlend = Blend.One,
     };
 
-    public ClampLightColorController(EntityData data, Vector2 offset) : base(data.Position + offset)
-    {
-        clampColor = data.HexColor("color", Color.White);
-        clampMethod = data.Enum("clampMethod", ClampMethod.Clamp);
-    }
-
-    public static void Load()
+    #region Hooks
+    
+    internal static void Load()
     {
         On.Celeste.LightingRenderer.BeforeRender += LightingRenderer_BeforeRender;
     }
 
-    public static void Unload()
+    internal static void Unload()
     {
         On.Celeste.LightingRenderer.BeforeRender -= LightingRenderer_BeforeRender;
     }
@@ -56,15 +52,17 @@ public class ClampLightColorController : Entity
     {
         orig(self, scene);
 
-        if (scene.Tracker.GetEntity<ClampLightColorController>() is ClampLightColorController controller)
-        {
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, controller.clampMethod switch {
-                ClampMethod.Clamp => clampColorState,
-                ClampMethod.Tint => tintColorState,
-                _ => throw new Exception($"Invalid color clamping method: {controller.clampMethod}"),
-            });
-            Draw.Rect(new Rectangle(0, 0, GameplayBuffers.Light.Width, GameplayBuffers.Light.Height), controller.clampColor);
-            Draw.SpriteBatch.End();
-        }
+        if (scene.Tracker.GetEntity<ClampLightColorController>() is not { } controller)
+            return;
+        
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, controller.clampMethod switch {
+            ClampMethod.Clamp => ClampColorState,
+            ClampMethod.Tint => TintColorState,
+            _ => throw new ArgumentOutOfRangeException()
+        });
+        Draw.Rect(new Rectangle(0, 0, GameplayBuffers.Light.Width, GameplayBuffers.Light.Height), controller.clampColor);
+        Draw.SpriteBatch.End();
     }
+    
+    #endregion
 }

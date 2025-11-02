@@ -131,9 +131,7 @@ public class ResizableHeart : HeartGem
             spriteOutline.Position = sprite.Position;
             spriteOutline.Scale = sprite.Scale;
             if (spriteOutline.CurrentAnimationID != sprite.CurrentAnimationID)
-            {
                 spriteOutline.Play(sprite.CurrentAnimationID);
-            }
             spriteOutline.SetAnimationFrame(sprite.CurrentAnimationFrame);
         }
     }
