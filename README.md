@@ -29,6 +29,8 @@ current features:
   - should really be called "Lightning Wallbounce Controller" but . gives lightning solid hitboxes like fire and ice barriers while the player is dashing (or always)
 - Seamless Lightning Controller
   - ever gotten really pissed when trying to connect lightning between rooms? me too! makes lightning visually connect to the edges of rooms so u dont have to fiddle with eeveehelper global modifiers not working
+- Intro Facing Controller
+  - some intro types don't let you set the player facing with spawn facing triggers which sucks so i made this. makes the map intro animation face whatever way u want
 
 for all of the controllers listed here, just place it in the room where you want its effect. most of them have flag fields to only be active when a certain flag is set, if they dont or you want to report any other bugs or feature requests then ping me in celestecord (@aonkeeper4)
 

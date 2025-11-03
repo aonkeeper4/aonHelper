@@ -121,7 +121,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
             instr => instr.MatchLdsfld(typeof(GameplayBuffers), "Level"),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("glitchTimer")))
-            throw new HookHelper.HookException(il, "Unable to find glitch effect rendering to insert bloom pass before.");
+            throw new HookHelper.HookException(il, "Unable to find glitch application to insert bloom pass before.");
 
         cursor.EmitLdarg0();
         cursor.EmitDelegate(DelayedBloomRendering);

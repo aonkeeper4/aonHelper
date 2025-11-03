@@ -6,17 +6,16 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System.Linq;
-using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
-[CustomEntity("aonHelper/IntroTypeFacingController")]
+[CustomEntity("aonHelper/IntroFacingController")]
 [Tracked]
-public class IntroTypeFacingController(Vector2 position, Facings facing) : Entity(position)
+public class IntroFacingController(Vector2 position, Facings facing) : Entity(position)
 {
     private readonly Facings facing = facing;
     
-    public IntroTypeFacingController(EntityData data, Vector2 offset)
+    public IntroFacingController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Enum("facing", Facings.Right))
     { }
     
@@ -56,10 +55,10 @@ public class IntroTypeFacingController(Vector2 position, Facings facing) : Entit
 
         static void SetPlayerFacing(Player player)
         {
-            if (player.Scene.Tracker.GetEntities<IntroTypeFacingController>()
+            if (player.Scene.Tracker.GetEntities<IntroFacingController>()
                                     .Concat(player.Scene.Entities.ToAdd)
-                                    .FirstOrDefault(e => e is IntroTypeFacingController)
-                is IntroTypeFacingController controller)
+                                    .FirstOrDefault(e => e is IntroFacingController) is IntroFacingController controller
+                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn)) // not sure if these are the only ones used "ingame"?
                 player.Facing = controller.facing;
         }
     }

@@ -44,7 +44,7 @@ namespace Celeste.Mod.aonHelper
             LightningCornerboostController.Load();
             UnforgivingSpikes.Load();
             SeamlessLightningController.Load();
-            IntroTypeFacingController.Load();
+            IntroFacingController.Load();
             
             aonHelperExports.Initialize();
         }
@@ -62,7 +62,7 @@ namespace Celeste.Mod.aonHelper
             LightningCornerboostController.Unload();
             UnforgivingSpikes.Unload();
             SeamlessLightningController.Unload();
-            IntroTypeFacingController.Unload();
+            IntroFacingController.Unload();
         }
 
         public override void LoadContent(bool firstLoad)

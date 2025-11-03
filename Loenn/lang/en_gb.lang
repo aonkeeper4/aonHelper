@@ -122,6 +122,9 @@ entities.aonHelper/LightningCornerboostController.attributes.description.always=
 # Seamless Lightning Controller
 entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightningController=Seamless Lightning Controller
 
+# Intro Facing Controller
+entities.aonHelper/IntroFacingController.placements.name.introFacingController=Intro Facing Controller
+entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation.
 
 ### Triggers
 
