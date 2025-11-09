@@ -25,12 +25,16 @@ public class UnforgivingSpikes : Spikes
     public static Entity LoadRight(Level level, LevelData levelData, Vector2 offset, EntityData entityData)
         => new UnforgivingSpikes(entityData, offset, Directions.Right);
 
-    public UnforgivingSpikes(EntityData data, Vector2 offset, Directions dir)
-        : base(data.Position + offset, GetSize(data, dir), dir, data.Attr("type", "default"))
+    public UnforgivingSpikes(Vector2 position, int size, Directions direction, string type)
+        : base(position, size, direction, type)
     {
         Remove(Get<PlayerCollider>());
         Add(pc = new PlayerCollider(OnCollide));
     }
+
+    public UnforgivingSpikes(EntityData data, Vector2 offset, Directions dir)
+        : this(data.Position + offset, GetSize(data, dir), dir, data.Attr("type", "default"))
+    { }
 
     private new void OnCollide(Player player)
     {
@@ -59,7 +63,7 @@ public class UnforgivingSpikes : Spikes
     
     #region Hooks
 
-    // TODO: maybe make these lazy loaded (a la GravityHelper)
+    // todo: maybe make these lazy loaded
     
     internal static void Load()
     {

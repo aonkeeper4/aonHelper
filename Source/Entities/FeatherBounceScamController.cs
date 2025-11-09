@@ -10,11 +10,15 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FeatherBounceScamController")]
 [Tracked]
-public class FeatherBounceScamController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class FeatherBounceScamController(Vector2 position, float featherBounceScamThreshold, string flag) : Entity(position)
 {
-    private readonly float featherBounceScamThresholdMultiplier = data.Float("featherBounceScamThreshold") / Player.StarFlyEndNoBounceTime;
+    private readonly float featherBounceScamThreshold = featherBounceScamThreshold;
 
-    private readonly string flag = data.Attr("flag");
+    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
+
+    public FeatherBounceScamController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.Float("featherBounceScamThreshold"), data.Attr("flag"))
+    { }
 
     #region Hooks
     
@@ -37,7 +41,7 @@ public class FeatherBounceScamController(EntityData data, Vector2 offset) : Enti
         if (!cursor.TryGotoNextBestFit(MoveType.After,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Player>("starFlyTimer"),
-            instr => instr.MatchLdcR4(Player.StarFlyEndNoBounceTime)))
+            instr => instr.MatchLdcR4(0.2f)))
             throw new HookHelper.HookException(il, "Unable to find check on `Player.starFlyTimer` to modify.");
         
         cursor.Emit(OpCodes.Ldarg_0);
@@ -54,8 +58,8 @@ public class FeatherBounceScamController(EntityData data, Vector2 offset) : Enti
             if (controller is null)
                 return 1f;
             
-            if (level.Session.GetFlag(controller.flag) || controller.flag == "")
-                return controller.featherBounceScamThresholdMultiplier;
+            if (level.Session.GetFlag(controller.flag) || controller.flag is null)
+                return controller.featherBounceScamThreshold / Player.StarFlyEndNoBounceTime;
             
             return 1f;
         }

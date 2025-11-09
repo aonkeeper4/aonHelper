@@ -8,15 +8,15 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/ClampLightColorController")]
 [Tracked]
-public class ClampLightColorController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class ClampLightColorController(Vector2 position, Color clampColor, ClampLightColorController.ClampMethod clampMethod) : Entity(position)
 {
-    private readonly Color clampColor = data.HexColor("color", Color.White);
+    private readonly Color clampColor = clampColor;
 
-    private enum ClampMethod {
+    public enum ClampMethod {
         Clamp,
         Tint,
     }
-    private readonly ClampMethod clampMethod = data.Enum("clampMethod", ClampMethod.Clamp);
+    private readonly ClampMethod clampMethod = clampMethod;
 
     // this might be wrongg but it looks fine to me
     private static readonly BlendState ClampColorState = new()
@@ -35,6 +35,10 @@ public class ClampLightColorController(EntityData data, Vector2 offset) : Entity
         AlphaSourceBlend = Blend.Zero,
         AlphaDestinationBlend = Blend.One,
     };
+
+    public ClampLightColorController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.HexColor("color", Color.White), data.Enum("clampMethod", ClampMethod.Clamp))
+    { }
 
     #region Hooks
     

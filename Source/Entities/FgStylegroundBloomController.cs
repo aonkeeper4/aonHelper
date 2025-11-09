@@ -4,18 +4,22 @@ using Celeste.Mod.Helpers;
 using Monocle;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FgStylegroundBloomController")]
 [Tracked]
-public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Entity(position)
 {
-    private readonly string bloomTag = data.Attr("bloomTag");
+    private readonly string bloomTag = bloomTag;
+    
+    public FgStylegroundBloomController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.Attr("bloomTag"))
+    { }
 
     #region Hooks
     
@@ -48,11 +52,11 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
     
     #endregion
     
-    private static FieldInfo f_GameplayBuffers_Level = typeof(GameplayBuffers).GetField("Level", HookHelper.Bind.PublicStatic)!;
-    
     internal static void Load()
     {
-        IL.Celeste.Level.Render += Level_Render;
+        // guarantee hook order
+        using (new DetourConfigContext(HookHelper.BeforeStyleMaskHelperDetourConfig).Use())
+            IL.Celeste.Level.Render += Level_Render;
     }
 
     internal static void Unload()
@@ -74,7 +78,7 @@ public class FgStylegroundBloomController(EntityData data, Vector2 offset) : Ent
         if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("Bloom"),
-            instr => instr.MatchLdsfld(f_GameplayBuffers_Level),
+            instr => instr.MatchLdsfld(typeof(GameplayBuffers), "Level"),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchCallvirt<BloomRenderer>("Apply")))
             throw new HookHelper.HookException(il, "Unable to find bloom application to modify.");

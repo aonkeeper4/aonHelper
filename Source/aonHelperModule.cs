@@ -24,10 +24,10 @@ namespace Celeste.Mod.aonHelper
             Instance = this;
 #if DEBUG
             // debug builds use verbose logging
-            Logger.SetLogLevel(nameof(aonHelperModule), LogLevel.Verbose);
+            Logger.SetLogLevel(nameof(aonHelper), LogLevel.Verbose);
 #else
             // release builds use info logging to reduce spam in log files
-            Logger.SetLogLevel(nameof(aonHelperModule), LogLevel.Info);
+            Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
 #endif
         }
 
@@ -45,6 +45,8 @@ namespace Celeste.Mod.aonHelper
             UnforgivingSpikes.Load();
             SeamlessLightningController.Load();
             IntroFacingController.Load();
+            QuantizeColorgradeController.Load();
+            DreamDashThroughTransitionController.Load();
             
             aonHelperExports.Initialize();
         }
@@ -63,6 +65,8 @@ namespace Celeste.Mod.aonHelper
             UnforgivingSpikes.Unload();
             SeamlessLightningController.Unload();
             IntroFacingController.Unload();
+            QuantizeColorgradeController.Unload();
+            DreamDashThroughTransitionController.Unload();
         }
 
         public override void LoadContent(bool firstLoad)

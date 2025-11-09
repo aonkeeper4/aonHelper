@@ -1,32 +1,29 @@
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
-using System;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/LightningCornerboostController")]
 [Tracked]
-public class LightningCornerboostController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
-{ 
-    private const string LogID = $"{nameof(aonHelperModule)}/{nameof(LightningCornerboostController)}";
+public class LightningCornerboostController(Vector2 position, bool always, string flag) : Entity(position)
+{
+    private const string LogID = $"{nameof(aonHelper)}/{nameof(LightningCornerboostController)}";
     
-    private class LightningSolidComponent(LightningCornerboostController controller) : Component(true, false)
+    private class LightningSolidComponent(LightningCornerboostController controller) : TypeRestrictedComponent<Lightning>(true, false)
     {
-        private Lightning lightning;
+        protected override string Name => nameof(LightningSolidComponent);
+        
         private Solid solid;
 
         private static readonly Vector2 Offset = new(3f, 4f);
 
         public override void Added(Entity entity)
         {
-            if (entity is not Lightning lightningEntity)
-                throw new Exception($"{nameof(LightningSolidComponent)} added to non-{nameof(Lightning)} entity!");
-            
             base.Added(entity);
 
-            lightning = lightningEntity;
-            solid = new Solid(lightning.Position + Offset, lightning.Width - 4f, lightning.Height - 5f, safe: false);
+            solid = new Solid(Entity.Position + Offset, Entity.Width - 4f, Entity.Height - 5f, safe: false);
             
             // is this just a Monocle bug?
             if (entity.Scene is { } scene)
@@ -42,11 +39,15 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
 
         public override void Update()
         {
-            solid.Position = lightning.Position + Offset;
+            Level level = SceneAs<Level>();
+            
+            solid.Position = Entity.Position + Offset;
 
-            bool inView = lightning.InView();
+            bool inView = Entity.InView();
             bool playerHasDashAttack = Scene.Tracker.GetEntity<Player>()?.DashAttacking ?? false;
-            solid.Collidable = inView && (controller.always || playerHasDashAttack);
+            solid.Collidable = inView
+                && (controller.always || playerHasDashAttack)
+                && (level.Session.GetFlag(controller.flag) || controller.flag is null);
             solid.Visible = inView;
         }
 
@@ -60,20 +61,26 @@ public class LightningCornerboostController(EntityData data, Vector2 offset) : E
         
         public override void Removed(Entity entity)
         {
-            base.Removed(entity);
-            
             RemoveSolid();
+            
+            base.Removed(entity);
         }
         
         public override void EntityRemoved(Scene scene)
         {
-            base.EntityRemoved(scene);
-            
             RemoveSolid();
+            
+            base.EntityRemoved(scene);
         }
     }
 
-    private readonly bool always = data.Bool("always", true); // backwards compatibility
+    private readonly bool always = always;
+
+    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
+
+    public LightningCornerboostController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.Bool("always", true), data.Attr("flag"))
+    { }
 
     public override void Added(Scene scene)
     {

@@ -10,38 +10,48 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/ReboundModifyController")]
 [Tracked]
-public class ReboundModifyController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class ReboundModifyController(Vector2 position,
+    ReboundModifyController.ReboundData leftRightData, ReboundModifyController.ReboundData topData, bool refillDash,
+    string flag)
+    : Entity(position)
 {
-    private struct ReboundData
+    public struct ReboundData
     {
         public enum Mode
         {
             Multiplier,
             Constant,
         }
-        public Mode xMode, yMode;
+        public Mode XMode, YMode;
 
-        public float xModifier, yModifier;
+        public float XModifier, YModifier;
     }
 
-    private readonly ReboundData leftRightData = new()
-    {
-        xMode = (ReboundData.Mode)data.Int("leftRightXMode", 0),
-        yMode = (ReboundData.Mode)data.Int("leftRightYMode", 1),
-        xModifier = data.Float("leftRightXModifier", data.Bool("reflectSpeed") ? -data.Float("reflectSpeedMultiplier", 0.5f) : 1f),
-        yModifier = data.Float("leftRightYModifier", -120f),
-    };
-    private readonly ReboundData topData = new()
-    {
-        xMode = (ReboundData.Mode)data.Int("topXMode", 1),
-        yMode = (ReboundData.Mode)data.Int("topYMode", 0),
-        xModifier = data.Float("topXModifier", 0f),
-        yModifier = data.Float("topYModifier", 1f),
-    };
+    private readonly ReboundData leftRightData = leftRightData;
+    private readonly ReboundData topData = topData;
+    private readonly bool refillDash = refillDash;
 
-    private readonly bool refillDash = data.Bool("refillDash");
-
-    private readonly string flag = data.Attr("flag");
+    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
+    
+    public ReboundModifyController(EntityData data, Vector2 offset)
+        : this(data.Position + offset,
+            new ReboundData
+            {
+                XMode = (ReboundData.Mode)data.Int("leftRightXMode", 0),
+                YMode = (ReboundData.Mode)data.Int("leftRightYMode", 1),
+                XModifier = data.Float("leftRightXModifier", data.Bool("reflectSpeed") ? -data.Float("reflectSpeedMultiplier", 0.5f) : 1f),
+                YModifier = data.Float("leftRightYModifier", -120f)
+            },
+            new ReboundData
+            {
+                XMode = (ReboundData.Mode)data.Int("topXMode", 1),
+                YMode = (ReboundData.Mode)data.Int("topYMode", 0),
+                XModifier = data.Float("topXModifier", 0f),
+                YModifier = data.Float("topYModifier", 1f)
+            },
+            data.Bool("refillDash"),
+            data.Attr("flag"))
+    { }
     
     #region Hooks
 
@@ -88,7 +98,7 @@ public class ReboundModifyController(EntityData data, Vector2 offset) : Entity(d
             Level level = player.SceneAs<Level>();
 
             ReboundModifyController controller = level.Tracker.GetEntity<ReboundModifyController>();
-            if (controller is null || !level.Session.GetFlag(controller.flag) && controller.flag != "")
+            if (controller is null || !level.Session.GetFlag(controller.flag) && controller.flag is not null)
                 return false;
             
             player.Speed = direction switch
@@ -105,16 +115,16 @@ public class ReboundModifyController(EntityData data, Vector2 offset) : Entity(d
     }
 
     private static Vector2 UpdateSpeed(Vector2 input, ReboundData data)
-        => new(data.xMode switch
+        => new(data.XMode switch
             {
-                ReboundData.Mode.Multiplier => input.X * data.xModifier,
-                ReboundData.Mode.Constant => data.xModifier,
+                ReboundData.Mode.Multiplier => input.X * data.XModifier,
+                ReboundData.Mode.Constant => data.XModifier,
                 _ => throw new ArgumentOutOfRangeException()
             },
-            data.yMode switch
+            data.YMode switch
             {
-                ReboundData.Mode.Multiplier => input.Y * data.yModifier,
-                ReboundData.Mode.Constant => data.yModifier,
+                ReboundData.Mode.Multiplier => input.Y * data.YModifier,
+                ReboundData.Mode.Constant => data.YModifier,
                 _ => throw new ArgumentOutOfRangeException()
             });
     

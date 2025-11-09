@@ -1,14 +1,20 @@
+using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Helpers;
 
 public class HookHelper
 {
-    private const string DetourConfigName = "aonHelper";
+    public const string DetourConfigName = "aonHelper";
+    public const string StyleMaskHelperDetourConfigName = "StyleMaskHelper";
+
+    public static readonly DetourConfig BeforeStyleMaskHelperDetourConfig = CreateDetourConfig(before: [StyleMaskHelperDetourConfigName]);
     
     public static void DisposeAndSetNull(ref Hook hook)
     {
@@ -22,7 +28,7 @@ public class HookHelper
         ilHook = null;
     }
 
-    public static DetourConfig GetDetourConfig(List<string> before = null, List<string> after = null)
+    public static DetourConfig CreateDetourConfig(List<string> before = null, List<string> after = null)
     {
         bool beforeAll = HasWildcard(before);
         bool afterAll = HasWildcard(after);
@@ -36,6 +42,44 @@ public class HookHelper
 
         static bool HasWildcard(List<string> list)
             => (list?.RemoveAll(s => s.Equals("*")) ?? 0) != 0;
+    }
+    
+    // see CommunalHelper DreamTunnelDash source for a properly explained version of this
+    public static void ModifyStateCheck(ILCursor cursor, int originalCheckedState, bool equal, bool canShortCircuit, int newCheckedState, Func<Player, bool> extraCheck = null)
+    {
+        if (!cursor.TryGotoNextFirstFitReversed(MoveType.AfterLabel, 0x10,
+            instr => instr.MatchLdfld<Player>("StateMachine"),
+            instr => instr.MatchCallvirt<StateMachine>("get_State"),
+            instr => instr.MatchLdcI4(originalCheckedState)))
+            return;
+
+        ILLabel failedCheck = null;
+
+        ILCursor cloned = cursor.Clone();
+        if (!cloned.TryGotoNext(MoveType.After, instr => equal ^ canShortCircuit ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck)))
+            return;
+        Instruction afterMatch = cloned.Next!;
+
+        ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
+
+        cursor.EmitDup();
+#pragma warning disable CL0002 // Avoid passing instance methods to ILCursor.EmitDelegate
+        cursor.EmitDelegate(StateCheck);
+#pragma warning restore CL0002
+        cursor.EmitBrtrue(cleanUpPlayer);
+
+        cursor.Goto(equal ^ canShortCircuit ? afterMatch : failedCheck.Target);
+        cursor.EmitBr(pastCleanUpPlayer);
+        cursor.EmitPop();
+        cursor.MarkLabel(pastCleanUpPlayer);
+        cursor.Index--;
+        cursor.MarkLabel(cleanUpPlayer);
+        
+        cursor.Goto(afterMatch, MoveType.After);
+        return;
+        
+        bool StateCheck(Player player)
+            => player.StateMachine.State == newCheckedState && (extraCheck?.Invoke(player) ?? true);
     }
     
     public static class Bind

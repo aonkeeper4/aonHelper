@@ -34,7 +34,8 @@ public class SeamlessLightningController(EntityData data, Vector2 offset) : Enti
         (bool bTouchingBounds, Vector2 sideB) = OnBorder(b + parent.Position, bounds);
         if (aTouchingBounds && bTouchingBounds && sideA != -sideB)
         {
-            orig(self, parent, new Vector2(float.MaxValue), new Vector2(float.MaxValue));
+            // exiled to the void
+            orig(self, parent, new Vector2(float.NaN), new Vector2(float.NaN));
             return;
         }
 

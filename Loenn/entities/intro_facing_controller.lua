@@ -11,6 +11,7 @@ local facingsOptions = {
 
 introFacingController.name = "aonHelper/IntroFacingController"
 introFacingController.texture = "objects/aonHelper/introFacingController"
+introFacingController.scale = function(room, entity) return { entity.facing or facings.right, 1 } end
 introFacingController.depth = 0
 introFacingController.placements = {
     {

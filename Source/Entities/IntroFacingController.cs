@@ -58,7 +58,7 @@ public class IntroFacingController(Vector2 position, Facings facing) : Entity(po
             if (player.Scene.Tracker.GetEntities<IntroFacingController>()
                                     .Concat(player.Scene.Entities.ToAdd)
                                     .FirstOrDefault(e => e is IntroFacingController) is IntroFacingController controller
-                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn)) // not sure if these are the only ones used "ingame"?
+                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None)) // not sure if these are the only ones used in gameplay?
                 player.Facing = controller.facing;
         }
     }

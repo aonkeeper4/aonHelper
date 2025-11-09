@@ -118,6 +118,7 @@ entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to 
 # Lightning Cornerboost Controller
 entities.aonHelper/LightningCornerboostController.placements.name.lightningCornerboostController=Lightning Cornerboost Controller
 entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether lightning should always have solid hitboxes instead of only while the player is dashing.
+entities.aonHelper/LightningCornerboostController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Seamless Lightning Controller
 entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightningController=Seamless Lightning Controller
@@ -125,6 +126,13 @@ entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightning
 # Intro Facing Controller
 entities.aonHelper/IntroFacingController.placements.name.introFacingController=Intro Facing Controller
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation.
+
+# Quantize Colorgrade Controller
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=Quantize Colorgrade Controller
+
+# Dream Dash Through Transition Controller
+entities.aonHelper/DreamDashThroughTransitionController.placements.name.dreamDashThroughTransitionController=Dream Dash Through Transition Controller
+entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 ### Triggers
 

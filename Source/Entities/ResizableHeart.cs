@@ -6,33 +6,19 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [TrackedAs(typeof(HeartGem))]
 [CustomEntity("aonHelper/ResizableHeart")]
-public class ResizableHeart : HeartGem
+public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, offset)
 {
-    private readonly int width, height;
+    private readonly int width = data.Width, height = data.Height;
     
-    private readonly string spriteID;
+    private readonly string spriteID = data.Attr("path");
     private Sprite spriteOutline;
-    private Color color;
-    private readonly bool disableGhost;
+    private Color color = data.HexColor("color", Calc.HexToColor("00a81f"));
+    private readonly bool disableGhost = data.Bool("disableGhost");
 
-    private readonly float respawnTime;
+    private readonly float respawnTime = data.Float("respawnTimer", 3f);
     private float respawnTimer;
 
-    private readonly bool fake;
-
-    public ResizableHeart(EntityData data, Vector2 offset) : base(data, offset)
-    {
-        width = data.Width;
-        height = data.Height;
-        
-        spriteID = data.Attr("path");
-        color = data.HexColor("color", Calc.HexToColor("00a81f"));
-        disableGhost = data.Bool("disableGhost");
-        
-        respawnTime = data.Float("respawnTimer", 3f);
-        
-        fake = data.Bool("isFake");
-    }
+    private readonly bool fake = data.Bool("isFake");
 
     public override void Awake(Scene scene)
     {
@@ -46,7 +32,7 @@ public class ResizableHeart : HeartGem
         IsGhost = !IsFake && !fake && SaveData.Instance.Areas_Safe[area.ID].Modes[(int)area.Mode].HeartGem;
         
         Remove(sprite);
-        if (!string.IsNullOrWhiteSpace(spriteID))
+        if (!string.IsNullOrEmpty(spriteID))
         {
             sprite = GFX.SpriteBank.Create(spriteID);
             

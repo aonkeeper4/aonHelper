@@ -10,9 +10,13 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FlingBirdNoSkipController")]
 [Tracked]
-public class FlingBirdNoSkipController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class FlingBirdNoSkipController(Vector2 position, string flag) : Entity(position)
 {
-    private readonly string flag = data.Attr("flag");
+    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
+
+    public FlingBirdNoSkipController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.Attr("flag"))
+    { }
 
     #region Hooks
     

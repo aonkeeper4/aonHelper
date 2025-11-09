@@ -13,7 +13,7 @@ public class ParallaxColorFadeTrigger(EntityData data, Vector2 offset) : Trigger
     private readonly Color colorTo = data.HexColor("colorTo", Color.White);
     private readonly PositionModes positionMode = data.Enum("positionMode", PositionModes.LeftToRight);
 
-    private readonly string tagToAffect = string.IsNullOrWhiteSpace(data.Attr("tagToAffect")) ? null : data.Attr("tagToAffect");
+    private readonly string tagToAffect = string.IsNullOrEmpty(data.Attr("tagToAffect")) ? null : data.Attr("tagToAffect");
     private List<Parallax> allParallaxes;
 
     public override void Awake(Scene scene)

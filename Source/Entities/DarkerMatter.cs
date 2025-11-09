@@ -2,7 +2,6 @@ using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
@@ -252,8 +251,10 @@ public class DarkerMatter : Entity
     
     public static int StDarkerMatter { get; private set; } = -1;
 
-    private class DarkerMatterComponent() : Component(false, false)
+    private class DarkerMatterComponent() : TypeRestrictedComponent<Player>(false, false)
     {
+        protected override string Name => nameof(DarkerMatterComponent);
+        
         public DarkerMatter LastDarkerMatter;
 
         public const float StopGraceThreshold = 0.01f;
@@ -440,42 +441,8 @@ public class DarkerMatter : Entity
         darkerMatterComponent.PreviousExactPosition = self.ExactPosition;
     }
 
-    private static void Player_orig_Update(ILContext il) => CheckState(new ILCursor(il), Player.StHitSquash, false, false);
-    private static void Player_orig_UpdateSprite(ILContext il) => CheckState(new ILCursor(il), Player.StCassetteFly, false, false);
-    
-    private static void CheckState(ILCursor cursor, int state, bool equal, bool canShortCircuit)
-    {
-        if (!cursor.TryGotoNextFirstFitReversed(MoveType.AfterLabel, 0x10,
-            instr => instr.MatchLdfld<Player>("StateMachine"),
-            instr => instr.MatchCallvirt<StateMachine>("get_State"),
-            instr => instr.MatchLdcI4(state)))
-            return;
-
-        ILLabel failedCheck = null;
-
-        ILCursor cloned = cursor.Clone();
-        if (!cloned.TryGotoNext(MoveType.After, instr => equal ^ canShortCircuit ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck)))
-            return;
-        Instruction afterMatch = cloned.Next!;
-
-        ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
-
-        cursor.Emit(OpCodes.Dup);
-        cursor.EmitDelegate(StateCheck);
-        cursor.Emit(OpCodes.Brtrue, cleanUpPlayer);
-
-        cursor.Goto(equal ^ canShortCircuit ? afterMatch : failedCheck.Target);
-        cursor.Emit(OpCodes.Br, pastCleanUpPlayer);
-        cursor.Emit(OpCodes.Pop);
-        cursor.MarkLabel(pastCleanUpPlayer);
-        cursor.Index--;
-        cursor.MarkLabel(cleanUpPlayer);
-        
-        cursor.Goto(afterMatch, MoveType.After);
-        return;
-        
-        static bool StateCheck(Player player) => player.StateMachine.State == StDarkerMatter;
-    }
+    private static void Player_orig_Update(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, StDarkerMatter);
+    private static void Player_orig_UpdateSprite(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, StDarkerMatter);
 
     #endregion
 

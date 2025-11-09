@@ -11,7 +11,7 @@ current features:
 - Feather Bounce Scam Controller
   - if your feather timer is low enough trying to bounce will uh instead Not Do That which is annoying
   - this fixes that (you can set the feather timer scam threshold to whatever u want. including 0 for it not not happen at all)
-- Rebound Modify Controller
+- Modify Rebound Controller
   - modifies the player's Rebound method to set/conserve speed (allows for independent control of the x and y directions as well as top vs side rebounds)
 - Fling Bird No Skip Controller
   - makes vanilla flingbirds not run away when you're too far past the node
@@ -31,7 +31,11 @@ current features:
   - ever gotten really pissed when trying to connect lightning between rooms? me too! makes lightning visually connect to the edges of rooms so u dont have to fiddle with eeveehelper global modifiers not working
 - Intro Facing Controller
   - some intro types don't let you set the player facing with spawn facing triggers which sucks so i made this. makes the map intro animation face whatever way u want
+- Quantize Colorgrade Controller
+  - when applying a colorgrade, if the color to be mapped does not exist, celeste will interpolate between the 4 adjacent colors on the colorgrade to calculate the resulting color. with this controller, this will not happen and instead the closest color will be used.
+- Dream Dash Through Transition Controller
+  - lets u use dream blocks across screen transitions properly. note: while this controller is active, dream dashing into the side of a screen where there is no available transition will kill you.
 
-for all of the controllers listed here, just place it in the room where you want its effect. most of them have flag fields to only be active when a certain flag is set, if they dont or you want to report any other bugs or feature requests then ping me in celestecord (@aonkeeper4)
+for all of the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set. if want to report any bugs or feature requests then ping me in celestecord (@aonkeeper4)
 
 happy modding :glumbsup:
