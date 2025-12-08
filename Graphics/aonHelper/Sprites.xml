@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Sprites>
-    <aonHelper_resizableHeart path="collectables/aonHelper/resizableHeart/" start="spin">
-        <Center />
-
+    <aonHelper_resizableHeart path="collectables/aonHelper/resizableHeart/heart" start="spin">
+        <Center/>
         <Loop id="idle" path="" frames="0" />
         <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
         <Loop id="fastspin" path="" delay="0.1"/>
     </aonHelper_resizableHeart>
-    <aonHelper_resizableHeartOutline path="collectables/aonHelper/resizableHeart_Outline/" start="spin">
-        <Center />
-
+    <aonHelper_resizableHeartOutline path="collectables/aonHelper/resizableHeart/outline" start="spin">
+        <Center/>
         <Loop id="idle" path="" frames="0" />
         <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
         <Loop id="fastspin" path="" delay="0.1"/>

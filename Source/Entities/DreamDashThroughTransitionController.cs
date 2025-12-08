@@ -51,8 +51,8 @@ public class DreamDashThroughTransitionController(Vector2 position, string flag)
 
     private static bool ShouldAffectStateCheck(Player player)
     {
-        Level level = player.SceneAs<Level>();
-        return level.Tracker.GetEntity<DreamDashThroughTransitionController>() is { } controller
+        Level level = player?.SceneAs<Level>(); // player should never be null here but someone encountered a crash
+        return level?.Tracker.GetEntity<DreamDashThroughTransitionController>() is { } controller
             && (level.Session.GetFlag(controller.flag) || controller.flag is null);
     }
     

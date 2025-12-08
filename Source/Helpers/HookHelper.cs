@@ -2,6 +2,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -14,7 +15,7 @@ public class HookHelper
     public const string DetourConfigName = "aonHelper";
     public const string StyleMaskHelperDetourConfigName = "StyleMaskHelper";
 
-    public static readonly DetourConfig BeforeStyleMaskHelperDetourConfig = CreateDetourConfig(before: [StyleMaskHelperDetourConfigName]);
+    public static readonly DetourConfig BeforeStyleMaskHelper = CreateDetourConfig(before: [StyleMaskHelperDetourConfigName]);
     
     public static void DisposeAndSetNull(ref Hook hook)
     {
@@ -55,6 +56,7 @@ public class HookHelper
 
         ILLabel failedCheck = null;
 
+        // todo: add support for ceq-based checks
         ILCursor cloned = cursor.Clone();
         if (!cloned.TryGotoNext(MoveType.After, instr => equal ^ canShortCircuit ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck)))
             return;
@@ -63,9 +65,9 @@ public class HookHelper
         ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
 
         cursor.EmitDup();
-#pragma warning disable CL0002 // Avoid passing instance methods to ILCursor.EmitDelegate
+        cursor.EmitLdcI4(newCheckedState);
+        cursor.EmitNewReference(extraCheck, out _); // we coulddd cache this?
         cursor.EmitDelegate(StateCheck);
-#pragma warning restore CL0002
         cursor.EmitBrtrue(cleanUpPlayer);
 
         cursor.Goto(equal ^ canShortCircuit ? afterMatch : failedCheck.Target);
@@ -78,7 +80,7 @@ public class HookHelper
         cursor.Goto(afterMatch, MoveType.After);
         return;
         
-        bool StateCheck(Player player)
+        static bool StateCheck(Player player, int newCheckedState, Func<Player, bool> extraCheck)
             => player.StateMachine.State == newCheckedState && (extraCheck?.Invoke(player) ?? true);
     }
     

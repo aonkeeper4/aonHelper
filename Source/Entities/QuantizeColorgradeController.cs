@@ -22,7 +22,7 @@ public class QuantizeColorgradeController(Vector2 position) : Entity(position)
     internal static void Load()
     {
         // guarantee hook order
-        using (new DetourConfigContext(HookHelper.BeforeStyleMaskHelperDetourConfig).Use())
+        using (new DetourConfigContext(HookHelper.BeforeStyleMaskHelper).Use())
             IL.Celeste.Level.Render += Level_Render;
     }
 
