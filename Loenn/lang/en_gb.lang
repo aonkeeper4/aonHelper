@@ -71,7 +71,7 @@ entities.aonHelper/UnforgivingSpikesUp.placements.name.up_reflection=Unforgiving
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_tentacles=Unforgiving Spikes (Up, Tentacles)
 entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=Determines the visual appearance of the spike.
 entities.aonHelper/UnforgivingSpikesUp.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.checkVelocity=Whether the spike should check the player's velocity before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 # Right
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_default=Unforgiving Spikes (Right, Default)
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_outline=Unforgiving Spikes (Right, Outline)
@@ -80,7 +80,7 @@ entities.aonHelper/UnforgivingSpikesRight.placements.name.right_reflection=Unfor
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_tentacles=Unforgiving Spikes (Right, Tentacles)
 entities.aonHelper/UnforgivingSpikesRight.attributes.description.type=Determines the visual appearance of the spike.
 entities.aonHelper/UnforgivingSpikesRight.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesRight.attributes.description.checkVelocity=Whether the spike should check the player's velocity before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesRight.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 # Down
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_default=Unforgiving Spikes (Down, Default)
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_outline=Unforgiving Spikes (Down, Outline)
@@ -89,7 +89,7 @@ entities.aonHelper/UnforgivingSpikesDown.placements.name.down_reflection=Unforgi
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_tentacles=Unforgiving Spikes (Down, Tentacles)
 entities.aonHelper/UnforgivingSpikesDown.attributes.description.type=Determines the visual appearance of the spike.
 entities.aonHelper/UnforgivingSpikesDown.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesDown.attributes.description.checkVelocity=Whether the spike should check the player's velocity before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesDown.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 # Left
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_default=Unforgiving Spikes (Left, Default)
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_outline=Unforgiving Spikes (Left, Outline)
@@ -98,7 +98,7 @@ entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_reflection=Unforgi
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_tentacles=Unforgiving Spikes (Left, Tentacles)
 entities.aonHelper/UnforgivingSpikesLeft.attributes.description.type=Determines the visual appearance of the spike.
 entities.aonHelper/UnforgivingSpikesLeft.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesLeft.attributes.description.checkVelocity=Whether the spike should check the player's velocity before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesLeft.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 
 # Clamp Light Color Controller
 entities.aonHelper/ClampLightColorController.placements.name.clampLightColorController=Clamp Light Color Controller

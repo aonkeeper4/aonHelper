@@ -1,11 +1,16 @@
+using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
 using Celeste.Mod.Helpers;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
+
+// todo: check whether these work in all cases with moving blocks
 
 [CustomEntity(
     "aonHelper/UnforgivingSpikesUp = LoadUp",
@@ -25,45 +30,44 @@ public class UnforgivingSpikes : Spikes
     public static Entity LoadRight(Level level, LevelData levelData, Vector2 offset, EntityData entityData)
         => new UnforgivingSpikes(entityData, offset, Directions.Right);
 
-    public UnforgivingSpikes(Vector2 position, int size, Directions direction, string type)
-        : base(position, size, direction, type)
-    {
-        Remove(Get<PlayerCollider>());
-        Add(pc = new PlayerCollider(OnCollide));
-    }
+    private readonly bool checkMoveDirection;
 
     public UnforgivingSpikes(EntityData data, Vector2 offset, Directions dir)
-        : this(data.Position + offset, GetSize(data, dir), dir, data.Attr("type", "default"))
-    { }
+        : base(data, offset, dir)
+    {
+        checkMoveDirection = data.Bool("checkMoveDirection");
+        
+        Remove(Get<PlayerCollider>());
+    }
 
-    private new void OnCollide(Player player)
+    private bool OnMoveCollision(Player player, Vector2 moveDir)
     {
         switch (Direction)
         {
-            case Directions.Up:
+            case Directions.Up when !checkMoveDirection || moveDir.Y > 0f:
                 player.Die(-Vector2.UnitY);
-                break;
+                return true;
             
-            case Directions.Down:
+            case Directions.Down when !checkMoveDirection || moveDir.Y < 0f:
                 player.Die(Vector2.UnitY);
-                break;
+                return true;
             
-            case Directions.Left:
+            case Directions.Left when !checkMoveDirection || moveDir.X > 0f:
                 player.Die(-Vector2.UnitX);
-                break;
+                return true;
             
-            case Directions.Right:
+            case Directions.Right when !checkMoveDirection || moveDir.X < 0f:
                 player.Die(Vector2.UnitX);
-                break;
+                return true;
             
             default:
-                throw new ArgumentOutOfRangeException();
+                return false;
         }
     }
     
     #region Hooks
 
-    // todo: maybe make these lazy loaded
+    // todo: make these lazy loaded
     
     internal static void Load()
     {
@@ -81,15 +85,30 @@ public class UnforgivingSpikes : Spikes
     private static void Actor_MoveVExact(ILContext il) => UnforgivingSpikesCheck(new ILCursor(il), false);
 
     private static void UnforgivingSpikesCheck(ILCursor cursor, bool horizontal)
-    { 
+    {
+        ILContext il = cursor.Context;
+
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+            instr => instr.MatchCall<Entity>("CollideFirst"),
+            instr => instr.MatchStloc3()))
+            throw new HookHelper.HookException(il, "Unable to find call to `Entity.CollideFirst` to insert local variable assignment before.");
+
+        // this didn't work with just a dup in the right place so we use a local :disappointed_relieved: this is probably rly bad
+        VariableDefinition checkPosition = new(il.Import(typeof(Vector2)));
+        il.Body.Variables.Add(checkPosition);
+        
+        cursor.EmitStloc(checkPosition);
+        cursor.EmitLdloc(checkPosition);
+
         if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdloc3(),
-            instr => instr.MatchBrfalse(out ILLabel _)))
-            return;
+            instr => instr.MatchBrfalse(out _)))
+            throw new HookHelper.HookException(il, "Unable to find null check for `solid` to insert check for Unforgiving Spikes before");
 
         ILLabel afterRet = cursor.DefineLabel();
         
         cursor.EmitLdarg0();
+        cursor.EmitLdloc(checkPosition);
         cursor.EmitLdarg1();
         cursor.EmitLdcI4(horizontal ? 1 : 0);
         cursor.EmitDelegate(CheckForUnforgivingSpikes);
@@ -100,17 +119,23 @@ public class UnforgivingSpikes : Spikes
         
         return;
 
-        static bool CheckForUnforgivingSpikes(Actor actor, int move, bool horizontal)
+        static bool CheckForUnforgivingSpikes(Actor actor, Vector2 checkPosition, int moveAmount, bool horizontal)
         {
             if (actor is not Player player)
                 return false;
 
-            Vector2 checkDir = horizontal ? Vector2.UnitX : Vector2.UnitY;
-            if (player.CollideFirst<UnforgivingSpikes>(player.Position + checkDir * Math.Sign(move)) is not { } spikes)
+            Collider collider = player.Collider;
+            player.Collider = player.hurtbox;
+            
+            UnforgivingSpikes spikes = player.CollideFirst<UnforgivingSpikes>(checkPosition);
+            
+            player.Collider = collider;
+            
+            if (spikes is null)
                 return false;
             
-            spikes.OnCollide(player);
-            return true;
+            Vector2 moveDir = (horizontal ? Vector2.UnitX : Vector2.UnitY) * Math.Sign(moveAmount);
+            return spikes.OnMoveCollision(player, moveDir);
         }
     }
     

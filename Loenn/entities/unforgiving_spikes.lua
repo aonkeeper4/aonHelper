@@ -6,6 +6,10 @@ local spikeOptions = {
         down = "aonHelper/UnforgivingSpikesDown",
         left = "aonHelper/UnforgivingSpikesLeft",
         right = "aonHelper/UnforgivingSpikesRight"
+    },
+    placementData = {
+        attachToSolid = true,
+        checkMoveDirection = false
     }
 }
 
