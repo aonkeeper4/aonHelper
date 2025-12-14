@@ -81,34 +81,22 @@ public class UnforgivingSpikes : Spikes
         IL.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
     }
 
-    private static void Actor_MoveHExact(ILContext il) => UnforgivingSpikesCheck(new ILCursor(il), true);
-    private static void Actor_MoveVExact(ILContext il) => UnforgivingSpikesCheck(new ILCursor(il), false);
+    private static void Actor_MoveHExact(ILContext il) => UnforgivingSpikesCheck(il, true);
+    private static void Actor_MoveVExact(ILContext il) => UnforgivingSpikesCheck(il, false);
 
-    private static void UnforgivingSpikesCheck(ILCursor cursor, bool horizontal)
+    private static void UnforgivingSpikesCheck(ILContext il, bool horizontal)
     {
-        ILContext il = cursor.Context;
+        ILCursor cursor = new(il);
 
         if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchCall<Entity>("CollideFirst"),
             instr => instr.MatchStloc3()))
-            throw new HookHelper.HookException(il, "Unable to find call to `Entity.CollideFirst` to insert local variable assignment before.");
-
-        // this didn't work with just a dup in the right place so we use a local :disappointed_relieved: this is probably rly bad
-        VariableDefinition checkPosition = new(il.Import(typeof(Vector2)));
-        il.Body.Variables.Add(checkPosition);
-        
-        cursor.EmitStloc(checkPosition);
-        cursor.EmitLdloc(checkPosition);
-
-        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
-            instr => instr.MatchLdloc3(),
-            instr => instr.MatchBrfalse(out _)))
-            throw new HookHelper.HookException(il, "Unable to find null check for `solid` to insert check for Unforgiving Spikes before");
+            throw new HookHelper.HookException(il, "Unable to find call to `Entity.CollideFirst` to insert Unforgiving Spikes check before.");
 
         ILLabel afterRet = cursor.DefineLabel();
-        
+
+        cursor.EmitDup();
         cursor.EmitLdarg0();
-        cursor.EmitLdloc(checkPosition);
         cursor.EmitLdarg1();
         cursor.EmitLdcI4(horizontal ? 1 : 0);
         cursor.EmitDelegate(CheckForUnforgivingSpikes);
@@ -117,9 +105,11 @@ public class UnforgivingSpikes : Spikes
         cursor.EmitRet();
         cursor.MarkLabel(afterRet);
         
+        Logger.Info(nameof(aonHelper) + "/unforgiving spieks", il.ToString());
+        
         return;
 
-        static bool CheckForUnforgivingSpikes(Actor actor, Vector2 checkPosition, int moveAmount, bool horizontal)
+        static bool CheckForUnforgivingSpikes(Vector2 checkPosition, Actor actor, int moveAmount, bool horizontal)
         {
             if (actor is not Player player)
                 return false;
