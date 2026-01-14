@@ -34,7 +34,7 @@ namespace Celeste.Mod.aonHelper
         public override void Load()
         {
             ResizableHeart.Load();
-            FeatherDashSwitch.Load();
+            LegacyFeatherDashSwitch.Load();
             ReboundModifyController.Load();
             FeatherBounceScamController.Load();
             FlingBirdNoSkipController.Load();
@@ -54,7 +54,7 @@ namespace Celeste.Mod.aonHelper
         public override void Unload()
         {
             ResizableHeart.Unload();
-            FeatherDashSwitch.Unload();
+            LegacyFeatherDashSwitch.Unload();
             ReboundModifyController.Unload();
             FeatherBounceScamController.Unload();
             FlingBirdNoSkipController.Unload();

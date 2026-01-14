@@ -12,10 +12,13 @@ namespace Celeste.Mod.aonHelper.Helpers;
 
 public class HookHelper
 {
-    public const string DetourConfigName = "aonHelper";
-    public const string StyleMaskHelperDetourConfigName = "StyleMaskHelper";
+    public const string DetourConfigID = "aonHelper";
+    public const string StyleMaskHelperDetourConfigID = "StyleMaskHelper";
 
-    public static readonly DetourConfig BeforeStyleMaskHelper = CreateDetourConfig(before: [StyleMaskHelperDetourConfigName]);
+    public static readonly DetourConfig BeforeStyleMaskHelper
+        = new DetourConfig(DetourConfigID)
+            .WithBefore(StyleMaskHelperDetourConfigID)
+            .WithPriority(0);
     
     public static void DisposeAndSetNull(ref Hook hook)
     {
@@ -29,22 +32,6 @@ public class HookHelper
         ilHook = null;
     }
 
-    public static DetourConfig CreateDetourConfig(List<string> before = null, List<string> after = null)
-    {
-        bool beforeAll = HasWildcard(before);
-        bool afterAll = HasWildcard(after);
-        int priority = beforeAll
-            ? int.MaxValue
-            : afterAll
-                ? int.MinValue
-                : 0;
-
-        return new DetourConfig(DetourConfigName, priority, before, after);
-
-        static bool HasWildcard(List<string> list)
-            => (list?.RemoveAll(s => s.Equals("*")) ?? 0) != 0;
-    }
-    
     // see CommunalHelper DreamTunnelDash source for a properly explained version of this
     public static void ModifyStateCheck(ILCursor cursor, int originalCheckedState, bool equal, bool canShortCircuit, int newCheckedState, Func<Player, bool> extraCheck = null)
     {

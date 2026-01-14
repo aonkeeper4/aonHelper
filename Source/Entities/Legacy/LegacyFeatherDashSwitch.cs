@@ -9,18 +9,14 @@ using System.Linq;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
-// i really hate to do this but i don't know how to preserve the legacy behaviour + it's been used in too many maps to just  fix the bugs
-// todo
-[CustomEntity("aonHelper/FeatherDashSwitchV2")]
-public class FeatherDashSwitch : DashSwitch
+[CustomEntity("aonHelper/FeatherDashSwitch")]
+internal class LegacyFeatherDashSwitch : DashSwitch
 {
     private new readonly ParticleType P_PressA;
     private new readonly ParticleType P_PressB;
 
-    public FeatherDashSwitch(EntityID id, Vector2 position, Sides side,
-        bool dashActivated, bool holdableActivated, bool featherActivated,
-        int dashesToRefill,
-        bool persistent, bool allGates, string flag,
+    public LegacyFeatherDashSwitch(EntityID id, Vector2 position, Sides side,
+        bool persistent, bool allGates,
         string spriteDir, Color particleColor1, Color particleColor2)
         : base(position, side, persistent, allGates, id, "default")
     {
@@ -59,7 +55,7 @@ public class FeatherDashSwitch : DashSwitch
         };
     }
 
-    public FeatherDashSwitch(EntityData data, Vector2 offset, EntityID id)
+    public LegacyFeatherDashSwitch(EntityData data, Vector2 offset, EntityID id)
         : this(id, data.Position + offset, data.Enum("side", Sides.Up),
             data.Bool("persistent"), data.Bool("allGates"),
             data.Attr("spriteDir"), data.HexColor("particleColor1"), data.HexColor("particleColor2"))
@@ -168,7 +164,7 @@ public class FeatherDashSwitch : DashSwitch
             case null:
                 return;
             
-            case FeatherDashSwitch dashSwitch:
+            case LegacyFeatherDashSwitch dashSwitch:
                 dashSwitch.OnFeatherHit(data.Direction);
                 break;
         }

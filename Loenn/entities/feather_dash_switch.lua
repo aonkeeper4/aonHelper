@@ -31,7 +31,7 @@ end
 
 local featherDashSwitch = {}
 
-featherDashSwitch.name = "aonHelper/FeatherDashSwitch"
+featherDashSwitch.name = "aonHelper/FeatherDashSwitchV2"
 featherDashSwitch.fieldInformation = {
     side = {
         options = featherDashSwitchDirectionOptions,

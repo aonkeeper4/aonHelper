@@ -1,4 +1,5 @@
 using Celeste.Mod.aonHelper.Entities;
+using Celeste.Mod.aonHelper.Helpers;
 using MonoMod.ModInterop;
 using System;
 
@@ -8,47 +9,62 @@ public static class aonHelperExports
 {
     internal static void Initialize()
     {
-        typeof(FgStylegroundBloomControllerCompat).ModInterop();
+        typeof(Exports).ModInterop();
+        typeof(Exports.FgStylegroundBloomControllerCompat).ModInterop();
     }
 
     /// <summary>
-    /// Provides ModInterop exports for interfacing correctly with the rendering changes imposed by Fg Styleground Bloom Controllers <b>with a set bloom tag</b>.
+    /// Provides common ModInterop exports for interfacing with this mod.
     /// </summary>
-    [ModExportName("aonHelper.FgStylegroundBloomControllerCompat")]
-    public static class FgStylegroundBloomControllerCompat
+    [ModExportName("aonHelper")]
+    public static class Exports
     {
         /// <summary>
-        /// Adds a callback to be invoked before the `Foregound.Render` call in `Level.Render`.
+        /// Returns the <see cref="MonoMod.RuntimeDetour.DetourConfig"/> ID used with all hooks in this mod.
         /// </summary>
-        /// <param name="action">The callback to add.</param>
-        public static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.AddBeforeForegroundRenderAction(action);
+        /// <returns>The <see cref="MonoMod.RuntimeDetour.DetourConfig"/> ID used with all hooks in this mod.</returns>
+        public static string GetDetourConfigID()
+            => HookHelper.DetourConfigID;
+        
         /// <summary>
-        /// Removes a callback from being invoked before the `Foregound.Render` call in `Level.Render`.
+        /// Provides ModInterop exports for interfacing correctly with the rendering changes imposed by Fg Styleground Bloom Controllers <b>with a set bloom tag</b>.
         /// </summary>
-        /// <param name="action">The callback to remove.</param>
-        public static void RemoveBeforeForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.RemoveBeforeForegroundRenderAction(action);
-    
-        /// <summary>
-        /// Adds a callback to be invoked after the `Foregound.Render` call in `Level.Render`.
-        /// </summary>
-        /// <param name="action">The callback to add.</param>
-        public static void AddAfterForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.AddAfterForegroundRenderAction(action);
-        /// <summary>
-        /// Removes a callback from being invoked after the `Foregound.Render` call in `Level.Render`.
-        /// </summary>
-        /// <param name="action">The callback to remove.</param>
-        public static void RemoveAfterForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.RemoveAfterForegroundRenderAction(action);
+        [ModExportName("aonHelper.FgStylegroundBloomControllerCompat")]
+        public static class FgStylegroundBloomControllerCompat
+        {
+            /// <summary>
+            /// Adds a callback to be invoked before the `Foregound.Render` call in `Level.Render`.
+            /// </summary>
+            /// <param name="action">The callback to add.</param>
+            public static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
+                => FgStylegroundBloomController.AddBeforeForegroundRenderAction(action);
+            /// <summary>
+            /// Removes a callback from being invoked before the `Foregound.Render` call in `Level.Render`.
+            /// </summary>
+            /// <param name="action">The callback to remove.</param>
+            public static void RemoveBeforeForegroundRenderAction(Action<Level, bool> action)
+                => FgStylegroundBloomController.RemoveBeforeForegroundRenderAction(action);
 
-        /// <summary>
-        /// Retrieves the bloom tag of the current Fg Stryleground Bloom Controller.
-        /// </summary>
-        /// <param name="level">The current <see cref="Level"/> instance to use.</param>
-        /// <returns>The current controller's bloom tag, or <c>null</c> if there is no controller or it does not have a bloom tag set.</returns>
-        public static string GetCurrentBloomTag(Level level)
-            => FgStylegroundBloomController.GetCurrentBloomTag(level);
+            /// <summary>
+            /// Adds a callback to be invoked after the `Foregound.Render` call in `Level.Render`.
+            /// </summary>
+            /// <param name="action">The callback to add.</param>
+            public static void AddAfterForegroundRenderAction(Action<Level, bool> action)
+                => FgStylegroundBloomController.AddAfterForegroundRenderAction(action);
+            /// <summary>
+            /// Removes a callback from being invoked after the `Foregound.Render` call in `Level.Render`.
+            /// </summary>
+            /// <param name="action">The callback to remove.</param>
+            public static void RemoveAfterForegroundRenderAction(Action<Level, bool> action)
+                => FgStylegroundBloomController.RemoveAfterForegroundRenderAction(action);
+
+            /// <summary>
+            /// Retrieves the bloom tag of the current Fg Stryleground Bloom Controller.
+            /// </summary>
+            /// <param name="level">The current <see cref="Level"/> instance to use.</param>
+            /// <returns>The current controller's bloom tag, or <c>null</c> if there is no controller or it does not have a bloom tag set.</returns>
+            public static string GetCurrentBloomTag(Level level)
+                => FgStylegroundBloomController.GetCurrentBloomTag(level);
+        }
     }
 }
