@@ -13,10 +13,10 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/QuantizeColorgradeController")]
 [Tracked]
-public class QuantizeColorgradeController(Vector2 position, string affectedColorGrades) : Entity(position)
+public class QuantizeColorgradeController(Vector2 position, string affectedColorgrades) : Entity(position)
 {
-    private readonly string[] affectedColorgrades = affectedColorGrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-    private readonly bool affectAll = affectedColorGrades.Contains('*');
+    private readonly string[] affectedColorgrades = affectedColorgrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    private readonly bool affectAll = affectedColorgrades.Contains('*');
     
     public QuantizeColorgradeController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("affectedColorgrades", "*"))
@@ -46,7 +46,6 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
     private static FieldInfo f_ColorGrade_from = typeof(ColorGrade).GetField("from", HookHelper.Bind.NonPublicStatic)!;
     private static FieldInfo f_ColorGrade_to = typeof(ColorGrade).GetField("to", HookHelper.Bind.NonPublicStatic)!;
 
-    // just using an on hook wasn't working for some reason?? so i'm doing this
     private static void ColorGrade_Set(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -83,8 +82,8 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
                 || level.Tracker.GetEntity<QuantizeColorgradeController>() is not { } controller)
                 return;
             
-            ColorGrade.Effect.Parameters["from_filter"]?.SetValue(controller.ColorgradeAffected(from) ? 1f : 0f);
-            ColorGrade.Effect.Parameters["to_filter"]?.SetValue(controller.ColorgradeAffected(to) ? 1f : 0f);
+            ColorGrade.Effect.Parameters["from_quantization"]?.SetValue(controller.ColorgradeAffected(from) ? 1f : 0f);
+            ColorGrade.Effect.Parameters["to_quantization"]?.SetValue(controller.ColorgradeAffected(to) ? 1f : 0f);
         }
     }
 
