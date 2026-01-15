@@ -6,7 +6,15 @@ quantizeColorgradeController.depth = 0
 quantizeColorgradeController.placements = {
     {
         name = "quantizeColorgradeController",
-        data = { }
+        data = {
+            affectedColorgrades = "*"
+        }
+    }
+}
+
+quantizeColorgradeController.fieldInformation = {
+    affectedColorgrades = {
+        fieldType = "list"
     }
 }
 
