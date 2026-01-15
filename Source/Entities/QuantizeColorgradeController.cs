@@ -3,9 +3,11 @@ using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
+using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
@@ -29,30 +31,61 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
     
     internal static void Load()
     {
-        On.Celeste.ColorGrade.Set_MTexture_MTexture_float += ColorGrade_Set;
+        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float += ColorGrade_Set;
         
         hook_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, ColorGrade_get_Effect);
     }
 
     internal static void Unload()
     {
-        On.Celeste.ColorGrade.Set_MTexture_MTexture_float -= ColorGrade_Set;
+        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float -= ColorGrade_Set;
         
         HookHelper.DisposeAndSetNull(ref hook_ColorGrade_get_Effect);
     }
 
-    private static void ColorGrade_Set(On.Celeste.ColorGrade.orig_Set_MTexture_MTexture_float orig, MTexture fromTex, MTexture toTex, float p)
-    {
-        orig(fromTex, toTex, p);
-        
-        if (Engine.Scene is not Level level
-            || level.Tracker.GetEntity<QuantizeColorgradeController>() is not { } controller
-            || aonHelperGFX.FxQuantizedColorgrade is null
-            || aonHelperGFX.FxQuantizedColorgrade.IsDisposed)
-            return;
+    private static FieldInfo f_ColorGrade_from = typeof(ColorGrade).GetField("from", HookHelper.Bind.NonPublicStatic)!;
+    private static FieldInfo f_ColorGrade_to = typeof(ColorGrade).GetField("to", HookHelper.Bind.NonPublicStatic)!;
 
-        aonHelperGFX.FxQuantizedColorgrade.Parameters["from_filter"].SetValue(controller.ColorgradeAffected(fromTex) ? 1f : 0f);
-        aonHelperGFX.FxQuantizedColorgrade.Parameters["to_filter"].SetValue(controller.ColorgradeAffected(toTex) ? 1f : 0f);
+    // just using an on hook wasn't working for some reason?? so i'm doing this
+    private static void ColorGrade_Set(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        
+        GotoNextSetCurrentTechnique();
+        cursor.EmitLdsfld(f_ColorGrade_from);
+        cursor.EmitLdsfld(f_ColorGrade_from);
+        cursor.EmitDelegate(SetCustomParameters);
+        
+        GotoNextSetCurrentTechnique();
+        cursor.EmitLdsfld(f_ColorGrade_to);
+        cursor.EmitLdsfld(f_ColorGrade_to);
+        cursor.EmitDelegate(SetCustomParameters);
+        
+        GotoNextSetCurrentTechnique();
+        cursor.EmitLdsfld(f_ColorGrade_from);
+        cursor.EmitLdsfld(f_ColorGrade_to);
+        cursor.EmitDelegate(SetCustomParameters);
+        
+        return;
+
+        void GotoNextSetCurrentTechnique()
+        {
+            /*
+             * IL_0089: callvirt instance void [FNA]Microsoft.Xna.Framework.Graphics.Effect::set_CurrentTechnique(...)
+             */
+            if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Effect>("set_CurrentTechnique")))
+                throw new HookHelper.HookException(il, "Unable to find effect technique assignment to insert custom parameter logic after.");
+        }
+        
+        static void SetCustomParameters(MTexture from, MTexture to)
+        {
+            if (Engine.Scene is not Level level
+                || level.Tracker.GetEntity<QuantizeColorgradeController>() is not { } controller)
+                return;
+            
+            ColorGrade.Effect.Parameters["from_filter"]?.SetValue(controller.ColorgradeAffected(from) ? 1f : 0f);
+            ColorGrade.Effect.Parameters["to_filter"]?.SetValue(controller.ColorgradeAffected(to) ? 1f : 0f);
+        }
     }
 
     private static Effect ColorGrade_get_Effect(Func<Effect> orig)

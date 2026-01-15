@@ -1,3 +1,5 @@
+local celesteEnums = require("consts.celeste_enums")
+
 local quantizeColorgradeController = {}
 
 quantizeColorgradeController.name = "aonHelper/QuantizeColorgradeController"
@@ -14,7 +16,11 @@ quantizeColorgradeController.placements = {
 
 quantizeColorgradeController.fieldInformation = {
     affectedColorgrades = {
-        fieldType = "list"
+        fieldType = "list",
+        elementOptions = {
+            options = celesteEnums.color_grades,
+            editable = true
+        }
     }
 }
 
