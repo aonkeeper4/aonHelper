@@ -17,16 +17,12 @@ namespace Celeste.Mod.aonHelper
         public override Type SaveDataType => typeof(aonHelperModuleSaveData);
         public static aonHelperModuleSaveData SaveData => (aonHelperModuleSaveData)Instance._SaveData;
 
-        public static SpriteBank SpriteBank { get; private set; }
-
         public aonHelperModule()
         {
             Instance = this;
 #if DEBUG
-            // debug builds use verbose logging
             Logger.SetLogLevel(nameof(aonHelper), LogLevel.Verbose);
 #else
-            // release builds use info logging to reduce spam in log files
             Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
 #endif
         }
@@ -50,9 +46,18 @@ namespace Celeste.Mod.aonHelper
             
             aonHelperExports.Initialize();
         }
+        
+        public override void LoadContent(bool firstLoad)
+        {
+            base.LoadContent(firstLoad);
+
+            aonHelperGFX.LoadContent();
+        }
 
         public override void Unload()
         {
+            aonHelperGFX.UnloadContent();
+            
             ResizableHeart.Unload();
             FeatherDashSwitch.Unload();
             ReboundModifyController.Unload();
@@ -67,13 +72,6 @@ namespace Celeste.Mod.aonHelper
             IntroFacingController.Unload();
             QuantizeColorgradeController.Unload();
             DreamDashThroughTransitionController.Unload();
-        }
-
-        public override void LoadContent(bool firstLoad)
-        {
-            base.LoadContent(firstLoad);
-
-            SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
         }
     }
 }

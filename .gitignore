@@ -358,3 +358,5 @@ MigrationBackup/
 # Visual Studio Code
 .vscode/
 
+# Shader binary files
+*.cso

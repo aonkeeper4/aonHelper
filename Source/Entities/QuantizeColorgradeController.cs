@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using System;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
@@ -18,17 +19,23 @@ public class QuantizeColorgradeController(Vector2 position) : Entity(position)
     { }
     
     #region Hooks
+
+    private static Hook hook_ColorGrade_get_Effect;
     
     internal static void Load()
     {
         // guarantee hook order
         using (new DetourConfigContext(HookHelper.BeforeStyleMaskHelper).Use())
             IL.Celeste.Level.Render += Level_Render;
+        
+        hook_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, ColorGrade_get_Effect);
     }
 
     internal static void Unload()
     {
         IL.Celeste.Level.Render -= Level_Render;
+        
+        HookHelper.DisposeAndSetNull(ref hook_ColorGrade_get_Effect);
     }
 
     private static void Level_Render(ILContext il)
@@ -95,6 +102,17 @@ public class QuantizeColorgradeController(Vector2 position) : Entity(position)
             Engine.Graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
             Engine.Graphics.GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
         }
+    }
+
+    private static Effect ColorGrade_get_Effect(Func<Effect> orig)
+    {
+        // probably some better way to get the current scene?
+        if (Engine.Scene is not Level level
+            || level.Tracker.GetEntity<QuantizeColorgradeController>() is null)
+            return orig();
+
+        // todo: custom parameter setup (this is almost definitely not the best place to be doing this but whatever)
+        return aonHelperGFX.FxQuantizedColorGrade;
     }
     
     #endregion
