@@ -140,6 +140,7 @@ entities.aonHelper/IntroFacingController.attributes.description.facing=The direc
 
 # Quantize Colorgrade Controller
 entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=Quantize Colorgrade Controller
+entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedColorgrades=The colorgrades to affect. Use "*" to affect all colorgrades.
 
 # Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dreamDashThroughTransitionController=Dream Dash Through Transition Controller

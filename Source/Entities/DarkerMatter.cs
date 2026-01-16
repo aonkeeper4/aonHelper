@@ -406,7 +406,7 @@ public class DarkerMatter : Entity
         
         DarkerMatterComponent darkerMatterComponent = new()
         {
-            WarpSprite = aonHelperModule.SpriteBank.Create("aonHelper_darkerMatterWarp")
+            WarpSprite = aonHelperGFX.SpriteBank.Create("aonHelper_darkerMatterWarp")
         };
         darkerMatterComponent.WarpSprite.Visible = false;
         darkerMatterComponent.WarpSprite.Origin = DarkerMatterComponent.WarpSpriteOffset;

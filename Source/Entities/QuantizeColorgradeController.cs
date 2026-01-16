@@ -1,100 +1,101 @@
 using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/QuantizeColorgradeController")]
 [Tracked]
-public class QuantizeColorgradeController(Vector2 position) : Entity(position)
+public class QuantizeColorgradeController(Vector2 position, string affectedColorgrades) : Entity(position)
 {
+    private readonly string[] affectedColorgrades = affectedColorgrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    private readonly bool affectAll = affectedColorgrades.Contains('*');
+    
     public QuantizeColorgradeController(EntityData data, Vector2 offset)
-        : this(data.Position + offset)
+        : this(data.Position + offset, data.Attr("affectedColorgrades", "*"))
     { }
+
+    private bool ColorgradeAffected(MTexture colorgrade)
+        => affectAll || affectedColorgrades.Contains(colorgrade.AtlasPath);
     
     #region Hooks
+
+    private static Hook hook_ColorGrade_get_Effect;
     
     internal static void Load()
     {
-        // guarantee hook order
-        using (new DetourConfigContext(HookHelper.BeforeStyleMaskHelper).Use())
-            IL.Celeste.Level.Render += Level_Render;
+        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float += ColorGrade_Set;
+        
+        hook_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, ColorGrade_get_Effect);
     }
 
     internal static void Unload()
     {
-        IL.Celeste.Level.Render -= Level_Render;
+        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float -= ColorGrade_Set;
+        
+        HookHelper.DisposeAndSetNull(ref hook_ColorGrade_get_Effect);
     }
 
-    private static void Level_Render(ILContext il)
+    private static FieldInfo f_ColorGrade_from = typeof(ColorGrade).GetField("from", HookHelper.Bind.NonPublicStatic)!;
+    private static FieldInfo f_ColorGrade_to = typeof(ColorGrade).GetField("to", HookHelper.Bind.NonPublicStatic)!;
+
+    private static void ColorGrade_Set(ILContext il)
     {
         ILCursor cursor = new(il);
         
-        /*
-         * IL_0383: call class [FNA]Microsoft.Xna.Framework.Graphics.SpriteBatch Monocle.Draw::get_SpriteBatch()
-         * IL_0388: ldc.i4.0
-         * IL_0389: ldsfld class [FNA]Microsoft.Xna.Framework.Graphics.BlendState [FNA]Microsoft.Xna.Framework.Graphics.BlendState::AlphaBlend
-         * IL_038e: ldsfld class [FNA]Microsoft.Xna.Framework.Graphics.SamplerState [FNA]Microsoft.Xna.Framework.Graphics.SamplerState::PointClamp
-         * IL_0393: ldsfld class [FNA]Microsoft.Xna.Framework.Graphics.DepthStencilState [FNA]Microsoft.Xna.Framework.Graphics.DepthStencilState::Default
-         * IL_0398: ldsfld class [FNA]Microsoft.Xna.Framework.Graphics.RasterizerState [FNA]Microsoft.Xna.Framework.Graphics.RasterizerState::CullNone
-         * IL_039d: call class [FNA]Microsoft.Xna.Framework.Graphics.Effect Celeste.ColorGrade::get_Effect()
-         * IL_03a2: ldloc.2
-         * IL_03a3: callvirt instance void [FNA]Microsoft.Xna.Framework.Graphics.SpriteBatch::Begin(...)
-         */
-        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
-            instr => instr.MatchCall(typeof(Draw), "get_SpriteBatch"),
-            instr => instr.MatchLdcI4(0),
-            instr => instr.MatchLdsfld<BlendState>("AlphaBlend"),
-            instr => instr.MatchLdsfld<SamplerState>("PointClamp"),
-            instr => instr.MatchLdsfld<DepthStencilState>("Default"),
-            instr => instr.MatchLdsfld<RasterizerState>("CullNone"),
-            instr => instr.MatchCall(typeof(ColorGrade), "get_Effect"),
-            instr => instr.MatchLdloc2(),
-            instr => instr.MatchCallvirt<SpriteBatch>("Begin")))
-            throw new HookHelper.HookException(il, "Unable to find `SpriteBatch.Begin` for colorgrade application to modify.");
-
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate(OverrideSamplerState);
+        GotoNextSetCurrentTechnique();
+        cursor.EmitLdsfld(f_ColorGrade_from);
+        cursor.EmitLdsfld(f_ColorGrade_from);
+        cursor.EmitDelegate(SetCustomParameters);
         
-        // no idea why stylemaskhelper matches on this part instead of just  after SpriteBatch.End but ok whatever
-        /*
-         * IL_0406: ldarg.0
-         * IL_0407: ldfld class Celeste.Pathfinder Celeste.Level::Pathfinder
-         * IL_040c: brfalse.s IL_0461
-         */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
-            instr => instr.MatchLdarg0(),
-            instr => instr.MatchLdfld<Level>("Pathfinder"),
-            instr => instr.MatchBrfalse(out _)))
-            throw new HookHelper.HookException(il, "Unable to find `SpriteBatch.End` for colorgrade application to modify.");
-
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate(ResetSamplerState);
-
+        GotoNextSetCurrentTechnique();
+        cursor.EmitLdsfld(f_ColorGrade_to);
+        cursor.EmitLdsfld(f_ColorGrade_to);
+        cursor.EmitDelegate(SetCustomParameters);
+        
+        GotoNextSetCurrentTechnique();
+        cursor.EmitLdsfld(f_ColorGrade_from);
+        cursor.EmitLdsfld(f_ColorGrade_to);
+        cursor.EmitDelegate(SetCustomParameters);
+        
         return;
-        
-        static void OverrideSamplerState(Level level)
-        {
-            if (level.Tracker.GetEntity<QuantizeColorgradeController>() is null)
-                return;
-            
-            Engine.Graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
-            Engine.Graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
-        }
 
-        static void ResetSamplerState(Level level)
+        void GotoNextSetCurrentTechnique()
         {
-            if (level.Tracker.GetEntity<QuantizeColorgradeController>() is null)
+            /*
+             * IL_0089: callvirt instance void [FNA]Microsoft.Xna.Framework.Graphics.Effect::set_CurrentTechnique(...)
+             */
+            if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Effect>("set_CurrentTechnique")))
+                throw new HookHelper.HookException(il, "Unable to find effect technique assignment to insert custom parameter logic after.");
+        }
+        
+        static void SetCustomParameters(MTexture from, MTexture to)
+        {
+            if (Engine.Scene is not Level level
+                || level.Tracker.GetEntity<QuantizeColorgradeController>() is not { } controller)
                 return;
             
-            Engine.Graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-            Engine.Graphics.GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
+            ColorGrade.Effect.Parameters["from_quantization"]?.SetValue(controller.ColorgradeAffected(from) ? 1f : 0f);
+            ColorGrade.Effect.Parameters["to_quantization"]?.SetValue(controller.ColorgradeAffected(to) ? 1f : 0f);
         }
+    }
+
+    private static Effect ColorGrade_get_Effect(Func<Effect> orig)
+    {
+        if (Engine.Scene is not Level level
+            || level.Tracker.GetEntity<QuantizeColorgradeController>() is null
+            || aonHelperGFX.FxQuantizedColorgrade is null
+            || aonHelperGFX.FxQuantizedColorgrade.IsDisposed)
+            return orig();
+
+        return aonHelperGFX.FxQuantizedColorgrade;
     }
     
     #endregion

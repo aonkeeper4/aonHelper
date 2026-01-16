@@ -69,8 +69,8 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
         }
         else
         {
-            sprite = aonHelperModule.SpriteBank.Create("aonHelper_resizableHeart");
-            spriteOutline = aonHelperModule.SpriteBank.Create("aonHelper_resizableHeartOutline");
+            sprite = aonHelperGFX.SpriteBank.Create("aonHelper_resizableHeart");
+            spriteOutline = aonHelperGFX.SpriteBank.Create("aonHelper_resizableHeartOutline");
             sprite.Color = IsGhost && !fake && !disableGhost ? Color.Lerp(color, Color.White, 0.8f) * 0.8f : color;
             shineParticle = new ParticleType(P_BlueShine) { Color = color };
         }
