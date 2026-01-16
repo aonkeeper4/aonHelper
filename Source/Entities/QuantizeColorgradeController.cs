@@ -22,8 +22,8 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
         : this(data.Position + offset, data.Attr("affectedColorgrades", "*"))
     { }
 
-    private bool ColorgradeAffected(MTexture texture)
-        => affectAll || affectedColorgrades.Contains(texture.AtlasPath);
+    private bool ColorgradeAffected(MTexture colorgrade)
+        => affectAll || affectedColorgrades.Contains(colorgrade.AtlasPath);
     
     #region Hooks
 
