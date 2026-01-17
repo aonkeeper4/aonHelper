@@ -44,7 +44,7 @@ public static class aonHelperExports
             => FgStylegroundBloomController.RemoveAfterForegroundRenderAction(action);
 
         /// <summary>
-        /// Retrieves the bloom tag of the current Fg Stryleground Bloom Controller.
+        /// Retrieves the bloom tag of the current Fg Styleground Bloom Controller.
         /// </summary>
         /// <param name="level">The current <see cref="Level"/> instance to use.</param>
         /// <returns>The current controller's bloom tag, or <c>null</c> if there is no controller or it does not have a bloom tag set.</returns>
