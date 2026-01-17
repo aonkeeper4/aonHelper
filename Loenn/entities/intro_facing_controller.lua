@@ -17,9 +17,15 @@ introFacingController.placements = {
     {
         name = "introFacingController",
         data = {
-            facing = facings.right
+            facing = facings.right,
+            flag = ""
         }
     }
+}
+
+introFacingController.fieldOrder = {
+    "x", "y",
+    "facing", "flag"
 }
 introFacingController.fieldInformation = {
     facing = {

@@ -142,6 +142,7 @@ entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightning
 # Intro Facing Controller
 entities.aonHelper/IntroFacingController.placements.name.introFacingController=Intro Facing Controller
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation.
+entities.aonHelper/IntroFacingController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Quantize Colorgrade Controller
 entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=Quantize Colorgrade Controller

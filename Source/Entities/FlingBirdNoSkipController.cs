@@ -62,7 +62,7 @@ public class FlingBirdNoSkipController(Vector2 position, string flag) : Entity(p
             if (level.Tracker.GetEntity<FlingBirdNoSkipController>() is not { } controller)
                 return false;
             
-            return level.Session.GetFlag(controller.flag) || controller.flag == "";
+            return level.Session.GetFlag(controller.flag) || controller.flag is null;
         }
     }
     

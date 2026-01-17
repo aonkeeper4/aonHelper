@@ -11,12 +11,13 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/IntroFacingController")]
 [Tracked]
-public class IntroFacingController(Vector2 position, Facings facing) : Entity(position)
+public class IntroFacingController(Vector2 position, Facings facing, string flag) : Entity(position)
 {
     private readonly Facings facing = facing;
+    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
     
     public IntroFacingController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Enum("facing", Facings.Right))
+        : this(data.Position + offset, data.Enum("facing", Facings.Right), data.Attr("flag"))
     { }
     
     #region Hooks
@@ -25,12 +26,27 @@ public class IntroFacingController(Vector2 position, Facings facing) : Entity(po
 
     internal static void Load()
     {
+        On.Celeste.Player.TempleFallUpdate += Player_TempleFallUpdate;
+        
         ilHook_Player_orig_Added = new ILHook(typeof(Player).GetMethod("orig_Added", HookHelper.Bind.PublicInstance)!, Player_orig_Added);
     }
 
     internal static void Unload()
     {
+        On.Celeste.Player.TempleFallUpdate -= Player_TempleFallUpdate;
+        
         HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_Added);
+    }
+
+    private static int Player_TempleFallUpdate(On.Celeste.Player.orig_TempleFallUpdate orig, Player self)
+    {
+        int result = orig(self);
+
+        if (self.Scene.Tracker.GetEntity<IntroFacingController>() is { } controller
+            && (self.SceneAs<Level>().Session.GetFlag(controller.flag) || controller.flag is null))
+            self.Facing = controller.facing;
+
+        return result;
     }
 
     private static void Player_orig_Added(ILContext il)
@@ -58,7 +74,8 @@ public class IntroFacingController(Vector2 position, Facings facing) : Entity(po
             if (player.Scene.Tracker.GetEntities<IntroFacingController>()
                                     .Concat(player.Scene.Entities.ToAdd)
                                     .FirstOrDefault(e => e is IntroFacingController) is IntroFacingController controller
-                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None)) // not sure if these are the only ones used in gameplay?
+                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None) // not sure if these are the only ones used in gameplay?
+                && (player.SceneAs<Level>().Session.GetFlag(controller.flag) || controller.flag is null))
                 player.Facing = controller.facing;
         }
     }
