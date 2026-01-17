@@ -1,77 +1,88 @@
 ﻿using System;
-using Monocle;
 using Celeste.Mod.aonHelper.Entities;
+using Celeste.Mod.aonHelper.Entities.Legacy;
 
-namespace Celeste.Mod.aonHelper
+namespace Celeste.Mod.aonHelper;
+
+public class aonHelperModule : EverestModule
 {
-    public class aonHelperModule : EverestModule
+    public static aonHelperModule Instance { get; private set; }
+
+    public override Type SettingsType => typeof(aonHelperModuleSettings);
+    public static aonHelperModuleSettings Settings => (aonHelperModuleSettings)Instance._Settings;
+
+    public override Type SessionType => typeof(aonHelperModuleSession);
+    public static aonHelperModuleSession Session => (aonHelperModuleSession)Instance._Session;
+
+    public override Type SaveDataType => typeof(aonHelperModuleSaveData);
+    public static aonHelperModuleSaveData SaveData => (aonHelperModuleSaveData)Instance._SaveData;
+
+    public aonHelperModule()
     {
-        public static aonHelperModule Instance { get; private set; }
-
-        public override Type SettingsType => typeof(aonHelperModuleSettings);
-        public static aonHelperModuleSettings Settings => (aonHelperModuleSettings)Instance._Settings;
-
-        public override Type SessionType => typeof(aonHelperModuleSession);
-        public static aonHelperModuleSession Session => (aonHelperModuleSession)Instance._Session;
-
-        public override Type SaveDataType => typeof(aonHelperModuleSaveData);
-        public static aonHelperModuleSaveData SaveData => (aonHelperModuleSaveData)Instance._SaveData;
-
-        public aonHelperModule()
-        {
-            Instance = this;
+        Instance = this;
 #if DEBUG
-            Logger.SetLogLevel(nameof(aonHelper), LogLevel.Verbose);
+        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Verbose);
 #else
-            Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
+        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
 #endif
-        }
+    }
 
-        public override void Load()
-        {
-            ResizableHeart.Load();
-            LegacyFeatherDashSwitch.Load();
-            ReboundModifyController.Load();
-            FeatherBounceScamController.Load();
-            FlingBirdNoSkipController.Load();
-            FgStylegroundBloomController.Load();
-            ClampLightColorController.Load();
-            DarkerMatter.Load();
-            LightningCornerboostController.Load();
-            UnforgivingSpikes.Load();
-            SeamlessLightningController.Load();
-            IntroFacingController.Load();
-            QuantizeColorgradeController.Load();
-            DreamDashThroughTransitionController.Load();
-            
-            aonHelperExports.Initialize();
-        }
+    public override void Load()
+    {
+        ResizableHeart.Load();
+        FeatherDashSwitch.Load();
+        ReboundModifyController.Load();
+        FeatherBounceScamController.Load();
+        FlingBirdNoSkipController.Load();
+        FgStylegroundBloomController.Load();
+        ClampLightColorController.Load();
+        DarkerMatter.Load();
+        LightningCornerboostController.Load();
+        UnforgivingSpikes.Load();
+        SeamlessLightningController.Load();
+        IntroFacingController.Load();
+        QuantizeColorgradeController.Load();
+        DreamDashThroughTransitionController.Load();
         
-        public override void LoadContent(bool firstLoad)
-        {
-            base.LoadContent(firstLoad);
+        #region Legacy
+        
+        LegacyFeatherDashSwitch.Load();
+        
+        #endregion
+        
+        aonHelperExports.Initialize();
+    }
+    
+    public override void LoadContent(bool firstLoad)
+    {
+        base.LoadContent(firstLoad);
 
-            aonHelperGFX.LoadContent();
-        }
+        aonHelperGFX.LoadContent();
+    }
 
-        public override void Unload()
-        {
-            aonHelperGFX.UnloadContent();
-            
-            ResizableHeart.Unload();
-            LegacyFeatherDashSwitch.Unload();
-            ReboundModifyController.Unload();
-            FeatherBounceScamController.Unload();
-            FlingBirdNoSkipController.Unload();
-            FgStylegroundBloomController.Unload();
-            ClampLightColorController.Unload();
-            DarkerMatter.Unload();
-            LightningCornerboostController.Unload();
-            UnforgivingSpikes.Unload();
-            SeamlessLightningController.Unload();
-            IntroFacingController.Unload();
-            QuantizeColorgradeController.Unload();
-            DreamDashThroughTransitionController.Unload();
-        }
+    public override void Unload()
+    {
+        aonHelperGFX.UnloadContent();
+        
+        ResizableHeart.Unload();
+        FeatherDashSwitch.Unload();
+        ReboundModifyController.Unload();
+        FeatherBounceScamController.Unload();
+        FlingBirdNoSkipController.Unload();
+        FgStylegroundBloomController.Unload();
+        ClampLightColorController.Unload();
+        DarkerMatter.Unload();
+        LightningCornerboostController.Unload();
+        UnforgivingSpikes.Unload();
+        SeamlessLightningController.Unload();
+        IntroFacingController.Unload();
+        QuantizeColorgradeController.Unload();
+        DreamDashThroughTransitionController.Unload();
+        
+        #region Legacy
+        
+        LegacyFeatherDashSwitch.Unload();
+        
+        #endregion
     }
 }

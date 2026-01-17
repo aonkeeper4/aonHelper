@@ -13,6 +13,12 @@
         <Loop id="fastspin" path="" delay="0.1"/>
     </aonHelper_resizableHeartOutline>
 
+    <aonHelper_legacyFeatherDashSwitch path="objects/aonHelper/featherDashSwitch/legacy" start="idle">
+        <Justify x="0.5" y="0.5"/>
+        <Loop id="idle" path="" delay="0.08" frames="0-20"/>
+        <Loop id="pushed" path="" delay="0.08" frames="27"/>
+        <Anim id="push" path="" delay="0.07" frames="21-27" goto="pushed"/>
+    </aonHelper_legacyFeatherDashSwitch>
     <aonHelper_featherDashSwitch path="objects/aonHelper/featherDashSwitch/" start="idle">
         <Justify x="0.5" y="0.5"/>
         <Loop id="idle" path="" delay="0.08" frames="0-20"/>

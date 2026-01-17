@@ -6,11 +6,8 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
-using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
-
-// todo: check whether these work in all cases with moving blocks
 
 [CustomEntity(
     "aonHelper/UnforgivingSpikesUp = LoadUp",
@@ -93,7 +90,7 @@ public class UnforgivingSpikes : Spikes
             instr => instr.MatchStloc3()))
             throw new HookHelper.HookException(il, "Unable to find call to `Entity.CollideFirst` to insert local variable assignment before.");
 
-        // this didn't work with just a dup in the right place so we use a local :disappointed_relieved: this is probably rly bad
+        // this didn't work with just a dup in the right place so we use a local :disappointed_relieved:
         VariableDefinition checkPosition = new(il.Import(typeof(Vector2)));
         il.Body.Variables.Add(checkPosition);
         

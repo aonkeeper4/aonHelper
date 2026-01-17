@@ -7,7 +7,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System.Linq;
 
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Legacy;
 
 [CustomEntity("aonHelper/FeatherDashSwitch")]
 internal class LegacyFeatherDashSwitch : DashSwitch
@@ -25,7 +25,7 @@ internal class LegacyFeatherDashSwitch : DashSwitch
         sprite.Stop();
         Remove(sprite);
         
-        sprite = string.IsNullOrEmpty(spriteDir) ? aonHelperModule.SpriteBank.Create("aonHelper_featherDashSwitch") : BuildSprite(spriteDir);
+        sprite = string.IsNullOrEmpty(spriteDir) ? aonHelperGFX.SpriteBank.Create("aonHelper_legacyFeatherDashSwitch") : BuildSprite(spriteDir);
         sprite.Position = spritePos;
         sprite.Rotation = spriteRot;
         Add(sprite);

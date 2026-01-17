@@ -14,16 +14,21 @@ entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the hear
 entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this heart if it has already been collected.
 
 # Feather Dash Switch
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchDown=[LEGACY] Feather Dash Switch (Down)
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchUp=[LEGACY] Feather Dash Switch (Up)
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchLeft=[LEGACY] Feather Dash Switch (Left)
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchRight=[LEGACY] Feather Dash Switch (Right)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchDown=Feather Dash Switch (Down)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchUp=Feather Dash Switch (Up)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchLeft=Feather Dash Switch (Left)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchRight=Feather Dash Switch (Right)
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.side=The orientation of the dash switch.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.persistent=Whether once this dash switch is activated, it should stay activated, even if the player dies.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.allGates=Whether this dash switch should open all temple gates instead of opening only the closest one.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.spriteDir=A path to custom sprites to use for this dash switch, relative to Graphics/Atlases/Gameplay.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The primary color of particles emitted when this dash switch is activated.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this dash switch is activated.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.holdableActivated=Whether this Feather Dash Switch should activate when a holdable is thrown into it.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.featherActivated=Whether this Feather Dash Switch should activate when bumped into in feather state.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.refillBehavior=Describes how this Feather Dash Switch should refill the player's dash when activated.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.flagOnPress=The flag to set when this Feather Dash Switch is activated.\nNote that if "Persistent" is enabled, the flag will not be unset on room reload; otherwise, it will.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.persistent=Whether once this Feather Dash Switch is activated, it should stay activated, even if the room is reloaded.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.allGates=Whether this Feather Dash Switch should open all temple gates instead of opening only the closest one.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.spriteDir=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The primary color of particles emitted when this Feather Dash Switch is activated.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
 # Legacy
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchDown=[LEGACY] Feather Dash Switch (Down)
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchUp=[LEGACY] Feather Dash Switch (Up)
