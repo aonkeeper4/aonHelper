@@ -35,7 +35,13 @@ current features:
   - when applying a colorgrade, if the color to be mapped does not exist, celeste will interpolate between the 4 adjacent colors on the colorgrade to calculate the resulting color. with this controller, this will not happen and instead the closest color will be used
 - Dream Dash Through Transition Controller
   - lets u use dream blocks across screen transitions properly. note: while this controller is active, dream dashing into the side of a screen where there is no available transition will kill you
+- Dream Lock Block
+  - an inactive dream block that can be unlocked to become active
+- Glass Lock Block
+  - a lock block version of Glass Blocks from vanilla
+- Glass Lock Block Controller
+  - a controller for the colors and visuals of Glass Lock Blocks
 
-for all of the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set. if want to report any bugs or feature requests then ping me in celestecord (@aonkeeper4)
+for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set. if want to report any bugs or feature requests then ping me in celestecord (@aonkeeper4)
 
 happy modding :glumbsup:

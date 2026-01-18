@@ -152,6 +152,36 @@ entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedC
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dreamDashThroughTransitionController=Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
+# Glass Lock Block
+entities.aonHelper/GlassLockBlock.placements.name.glassLockBlock=Glass Lock Block
+entities.aonHelper/GlassLockBlock.attributes.description.spritePath=The path to use for the lock sprites, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/MoreLockBlocks/generic/lock.
+entities.aonHelper/GlassLockBlock.attributes.description.unlockSfx=The event that will play when the lock block is unlocked. Defaults to "event:/game/03_resort/key_unlock".
+entities.aonHelper/GlassLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this lock block is unlocked.
+entities.aonHelper/GlassLockBlock.attributes.description.behindFgTiles=Whether this lock block will render behind foreground tiles.
+entities.aonHelper/GlassLockBlock.attributes.description.useVanillaKeys=Whether this lock block can be unlocked by vanilla keys.
+entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key groups (if any) this lock block can be unlocked by.\nLeft empty: this lock block cannot be unlocked by Dzhake Helper keys.\n*: this lock block can be unlocked by any Dzhake Helper key.\nAny integer: this lock block can only be unlocked by a Dzhake Helper key with the specified Group. 
+
+# Glass Lock Block Controller
+entities.aonHelper/GlassLockBlockController.placements.name.controller=Glass Lock Block Controller
+entities.aonHelper/GlassLockBlockController.placements.name.controller_vanilla=Glass Lock Block Controller (Vanilla Settings)
+entities.aonHelper/GlassLockBlockController.attributes.description.starColors=The colors of stars on Glass Lock Blocks affected by this controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.bgColor=The color of the background on Glass Lock Blocks affected by this controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.lineColor=The color of the outline on Glass Lock Blocks affected by this controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.rayColor=The color of the rays on Glass Lock Blocks affected by this controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.wavy=Whether to render the wavy effect on Glass Lock Blocks affected by this controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.vanillaEdgeBehavior=Whether to have the edges of Glass Lock Blocks affected by this controller display like vanilla glass block edges.
+entities.aonHelper/GlassLockBlockController.attributes.description.persistent=Whether this controller's effects should persist after leaving the room this controller is in.
+
+# Dream Lock Block
+entities.aonHelper/DreamLockBlock.placements.name.dreamLockBlock=Dream Lock Block
+entities.aonHelper/DreamLockBlock.attributes.description.spritePath=The path to use for the lock sprites, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/MoreLockBlocks/generic/lock.
+entities.aonHelper/DreamLockBlock.attributes.description.unlockSfx=The event that will play when the lock block is unlocked. Defaults to "event:/MoreLockBlocks/game/lockblocks/dreamlockblock_key_unlock".
+entities.aonHelper/DreamLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this lock block is unlocked.
+entities.aonHelper/DreamLockBlock.attributes.description.below=Whether this lock block will render behind foreground tiles.
+entities.aonHelper/DreamLockBlock.attributes.description.ignoreInventory=Whether this lock block is able to be dream dashed through while unlocked even if the player's inventory (for example the OldSite inventory) forbids it.
+entities.aonHelper/DreamLockBlock.attributes.description.useVanillaKeys=Whether this lock block can be unlocked by vanilla keys.
+entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key groups (if any) this lock block can be unlocked by.\nLeft empty: this lock block cannot be unlocked by Dzhake Helper keys.\n*: this lock block can be unlocked by any Dzhake Helper key.\nAny integer: this lock block can only be unlocked by a Dzhake Helper key with the specified Group. 
+
 ### Triggers
 
 # Parallax Alpha Fade

@@ -360,3 +360,6 @@ MigrationBackup/
 
 # Shader binary files
 *.cso
+
+# Mod audio
+Audio/

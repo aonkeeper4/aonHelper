@@ -1,9 +1,33 @@
-using Celeste.Mod.Helpers;
+using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.aonHelper.Helpers;
+
+public static class RectangleExtensions
+{
+    public static Vector2 TopLeft(this Rectangle rect) => new(rect.Left, rect.Top);
+    public static Vector2 TopRight(this Rectangle rect) => new(rect.Right, rect.Top);
+    public static Vector2 BottomLeft(this Rectangle rect) => new(rect.Left, rect.Bottom);
+    public static Vector2 BottomRight(this Rectangle rect) => new(rect.Right, rect.Bottom);
+}
+
+public static class IEnumerableExtensions
+{
+    public static int LastIndexWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        int index = 0;
+        int resultIndex = -1;
+        foreach (T item in source)
+        {
+            if (predicate.Invoke(item)) resultIndex = index;
+            index++;
+        }
+        return resultIndex;
+    }
+}
 
 public static class ILCursorExtensions
 {

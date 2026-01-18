@@ -1,11 +1,10 @@
-// i have verified that this has the exact same colorgrading behaviour as the vanilla shader when both `from_quantization` and `to_quantization` are 0.
-// don't yell at me
+// i have verified that this has the exact same behaviour as the vanilla shader when both `from_quantization` and `to_quantization` are 0
 
 texture tex : register(t0);
 sampler tex_sampler : register(s0);
 
-// i would prefer not to do this but otherwise there are weird ass magenta artifacts
-// guess the vanilla shader does it for a reason :cry:
+// specifying `Clamp` here is necessary cus the vanilla shader is stupid and samples past [0, 1] for the green channel whilst using `SamplerState.LinearWrap`
+// this results from not scaling the green component in the same way as the red component, which also applies a bit of gain to the green channel when sampling :catplush:
 texture grade_from : register(t1);
 sampler grade_from_sampler : register(s1)
 {
@@ -33,7 +32,7 @@ float4 pixel_shader_fade(float4 position : SV_POSITION, float4 color : COLOR, fl
     float4 tex_color = tex2D(tex_sampler, uv) * color;
 
     float offset_r = tex_color.r / dimensions.x * (dimensions.y - 1.0);
-    float offset_g = tex_color.g; // / dimensions.y * (dimensions.y - 1.0); <- this should really be here to make the logic consistent across the r and g components
+    float offset_g = tex_color.g;
     float b_slice_0 = min(floor(tex_color.b * dimensions.y), dimensions.y - 1.0);
     float b_slice_1 = min(b_slice_0 + 1.0, dimensions.y - 1.0);
 
@@ -60,7 +59,7 @@ float4 pixel_shader_single(float4 position : SV_POSITION, float4 color : COLOR, 
     float4 tex_color = tex2D(tex_sampler, uv) * color;
 
     float offset_r = tex_color.r / dimensions.x * (dimensions.y - 1.0);
-    float offset_g = tex_color.g; // / dimensions.y * (dimensions.y - 1.0); <- this should really be here to make the logic consistent across the r and g components
+    float offset_g = tex_color.g;
     float b_slice_0 = min(floor(tex_color.b * dimensions.y), dimensions.y - 1.0);
     float b_slice_1 = min(b_slice_0 + 1.0, dimensions.y - 1.0);
 
