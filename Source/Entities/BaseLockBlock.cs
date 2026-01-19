@@ -89,7 +89,7 @@ public abstract class BaseLockBlock : Solid
 
     private void OnPlayer(Player player)
     {
-        if (aonHelperModule.Instance.DzhakeHelperLoaded)
+        if (aonHelperDependencies.DzhakeHelperLoaded)
             OnPlayer_DzhakeHelperLoaded(player);
         else
             OnPlayer_DzhakeHelperUnloaded(player);
@@ -138,7 +138,7 @@ public abstract class BaseLockBlock : Solid
 
     private void TryOpen(Player player, Follower fol)
     {
-        if (aonHelperModule.Instance.DzhakeHelperLoaded)
+        if (aonHelperDependencies.DzhakeHelperLoaded)
             TryOpen_DzhakeHelperLoaded(player, fol);
         else
             TryOpen_DzhakeHelperUnloaded(player, fol);
@@ -190,7 +190,7 @@ public abstract class BaseLockBlock : Solid
     #region UnlockRoutine
 
     protected IEnumerator UnlockRoutine(Follower fol)
-        => aonHelperModule.Instance.DzhakeHelperLoaded
+        => aonHelperDependencies.DzhakeHelperLoaded
             ? UnlockRoutine_DzhakeHelperLoaded(fol)
             : UnlockRoutine_DzhakeHelperUnloaded(fol);
 

@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework;
 using Celeste.Mod.Entities;
 using System.Collections;
 using MonoMod.Cil;
-using System.Reflection;
 using Mono.Cecil.Cil;
 using Celeste.Mod.DzhakeHelper;
 using Celeste.Mod.DzhakeHelper.Entities;
+using Celeste.Mod.Helpers;
 using System.Runtime.CompilerServices;
 using System;
 using MonoMod.Utils;
@@ -50,8 +50,8 @@ public class DreamLockBlock : BaseLockBlock
 
         private void SetReverseHelperDummyState(bool value)
         {
-            aonHelperImports.ReverseHelperCallHelper.ConfigureSetFromEnum(this, 1 << 1, value); // set `alwaysEnable`
-            aonHelperImports.ReverseHelperCallHelper.ConfigureSetFromEnum(this, 1 << 2, !value); // set `alwaysDisable`
+            aonHelperImports.ReverseHelper.ConfigureSetFromEnum?.Invoke(this, 1 << 1, value); // set `alwaysEnable`
+            aonHelperImports.ReverseHelper.ConfigureSetFromEnum?.Invoke(this, 1 << 2, !value); // set `alwaysDisable`
         }
 
         private bool Unlocked => aonHelperModule.Session.UnlockedDreamLockBlocks.Contains(parent.ID); // whether we can change state
@@ -114,11 +114,11 @@ public class DreamLockBlock : BaseLockBlock
             
             IL.Celeste.DreamBlock.Added += DreamBlock_Added;
 
-            if (!aonHelperModule.Instance.ReverseHelperLoaded)
+            if (!aonHelperDependencies.ReverseHelperLoaded)
             {
                 IL.Celeste.Player.DreamDashCheck += Player_DreamDashCheck;
 
-                ilHook_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.Instance | BindingFlags.NonPublic)!.GetStateMachineTarget()!, Player_DashCoroutine);
+                ilHook_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, Player_DashCoroutine);
             }
         }
 
@@ -133,7 +133,7 @@ public class DreamLockBlock : BaseLockBlock
             
             IL.Celeste.DreamBlock.Added -= DreamBlock_Added;
 
-            if (!aonHelperModule.Instance.ReverseHelperLoaded)
+            if (!aonHelperDependencies.ReverseHelperLoaded)
             {
                 IL.Celeste.Player.DreamDashCheck -= Player_DreamDashCheck;
 
@@ -145,7 +145,10 @@ public class DreamLockBlock : BaseLockBlock
         {
             ILCursor cursor = new(il);
 
-            cursor.GotoNext(MoveType.Before, instr => instr.MatchStfld(typeof(DreamBlock), "playerHasDreamDash"));
+            // IL_001d: stfld bool Celeste.DreamBlock::playerHasDreamDash
+            if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld(typeof(DreamBlock), "playerHasDreamDash")))
+                throw new HookHelper.HookException(il, "Unable to find assignment to `DreamBlock.playerHasDreamDash` to modify.");
+                
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.EmitDelegate(DetermineDreamBlockActive);
             
@@ -157,7 +160,6 @@ public class DreamLockBlock : BaseLockBlock
                     return orig;
             
                 bool canDashThrough = dummy.CanDashThrough;
-                
                 if (dummy.ignoreInventory)
                     dummy.SetReverseHelperDummyState(canDashThrough);
                 
@@ -202,28 +204,46 @@ public class DreamLockBlock : BaseLockBlock
         {
             ILCursor cursor = new(il);
 
-            cursor.GotoNext(MoveType.After, instr => instr.MatchLdfld<PlayerInventory>("DreamDash"));
-            cursor.GotoNext(MoveType.Before, instr => instr.MatchBrfalse(out ILLabel _));
-            cursor.Emit(OpCodes.Ldarg_0);
-            cursor.Emit(OpCodes.Ldarg_1);
+            /*
+             * IL_0000: ldarg.0
+             * IL_0001: callvirt instance valuetype Celeste.PlayerInventory Celeste.Player::get_Inventory()
+             * IL_0006: ldfld bool Celeste.PlayerInventory::DreamDash
+             */
+            if (!cursor.TryGotoNextBestFit(MoveType.After,
+                instr => instr.MatchLdarg0(),
+                instr => instr.MatchCallvirt<Player>("get_Inventory"),
+                instr => instr.MatchLdfld<PlayerInventory>("DreamDash")))
+                throw new HookHelper.HookException(il, "Unable to find check for `Player.Inventory.DreamDash` to modify.");
+            
+            cursor.EmitLdarg0();
+            cursor.EmitLdarg1();
             cursor.EmitDelegate(DetermineInventoryCheckOverride);
-            cursor.Emit(OpCodes.Or);
+            cursor.EmitOr();
         }
 
         private static void Player_DashCoroutine(ILContext il)
         {
             ILCursor cursor = new(il);
-
-            cursor.GotoNext(MoveType.After, instr => instr.MatchLdfld<PlayerInventory>("DreamDash"));
-            cursor.GotoNext(MoveType.Before, instr => instr.MatchBrfalse(out ILLabel _));
-            cursor.Emit(OpCodes.Ldloc_1);
-            cursor.EmitCall(typeof(Vector2).GetProperty("UnitY", BindingFlags.Static | BindingFlags.Public)!.GetGetMethod()!);
+            
+            /*
+             * IL_021c: ldloc.1
+             * IL_021d: callvirt instance valuetype Celeste.PlayerInventory Celeste.Player::get_Inventory()
+             * IL_0222: ldfld bool Celeste.PlayerInventory::DreamDash
+             */
+            if (!cursor.TryGotoNextBestFit(MoveType.After,
+                instr => instr.MatchLdloc1(),
+                instr => instr.MatchCallvirt<Player>("get_Inventory"),
+                instr => instr.MatchLdfld<PlayerInventory>("DreamDash")))
+                throw new HookHelper.HookException(il, "Unable to find check for `Player.Inventory.DreamDash` to modify.");
+            
+            cursor.EmitLdloc1();
+            cursor.EmitCall(typeof(Vector2).GetProperty("UnitY", HookHelper.Bind.PublicStatic)!.GetGetMethod()!);
             cursor.EmitDelegate(DetermineInventoryCheckOverride);
-            cursor.Emit(OpCodes.Or);
+            cursor.EmitOr();
         }
 
         private static bool DetermineInventoryCheckOverride(Player player, Vector2 dir)
-            => player.CollideFirst<DreamBlock>(player.Position + dir) is DreamBlockDummy dummy && dummy.CanDashThrough && dummy.ignoreInventory;
+            => player.CollideFirst<DreamBlock>(player.Position + dir) is DreamBlockDummy { CanDashThrough: true, ignoreInventory: true };
 
         #endregion
     }

@@ -1,9 +1,6 @@
 ﻿using System;
 using Celeste.Mod.aonHelper.Entities;
 using Celeste.Mod.aonHelper.Entities.Legacy;
-using Celeste.Mod.aonHelper.Helpers;
-using MonoMod.RuntimeDetour;
-using System.Reflection;
 
 namespace Celeste.Mod.aonHelper;
 
@@ -12,46 +9,13 @@ public class aonHelperModule : EverestModule
     public static aonHelperModule Instance { get; private set; }
 
     public override Type SettingsType => typeof(aonHelperModuleSettings);
-    public static aonHelperModuleSettings Settings => (aonHelperModuleSettings)Instance._Settings;
+    public static aonHelperModuleSettings Settings => (aonHelperModuleSettings) Instance._Settings;
 
     public override Type SessionType => typeof(aonHelperModuleSession);
-    public static aonHelperModuleSession Session => (aonHelperModuleSession)Instance._Session;
+    public static aonHelperModuleSession Session => (aonHelperModuleSession) Instance._Session;
 
     public override Type SaveDataType => typeof(aonHelperModuleSaveData);
-    public static aonHelperModuleSaveData SaveData => (aonHelperModuleSaveData)Instance._SaveData;
-    
-    private static readonly FieldInfo Everest__ContentLoaded = typeof(Everest).GetField("_ContentLoaded", BindingFlags.NonPublic | BindingFlags.Static)!;
-    private static Hook hook_Everest_Register;
-
-    private static readonly EverestModuleMetadata DzhakeHelper = new() { Name = "DzhakeHelper", Version = new Version(1, 4, 9) };
-    private static readonly EverestModuleMetadata ReverseHelper = new() { Name = "ReverseHelper", Version = new Version(1, 15, 0) };
-    
-    internal bool DzhakeHelperLoaded;
-    internal bool ReverseHelperLoaded;
-    
-    private void LoadDzhakeHelper() => DzhakeHelperLoaded = true;
-    private void UnloadDzhakeHelper() => DzhakeHelperLoaded = false;
-
-    private void LoadReverseHelper() => ReverseHelperLoaded = true;
-    private void UnloadReverseHelper() => ReverseHelperLoaded = false;
-    
-    private static void LoadOptionalDependencies()
-    {
-        if (!Instance.DzhakeHelperLoaded && Everest.Loader.DependencyLoaded(DzhakeHelper))
-            Instance.LoadDzhakeHelper();
-
-        if (!Instance.ReverseHelperLoaded && Everest.Loader.DependencyLoaded(ReverseHelper))
-            Instance.LoadReverseHelper();
-    }
-    
-    private static void UnloadOptionalDependencies()
-    {
-        if (Instance.DzhakeHelperLoaded)
-            Instance.UnloadDzhakeHelper();
-        
-        if (Instance.ReverseHelperLoaded)
-            Instance.UnloadReverseHelper();
-    }
+    public static aonHelperModuleSaveData SaveData => (aonHelperModuleSaveData) Instance._SaveData;
 
     public aonHelperModule()
     {
@@ -66,6 +30,8 @@ public class aonHelperModule : EverestModule
 
     public override void Load()
     {
+        aonHelperDependencies.Load();
+        
         aonHelperImports.Initialize();
         aonHelperExports.Initialize();
         
@@ -91,8 +57,6 @@ public class aonHelperModule : EverestModule
         LegacyFeatherDashSwitch.Load();
         
         #endregion
-        
-        hook_Everest_Register = new Hook(typeof(Everest).GetMethod("Register")!, Everest_Register);
     }
     
     public override void LoadContent(bool firstLoad)
@@ -100,11 +64,6 @@ public class aonHelperModule : EverestModule
         base.LoadContent(firstLoad);
 
         aonHelperGFX.LoadContent();
-    }
-    
-    public override void Initialize()
-    {
-        LoadOptionalDependencies();
     }
 
     public override void Unload()
@@ -134,20 +93,6 @@ public class aonHelperModule : EverestModule
         
         #endregion
         
-        HookHelper.DisposeAndSetNull(ref hook_Everest_Register);
-        
-        UnloadOptionalDependencies();
+        aonHelperDependencies.Unload();
     }
-    
-    #region Hooks
-    
-    private static void Everest_Register(Action<EverestModule> orig, EverestModule module)
-    {
-        orig(module);
-
-        if ((bool) Everest__ContentLoaded.GetValue(null)!)
-            LoadOptionalDependencies();
-    }
-    
-    #endregion
 }

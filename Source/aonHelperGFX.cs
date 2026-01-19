@@ -1,7 +1,7 @@
+using Celeste.Mod.aonHelper.Entities;
+using Celeste.Mod.aonHelper.Helpers;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Celeste.Mod.aonHelper;
 
@@ -9,36 +9,64 @@ public static class aonHelperGFX
 {
     private const string LogID = $"{nameof(aonHelper)}/{nameof(aonHelperGFX)}";
     
-    public static int GameplayBufferWidth => GameplayBuffers.Gameplay?.Width ?? 320;
-    public static int GameplayBufferHeight => GameplayBuffers.Gameplay?.Height ?? 180;
-    
     public static SpriteBank SpriteBank { get; private set; }
     
-    private static readonly List<Effect> Effects = [];
-    public static Effect FxQuantizedColorgrade { get; private set; }
+    #region Effects
+
+    private static Effect quantizedColorgradeEffect;
+    public static Effect FxQuantizedColorgrade => quantizedColorgradeEffect;
+    
+    #endregion
+    
+    #region Buffers
+    
+    private static VirtualRenderTarget glassLockBlockBeamsBuffer, glassLockBlockStarsBuffer, glassLockBlockStencilBuffer;
+    
+    #endregion
 
     internal static void LoadContent()
     {
         SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
 
-        Effects.Clear();
-        FxQuantizedColorgrade = LoadEffect("quantized_colorgrade");
+        quantizedColorgradeEffect = EffectHelper.LoadEffect("quantized_colorgrade");
     }
 
     internal static void UnloadContent()
     {
-        Effects.ForEach(e => e?.Dispose());
+        #region Effects
+        
+        EffectHelper.DisposeAndSetNull(ref quantizedColorgradeEffect);
+        
+        #endregion
+        
+        #region Buffers
+        
+        RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockBeamsBuffer);
+        RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStarsBuffer);
+        RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
+        
+        #endregion
     }
-
-    private static Effect LoadEffect(string id)
+    
+    public static void QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out VirtualRenderTarget stencilBuffer)
     {
-        string path = $"Effects/aonHelper/{id}.cso";
-        Logger.Info(LogID, $"Loading effect from {path}...");
+        if (glassLockBlockBeamsBuffer is not { IsDisposed: false }
+            || glassLockBlockStarsBuffer is not { IsDisposed: false }
+            || glassLockBlockStencilBuffer is not { IsDisposed: false })
+        {
+            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockBeamsBuffer);
+            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStarsBuffer);
+            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
 
-        if (!Everest.Content.TryGet(path, out ModAsset effect))
-            Logger.Error(LogID, $"Failed to find effect at {path}!");
+            glassLockBlockBeamsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_beams", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
+            glassLockBlockStarsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stars", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
+            glassLockBlockStencilBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stencil", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
 
-        Effects.Add(new Effect(Engine.Graphics.GraphicsDevice, effect.Data));
-        return Effects.Last();
+            Logger.Info(LogID, "Created new Glass Lock Block buffer triplet.");
+        }
+
+        beamsBuffer = glassLockBlockBeamsBuffer;
+        starsBuffer = glassLockBlockStarsBuffer;
+        stencilBuffer = glassLockBlockStencilBuffer;
     }
 }

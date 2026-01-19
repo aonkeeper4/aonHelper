@@ -26,7 +26,7 @@ public class GlassLockBlock : BaseLockBlock
             if (TryGetFrameIndexFromPath(Sprite.Texture.AtlasPath, frameMetadata.Count, out int index))
                 return frameMetadata[index];
                     
-            throw new Exception("Could not find metadata associated with current frame index, does your sprite match vanilla's format?");
+            throw new KeyNotFoundException("Could not find metadata associated with current frame index, does your sprite match vanilla's format?");
             
             static bool TryGetFrameIndexFromPath(string path, int max, out int index)
             {
@@ -85,7 +85,7 @@ public class GlassLockBlock : BaseLockBlock
                                 return new Rectangle(args[0], args[1], args[2], args[3]);
                             })
                             .ToList()
-            ?? throw new Exception($"Could not find bounds metadata for sprite with ID {SpriteID}!");
+            ?? throw new KeyNotFoundException($"Could not find bounds metadata for sprite with ID {SpriteID}!");
     }
 
     public override void Render()

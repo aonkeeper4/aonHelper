@@ -15,6 +15,7 @@ public class GlassLockBlockController : Entity
 {
     private static readonly string[] EntitySIDs = ["aonHelper/GlassLockBlockController", "MoreLockBlocks/GlassLockBlockController"];
 
+    private const int StarCount = 100;
     private struct Star
     {
         public Vector2 Position;
@@ -22,7 +23,9 @@ public class GlassLockBlockController : Entity
         public Color Color;
         public Vector2 Scroll;
     }
+    private readonly Star[] stars = new Star[StarCount];
 
+    private const int RayCount = 50;
     private struct Ray
     {
         public Vector2 Position;
@@ -30,27 +33,17 @@ public class GlassLockBlockController : Entity
         public float Length;
         public Color Color;
     }
-
-    private const int StarCount = 100;
-    private const int RayCount = 50;
-
-    private readonly Star[] stars = new Star[StarCount];
     private readonly Ray[] rays = new Ray[RayCount];
-
-    private readonly VertexPositionColor[] verts = new VertexPositionColor[2700];
-
     private readonly Vector2 rayNormal = new Vector2(-5f, -8f).SafeNormalize();
 
-    private VirtualRenderTarget beamsTarget;
-    private VirtualRenderTarget starsTarget;
-    private VirtualRenderTarget stencilTarget;
+    private readonly VertexPositionColor[] verts = new VertexPositionColor[2700];
 
     private readonly BlendState overwriteColorBlendState = new()
     {
         ColorSourceBlend = Blend.DestinationAlpha,
         ColorDestinationBlend = Blend.Zero,
         AlphaSourceBlend = Blend.Zero,
-        AlphaDestinationBlend = Blend.One,
+        AlphaDestinationBlend = Blend.One
     };
 
     private bool hasBlocks;
@@ -94,11 +87,9 @@ public class GlassLockBlockController : Entity
 
     public GlassLockBlockController(EntityData data, Vector2 offset)
         : this(data.Position + offset,
-            data.HexColor("bgColor"), data.HexColor("lineColor"), data.HexColor("rayColor"), data.Attr("starColors")
-                                                                                                 .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                                                                                                 .Select(Calc.HexToColor)
-                                                                                                 .ToArray(),
-            data.Bool("wavy"), data.Bool("vanillaEdgeBehavior"),
+            data.HexColor("bgColor", Calc.HexToColor("0d2e89")), data.HexColor("lineColor", Color.White), data.HexColor("rayColor", Color.White),
+            data.Attr("starColors", "7f9fba,9bd1cd,bacae3").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(Calc.HexToColor).ToArray(),
+            data.Bool("wavy", true), data.Bool("vanillaEdgeBehavior", true),
             data.Bool("persistent"))
     { }
 
@@ -134,15 +125,14 @@ public class GlassLockBlockController : Entity
             return;
 
         Camera camera = SceneAs<Level>().Camera;
-        int screenWidth = aonHelperGFX.GameplayBufferWidth;
-        int screenHeight = aonHelperGFX.GameplayBufferHeight;
-
-        starsTarget ??= VirtualContent.CreateRenderTarget("aonHelper/glassLockBlockSurfaces", screenWidth, screenHeight);
-        Engine.Graphics.GraphicsDevice.SetRenderTarget(starsTarget);
-        Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+        int screenWidth = RenderTargetHelper.GameplayWidth;
+        int screenHeight = RenderTargetHelper.GameplayHeight;
         
+        aonHelperGFX.QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out _);
+        
+        Engine.Graphics.GraphicsDevice.SetRenderTarget(starsBuffer);
+        Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
         Vector2 origin = new(8f, 8f);
         for (int i = 0; i < stars.Length; i++)
         {
@@ -162,7 +152,6 @@ public class GlassLockBlockController : Entity
             else if (starActualPosition.Y > screenHeight - origin.Y)
                 starTexture.Draw(starActualPosition - new Vector2(0f, screenHeight), origin, starColor);
         }
-        
         Draw.SpriteBatch.End();
 
         int vertex = 0;
@@ -181,10 +170,8 @@ public class GlassLockBlockController : Entity
                 DrawRay(rayPosition - new Vector2(0f, screenHeight), ref vertex, ref rays[j]);
         }
 
-        beamsTarget ??= VirtualContent.CreateRenderTarget("aonHelper/glassLockBlockBeams", screenWidth, screenHeight);
-        Engine.Graphics.GraphicsDevice.SetRenderTarget(beamsTarget);
+        Engine.Graphics.GraphicsDevice.SetRenderTarget(beamsBuffer);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-        
         GFX.DrawVertices(Matrix.Identity, verts, vertex);
     }
 
@@ -239,8 +226,9 @@ public class GlassLockBlockController : Entity
         if (!hasBlocks)
             return;
 
-        Vector2 position = SceneAs<Level>().Camera.Position;
-        GlassLockBlock[] glassBlocks = GetGlassBlocksToAffect().ToArray();
+        Vector2 cameraPos = SceneAs<Level>().Camera.Position;
+        GlassLockBlock[] glassBlocks = GetGlassBlocksToAffect();
+        aonHelperGFX.QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out _);
 
         foreach (GlassLockBlock block in glassBlocks)
         {
@@ -250,57 +238,27 @@ public class GlassLockBlockController : Entity
             Draw.Rect(block.Center.X + rb.Left, block.Center.Y + rb.Top, rb.Width, rb.Height, BgColor);
         }
 
-        if (starsTarget is not null && !starsTarget.IsDisposed)
-            foreach (GlassLockBlock block in glassBlocks)
-            {
-                if (block.RenderBounds is not { } rb)
-                    continue;
-                
-                Rectangle clipTarget = new((int)(block.Center.X + rb.Left - position.X), (int)(block.Center.Y + rb.Top - position.Y), rb.Width, rb.Height);
-                Draw.SpriteBatch.Draw(starsTarget, block.Center + rb.TopLeft(), clipTarget, Color.White);
-            }
+        foreach (GlassLockBlock block in glassBlocks)
+        {
+            if (block.RenderBounds is not { } rb)
+                continue;
+            
+            Rectangle clipTarget = new((int)(block.Center.X + rb.Left - cameraPos.X), (int)(block.Center.Y + rb.Top - cameraPos.Y), rb.Width, rb.Height);
+            Draw.SpriteBatch.Draw(starsBuffer, block.Center + rb.TopLeft(), clipTarget, Color.White);
+        }
 
-        if (beamsTarget is not null && !beamsTarget.IsDisposed)
-            foreach (GlassLockBlock block in glassBlocks)
-            {
-                if (block.RenderBounds is not { } rb)
-                    continue;
-                
-                Rectangle clipTarget = new((int)(block.Center.X + rb.Left - position.X), (int)(block.Center.Y + rb.Top - position.Y), rb.Width, rb.Height);
-                Draw.SpriteBatch.Draw(beamsTarget, block.Center + rb.TopLeft(), clipTarget, Color.White);
-            }
+        foreach (GlassLockBlock block in glassBlocks)
+        {
+            if (block.RenderBounds is not { } rb)
+                continue;
+            
+            Rectangle clipTarget = new((int)(block.Center.X + rb.Left - cameraPos.X), (int)(block.Center.Y + rb.Top - cameraPos.Y), rb.Width, rb.Height);
+            Draw.SpriteBatch.Draw(beamsBuffer, block.Center + rb.TopLeft(), clipTarget, Color.White);
+        }
     }
 
     protected virtual GlassLockBlock[] GetGlassBlocksToAffect()
         => Scene.Tracker.GetEntities<GlassLockBlock>().OfType<GlassLockBlock>().ToArray();
-
-    public override void Removed(Scene scene)
-    {
-        Dispose();
-        
-        base.Removed(scene);
-    }
-
-    public override void SceneEnd(Scene scene)
-    {
-        Dispose();
-        
-        base.SceneEnd(scene);
-    }
-
-    private void Dispose()
-    {
-        if (starsTarget is { IsDisposed: false })
-            starsTarget.Dispose();
-        if (beamsTarget is { IsDisposed: false })
-            beamsTarget.Dispose();
-        if (stencilTarget is { IsDisposed: false })
-            stencilTarget.Dispose();
-        
-        starsTarget = null;
-        beamsTarget = null;
-        stencilTarget = null;
-    }
 
     private static float Mod(float x, float m)
         => (x % m + m) % m;
@@ -308,7 +266,8 @@ public class GlassLockBlockController : Entity
     private void OnDisplacementRender()
     {
         Camera camera = SceneAs<Level>().Camera;
-        IEnumerable<GlassLockBlock> blocks = GetGlassBlocksToAffect();
+        GlassLockBlock[] blocks = GetGlassBlocksToAffect();
+        aonHelperGFX.QueryGlassLockBlockBuffers(out _, out _, out VirtualRenderTarget stencilBuffer);
 
         foreach (GlassLockBlock block in blocks)
         {
@@ -322,30 +281,25 @@ public class GlassLockBlockController : Entity
         }
         
         Draw.SpriteBatch.End();
-
-        stencilTarget ??= VirtualContent.CreateRenderTarget("aonHelper/glassLockBlockDisplacementOverride", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
-        Engine.Graphics.GraphicsDevice.SetRenderTarget(stencilTarget);
-        Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
-
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, camera.Matrix);
         
+        Engine.Graphics.GraphicsDevice.SetRenderTarget(stencilBuffer);
+        Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, camera.Matrix);
         foreach (GlassLockBlock block in blocks)
             block.Sprite.Texture.DrawCentered(block.Center);
-        
         Draw.SpriteBatch.End();
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, overwriteColorBlendState, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, camera.Matrix);
         
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, overwriteColorBlendState, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, camera.Matrix);
         foreach (GlassLockBlock block in blocks)
         {
             MTexture tex = block.Sprite.Texture;
             Draw.Rect(block.Center.X - tex.Width / 2, block.Center.Y - tex.Height / 2, tex.Width, tex.Height, new Color(0.5f, 0.5f, 0f, 1f));
         }
-        
         Draw.SpriteBatch.End();
 
         Engine.Graphics.GraphicsDevice.SetRenderTarget(GameplayBuffers.Displacement);
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Matrix.Identity);
-        Draw.SpriteBatch.Draw(stencilTarget, Vector2.Zero, Color.White);
+        Draw.SpriteBatch.Draw(stencilBuffer, Vector2.Zero, Color.White);
         Draw.SpriteBatch.End();
 
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, camera.Matrix);
@@ -353,22 +307,22 @@ public class GlassLockBlockController : Entity
 
     #region Hooks
 
-    public static void Load()
+    internal static void Load()
     {
-        On.Celeste.Level.LoadLevel += Level_LoadLevel;
+        Everest.Events.Level.OnLoadLevel += OnLoadLevel;
     }
 
-    public static void Unload()
+    internal static void Unload()
     {
-        On.Celeste.Level.LoadLevel -= Level_LoadLevel;
+        Everest.Events.Level.OnLoadLevel += OnLoadLevel;
     }
 
-    private static void Level_LoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader)
+    private static void OnLoadLevel(Level level, Player.IntroTypes playerIntro, bool isFromLoader)
     {
-        if (self.Session.LevelData is { } levelData
+        if (level.Session.LevelData is { } levelData
             && levelData.Entities.All(entity => !EntitySIDs.Contains(entity.Name)))
         {
-            self.Add(aonHelperModule.Session.GlassLockBlockCurrentSettings is {} currentSettings
+            level.Add(aonHelperModule.Session.GlassLockBlockCurrentSettings is {} currentSettings
                 ? new GlassLockBlockController(
                     Vector2.Zero,
                     currentSettings.BgColor, currentSettings.LineColor, currentSettings.RayColor, currentSettings.StarColors,
@@ -380,8 +334,6 @@ public class GlassLockBlockController : Entity
                     true, true,
                     false));
         }
-
-        orig(self, playerIntro, isFromLoader);
     }
 
     #endregion
