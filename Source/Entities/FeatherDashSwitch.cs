@@ -1,5 +1,6 @@
 using Celeste.Mod.aonHelper.Helpers;
 using Celeste.Mod.Entities;
+using Celeste.Mod.Helpers;
 using Monocle;
 using Microsoft.Xna.Framework;
 using System;
@@ -34,6 +35,8 @@ public class FeatherDashSwitch : DashSwitch
         string spriteDir, Color particleColor1, Color particleColor2)
         : base(position, side, persistent, allGates, id, "default")
     {
+        OnDashCollide = OnDashed;
+        
         this.dashActivated = dashActivated;
         this.holdableActivated = holdableActivated;
         this.featherActivated = featherActivated;
@@ -54,8 +57,6 @@ public class FeatherDashSwitch : DashSwitch
         sprite.Rotation = spriteRot;
         sprite.Play("idle");
         Add(sprite);
-        
-        OnDashCollide = OnDashed;
         
         P_PressA = new ParticleType
         {
@@ -222,13 +223,9 @@ public class FeatherDashSwitch : DashSwitch
         OnDashCollide(player, direction);
     }
 
-    private new DashCollisionResults OnDashed(Player player, Vector2 direction)
-    {
-        if (dashActivated)
-            Press(player, direction);
-        
-        return DashCollisionResults.NormalCollision;
-    }
+    // ensure only our code can activate feather dash switches
+    private static new DashCollisionResults OnDashed(Player player, Vector2 dir)
+        => DashCollisionResults.NormalCollision;
     
     #region Hooks
     
@@ -263,6 +260,7 @@ public class FeatherDashSwitch : DashSwitch
     }
 
     // ensure only our code can activate feather dash switches
+    // not sure if anyone actually calls this? but better to be safe than sorry
     private static DashCollisionResults DashSwitch_OnDashed(On.Celeste.DashSwitch.orig_OnDashed orig, DashSwitch self, Player player, Vector2 direction)
         => self is FeatherDashSwitch ? DashCollisionResults.NormalCollision : orig(self, player, direction);
     
@@ -289,20 +287,55 @@ public class FeatherDashSwitch : DashSwitch
     {
         ILCursor cursor = new(il);
         
-        if (!cursor.TryGotoNext(MoveType.Before,
-                instr => instr.MatchLdarg0(),
-                instr => instr.MatchLdfld<Player>("starFlyTimer")))
-            throw new HookHelper.HookException(il, "Unable to find reference to `Player.starFlyTimer`.");
+        /*
+         * IL_0007: ldarg.0
+         * IL_0008: ldfld class Monocle.StateMachine Celeste.Player::StateMachine
+         * IL_000d: callvirt instance int32 Monocle.StateMachine::get_State()
+         * IL_0012: ldc.i4.s 19
+         * IL_0014: bne.un.s IL_0062
+         */
+        if (!cursor.TryGotoNextBestFit(MoveType.After,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Player>("StateMachine"),
+            instr => instr.MatchCallvirt<StateMachine>("get_State"),
+            instr => instr.MatchLdcI4(Player.StStarFly),
+            instr => instr.MatchBneUn(out _)))
+            throw new HookHelper.HookException(il, "Unable to find check for `Player.StateMachine.State` to insert feather dash switch press after.");
 
         cursor.EmitLdarg0();
         cursor.EmitLdarg1();
         cursor.EmitDelegate(PressFeatherDashSwitchOnFeather);
-    }
+        
+        /*
+         * IL_00c5: ldarg.1
+         * IL_00c6: ldfld valuetype [FNA]Microsoft.Xna.Framework.Vector2 Celeste.CollisionData::Direction
+         * IL_00cb: callvirt instance valuetype Celeste.DashCollisionResults Celeste.DashCollision::Invoke(class Celeste.Player, valuetype [FNA]Microsoft.Xna.Framework.Vector2)
+         * IL_00d0: stloc.0
+         */
+        if (!cursor.TryGotoNextBestFit(MoveType.After,
+            instr => instr.MatchLdarg1(),
+            instr => instr.MatchLdfld<CollisionData>("Direction"),
+            instr => instr.MatchCallvirt<DashCollision>("Invoke"),
+            instr => instr.MatchStloc0()))
+            throw new HookHelper.HookException(il, "Unable to find call to `DashCollision.Invoke` to insert feather dash switch press after.");
 
-    private static void PressFeatherDashSwitchOnFeather(Player player, CollisionData data)
-    {
-        if (data.Hit is FeatherDashSwitch { featherActivated: true } featherDashSwitch)
-            featherDashSwitch.Press(player, data.Direction);
+        cursor.EmitLdarg0();
+        cursor.EmitLdarg1();
+        cursor.EmitDelegate(PressFeatherDashSwitchOnDash);
+
+        return;
+        
+        static void PressFeatherDashSwitchOnFeather(Player player, CollisionData data)
+        {
+            if (data.Hit is FeatherDashSwitch { featherActivated: true } featherDashSwitch)
+                featherDashSwitch.Press(player, data.Direction);
+        }
+        
+        static void PressFeatherDashSwitchOnDash(Player player, CollisionData data)
+        {
+            if (data.Hit is FeatherDashSwitch { dashActivated: true } featherDashSwitch)
+                featherDashSwitch.Press(player, data.Direction);
+        }
     }
     
     #endregion

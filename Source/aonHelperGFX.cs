@@ -28,7 +28,11 @@ public static class aonHelperGFX
     {
         SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
 
+        #region Effects
+        
         quantizedColorgradeEffect = EffectHelper.LoadEffect("quantized_colorgrade");
+        
+        #endregion
     }
 
     internal static void UnloadContent()

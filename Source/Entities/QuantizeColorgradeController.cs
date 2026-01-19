@@ -69,9 +69,7 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
 
         void GotoNextSetCurrentTechnique()
         {
-            /*
-             * IL_0089: callvirt instance void [FNA]Microsoft.Xna.Framework.Graphics.Effect::set_CurrentTechnique(...)
-             */
+            // IL_0089: callvirt instance void [FNA]Microsoft.Xna.Framework.Graphics.Effect::set_CurrentTechnique(...)
             if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Effect>("set_CurrentTechnique")))
                 throw new HookHelper.HookException(il, "Unable to find effect technique assignment to insert custom parameter logic after.");
         }

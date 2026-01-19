@@ -12,7 +12,7 @@ public static class EffectHelper
     
     public static Effect LoadEffect(string id)
     {
-        string path = $"aonHelper:Effects/aonHelper/{id}.cso";
+        string path = $"aonHelper:/Effects/aonHelper/{id}.cso";
 
         if (Everest.Content.TryGet(path, out ModAsset effect))
             return new Effect(Engine.Graphics.GraphicsDevice, effect.Data);
