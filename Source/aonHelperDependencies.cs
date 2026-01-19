@@ -46,18 +46,14 @@ public static class aonHelperDependencies
     internal static void Load()
     {
         foreach ((EverestModuleMetadata metadata, DependencyHandler handler) in DependencyHandlers)
-        {
             if (!handler.IsLoaded() && Everest.Loader.DependencyLoaded(metadata))
                 handler.Load();
-        }
     }
     
     internal static void Unload()
     {
         foreach (DependencyHandler handler in DependencyHandlers.Values)
-        {
             if (handler.IsLoaded())
                 handler.Unload();
-        }
     }
 }
