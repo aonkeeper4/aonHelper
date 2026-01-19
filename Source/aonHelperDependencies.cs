@@ -57,7 +57,7 @@ public static class aonHelperDependencies
     {
         foreach (DependencyHandler handler in DependencyHandlers.Values)
         {
-            if (!handler.IsLoaded())
+            if (handler.IsLoaded())
                 handler.Unload();
         }
     }
