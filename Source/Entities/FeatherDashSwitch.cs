@@ -306,6 +306,7 @@ public class FeatherDashSwitch : DashSwitch
         cursor.EmitLdarg1();
         cursor.EmitDelegate(PressFeatherDashSwitchOnFeather);
         
+        // we don't use `OnDashCollide` because other places call that :disappointed_relieved: so we hook where it would be called instead :fire:
         /*
          * IL_00c5: ldarg.1
          * IL_00c6: ldfld valuetype [FNA]Microsoft.Xna.Framework.Vector2 Celeste.CollisionData::Direction
