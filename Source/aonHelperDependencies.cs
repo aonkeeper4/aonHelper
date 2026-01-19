@@ -37,7 +37,6 @@ public static class aonHelperDependencies
         public readonly Action Load = load;
         public readonly Action Unload = unload;
     }
-
     private static readonly Dictionary<EverestModuleMetadata, DependencyHandler> DependencyHandlers = new()
     {
         { DzhakeHelper, new DependencyHandler(() => DzhakeHelperLoaded, LoadDzhakeHelper, UnloadDzhakeHelper) },

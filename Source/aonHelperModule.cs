@@ -20,12 +20,8 @@ public class aonHelperModule : EverestModule
     public aonHelperModule()
     {
         Instance = this;
-        
-#if DEBUG
-        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Verbose);
-#else
+       
         Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
-#endif
     }
 
     public override void Load()
@@ -34,6 +30,8 @@ public class aonHelperModule : EverestModule
         
         aonHelperImports.Initialize();
         aonHelperExports.Initialize();
+        
+        #region Entities
         
         ResizableHeart.Load();
         FeatherDashSwitch.Load();
@@ -51,6 +49,8 @@ public class aonHelperModule : EverestModule
         DreamDashThroughTransitionController.Load();
         GlassLockBlockController.Load();
         DreamLockBlock.DreamBlockDummy.Load();
+        
+        #endregion
         
         #region Legacy
         
@@ -70,6 +70,8 @@ public class aonHelperModule : EverestModule
     {
         aonHelperGFX.UnloadContent();
         
+        #region Entities
+        
         ResizableHeart.Unload();
         FeatherDashSwitch.Unload();
         ReboundModifyController.Unload();
@@ -86,6 +88,8 @@ public class aonHelperModule : EverestModule
         DreamDashThroughTransitionController.Unload();
         GlassLockBlockController.Unload();
         DreamLockBlock.DreamBlockDummy.Unload();
+        
+        #endregion
         
         #region Legacy
         
