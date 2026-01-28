@@ -32,7 +32,7 @@ public class FeatherDashSwitch : DashSwitch
         bool dashActivated, bool holdableActivated, bool featherActivated,
         RefillBehavior refillBehavior, string flagOnPress,
         bool persistent, bool allGates,
-        string spriteDir, Color particleColor1, Color particleColor2)
+        string spritePath, Color particleColor1, Color particleColor2)
         : base(position, side, persistent, allGates, id, "default")
     {
         OnDashCollide = OnDashed;
@@ -50,9 +50,9 @@ public class FeatherDashSwitch : DashSwitch
         sprite.Stop();
         Remove(sprite);
         
-        sprite = string.IsNullOrEmpty(spriteDir)
+        sprite = string.IsNullOrEmpty(spritePath)
             ? aonHelperGFX.SpriteBank.Create("aonHelper_featherDashSwitch")
-            : BuildSprite(spriteDir);
+            : BuildSprite(spritePath);
         sprite.Position = spritePos;
         sprite.Rotation = spriteRot;
         sprite.Play("idle");
@@ -88,9 +88,9 @@ public class FeatherDashSwitch : DashSwitch
             data.Attr("spriteDir"), data.HexColor("particleColor1", Calc.HexToColor("ff8000")), data.HexColor("particleColor2", Calc.HexToColor("ffd65c")))
     { }
 
-    private static Sprite BuildSprite(string spriteDir)
+    private static Sprite BuildSprite(string spritePath)
     {
-        Sprite sprite = new(GFX.Game, spriteDir);
+        Sprite sprite = new(GFX.Game, spritePath);
             
         // <Loop id="idle" path="" delay="0.08" frames="0-20"/>
         sprite.AddLoop("idle", "", 0.08f, Enumerable.Range(0, 21).ToArray());

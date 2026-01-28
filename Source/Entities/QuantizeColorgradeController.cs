@@ -13,17 +13,28 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/QuantizeColorgradeController")]
 [Tracked]
-public class QuantizeColorgradeController(Vector2 position, string affectedColorgrades) : Entity(position)
+public class QuantizeColorgradeController(Vector2 position, string affectedColorgrades, QuantizeColorgradeController.Modes mode) : Entity(position)
 {
     private readonly string[] affectedColorgrades = affectedColorgrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     private readonly bool affectAll = affectedColorgrades.Contains('*');
+
+    public enum Modes
+    {
+        Quantize,
+        Normalize,
+        Both
+    }
+    private readonly Modes mode = mode;
     
     public QuantizeColorgradeController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Attr("affectedColorgrades", "*"))
+        : this(data.Position + offset, data.Attr("affectedColorgrades", "*"), data.Enum("mode", Modes.Quantize))
     { }
 
-    private bool ColorgradeAffected(MTexture colorgrade)
-        => affectAll || affectedColorgrades.Contains(colorgrade.AtlasPath);
+    private static Modes? ModeFor(MTexture colorgrade)
+        => (Engine.Scene as Level)?.Tracker.GetEntities<QuantizeColorgradeController>()
+                                           .Cast<QuantizeColorgradeController>()
+                                           .FirstOrDefault(c => c.affectAll || c.affectedColorgrades.Contains(colorgrade.AtlasPath))?
+                                           .mode;
     
     #region Hooks
 
@@ -76,12 +87,13 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
         
         static void SetCustomParameters(MTexture from, MTexture to)
         {
-            if (Engine.Scene is not Level level
-                || level.Tracker.GetEntity<QuantizeColorgradeController>() is not { } controller)
-                return;
+            Modes? fromMode = ModeFor(from);
+            Modes? toMode = ModeFor(to);
             
-            ColorGrade.Effect.Parameters["from_quantization"]?.SetValue(controller.ColorgradeAffected(from) ? 1f : 0f);
-            ColorGrade.Effect.Parameters["to_quantization"]?.SetValue(controller.ColorgradeAffected(to) ? 1f : 0f);
+            ColorGrade.Effect.Parameters["from_quantization"]?.SetValue(fromMode is Modes.Quantize or Modes.Both ? 1f : 0f);
+            ColorGrade.Effect.Parameters["to_quantization"]?.SetValue(toMode is Modes.Quantize or Modes.Both ? 1f : 0f);
+            ColorGrade.Effect.Parameters["from_normalization"]?.SetValue(fromMode is Modes.Normalize or Modes.Both ? 1f : 0f);
+            ColorGrade.Effect.Parameters["to_normalization"]?.SetValue(toMode is Modes.Normalize or Modes.Both ? 1f : 0f);
         }
     }
 
@@ -89,8 +101,7 @@ public class QuantizeColorgradeController(Vector2 position, string affectedColor
     {
         if (Engine.Scene is not Level level
             || level.Tracker.GetEntity<QuantizeColorgradeController>() is null
-            || aonHelperGFX.FxQuantizedColorgrade is null
-            || aonHelperGFX.FxQuantizedColorgrade.IsDisposed)
+            || aonHelperGFX.FxQuantizedColorgrade is not { IsDisposed: false })
             return orig();
 
         return aonHelperGFX.FxQuantizedColorgrade;

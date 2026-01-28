@@ -1,8 +1,15 @@
+local drawableSprite = require("structs.drawable_sprite")
+local utils = require("utils")
+
 local clampLightColorController = {}
 
 local clampMethods = {
-    "Clamp",
-    "Tint"
+    clamp = 0,
+    tint = 1
+}
+local clampMethodsOptions = {
+    ["Clamp"] = clampMethods.clamp,
+    ["Tint"] = clampMethods.tint
 }
 
 clampLightColorController.name = "aonHelper/ClampLightColorController"
@@ -12,22 +19,48 @@ clampLightColorController.placements = {
         name = "clampLightColorController",
         data = {
             color = "ffffff",
-            clampMethod = "Clamp"
+            clampMethod = clampMethods.clamp
         }
     }
+}
+
+clampLightColorController.fieldOrder = {
+    "x", "y",
+    "color", "clampMethod"
 }
 clampLightColorController.fieldInformation = {
     color = {
         fieldType = "color"
     },
     clampMethod = {
-        options = clampMethods,
+        options = clampMethodsOptions,
         editable = false
     }
 }
 
-clampLightColorController.texture = function(room, entity)
-    return "objects/aonHelper/clampLightColorController/" .. string.lower(entity.clampMethod or "clamp")
+local controllerSprites = {
+    [clampMethods.clamp] = "objects/aonHelper/clampLightColorController/clamp",
+    ["Clamp"] = "objects/aonHelper/clampLightColorController/clamp",
+    [clampMethods.tint] = "objects/aonHelper/clampLightColorController/tint",
+    ["Tint"] = "objects/aonHelper/clampLightColorController/tint",
+}
+
+function clampLightColorController.sprite(room, entity)
+    local clampMethod = entity.clampMethod or clampMethods.clamp
+    local spritePath = controllerSprites[clampMethod]
+    local clampColor = utils.getColor(entity.color or { 1.0, 1.0, 1.0, 1.0 })
+    
+    local baseSprite = drawableSprite.fromTexture(spritePath .. "00", entity)
+    baseSprite:setColor({ 1.0, 1.0, 1.0, 1.0 })
+    local overlaySprite = drawableSprite.fromTexture(spritePath .. "01", entity)
+    overlaySprite:setColor(clampColor)
+    
+    return { baseSprite, overlaySprite }
+end
+
+function clampLightColorController.selection(room, entity)
+    local x, y = entity.x or 0, entity.y or 0
+    return utils.rectangle(x - 12, y - 12, 24, 24)
 end
 
 return clampLightColorController

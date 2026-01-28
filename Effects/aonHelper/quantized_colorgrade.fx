@@ -1,10 +1,8 @@
-// i have verified that this has the exact same behaviour as the vanilla shader when both `from_quantization` and `to_quantization` are 0
+// i have verified that this has the exact same behaviour as the vanilla shader when all custom parameters are 0
 
 texture tex : register(t0);
 sampler tex_sampler : register(s0);
 
-// specifying `Clamp` here is necessary cus the vanilla shader is stupid and samples past [0, 1] for the green channel whilst using `SamplerState.LinearWrap`
-// this results from not scaling the green component in the same way as the red component, which also applies a bit of gain to the green channel when sampling :catplush:
 texture grade_from : register(t1);
 sampler grade_from_sampler : register(s1)
 {
@@ -20,6 +18,10 @@ sampler grade_to_sampler : register(s2)
 
 uniform float from_quantization = 0.0;
 uniform float to_quantization = 0.0;
+
+uniform float from_normalization = 0.0;
+uniform float to_normalization = 0.0;
+
 uniform float percent = 0.0;
 
 static const float2 dimensions = float2(256.0, 16.0);
@@ -27,12 +29,13 @@ static const float2 dimensions = float2(256.0, 16.0);
 // used when fading between 2 colorgrades
 float4 pixel_shader_fade(float4 position : SV_POSITION, float4 color : COLOR, float2 uv : TEXCOORD) : COLOR
 {
-    float4 quantization_percent = lerp(from_quantization, to_quantization, percent);
+    float quantization_percent = lerp(from_quantization, to_quantization, percent);
+    float normalization_percent = lerp(from_normalization, to_normalization, percent);
 
     float4 tex_color = tex2D(tex_sampler, uv) * color;
 
     float offset_r = tex_color.r / dimensions.x * (dimensions.y - 1.0);
-    float offset_g = tex_color.g;
+    float offset_g = lerp(tex_color.g, tex_color.g / dimensions.y * (dimensions.y - 1.0), normalization_percent);
     float b_slice_0 = min(floor(tex_color.b * dimensions.y), dimensions.y - 1.0);
     float b_slice_1 = min(b_slice_0 + 1.0, dimensions.y - 1.0);
 
@@ -59,7 +62,7 @@ float4 pixel_shader_single(float4 position : SV_POSITION, float4 color : COLOR, 
     float4 tex_color = tex2D(tex_sampler, uv) * color;
 
     float offset_r = tex_color.r / dimensions.x * (dimensions.y - 1.0);
-    float offset_g = tex_color.g;
+    float offset_g = lerp(tex_color.g, tex_color.g / dimensions.y * (dimensions.y - 1.0), from_normalization);
     float b_slice_0 = min(floor(tex_color.b * dimensions.y), dimensions.y - 1.0);
     float b_slice_1 = min(b_slice_0 + 1.0, dimensions.y - 1.0);
 

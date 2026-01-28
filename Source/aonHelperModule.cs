@@ -21,7 +21,7 @@ public class aonHelperModule : EverestModule
     {
         Instance = this;
        
-        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
+        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Debug);
     }
 
     public override void Load()
@@ -49,12 +49,13 @@ public class aonHelperModule : EverestModule
         DreamDashThroughTransitionController.Load();
         GlassLockBlockController.Load();
         DreamLockBlock.DreamBlockDummy.Load();
-        
-        #endregion
+        LightOcclusionFixController.Load();
         
         #region Legacy
         
         LegacyFeatherDashSwitch.Load();
+        
+        #endregion
         
         #endregion
     }
@@ -88,12 +89,13 @@ public class aonHelperModule : EverestModule
         DreamDashThroughTransitionController.Unload();
         GlassLockBlockController.Unload();
         DreamLockBlock.DreamBlockDummy.Unload();
-        
-        #endregion
+        LightOcclusionFixController.Unload();
         
         #region Legacy
         
         LegacyFeatherDashSwitch.Unload();
+        
+        #endregion
         
         #endregion
         

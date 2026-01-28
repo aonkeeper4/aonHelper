@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
@@ -11,6 +12,7 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     private readonly int width = data.Width, height = data.Height;
     
     private readonly string spriteID = data.Attr("path");
+    private readonly string spritePath = data.Attr("spritePath");
     private Sprite spriteOutline;
     private Color color = data.HexColor("color", Calc.HexToColor("00a81f"));
     private readonly bool disableGhost = data.Bool("disableGhost");
@@ -32,14 +34,9 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
         IsGhost = !IsFake && !fake && SaveData.Instance.Areas_Safe[area.ID].Modes[(int)area.Mode].HeartGem;
         
         Remove(sprite);
+        
         if (!string.IsNullOrEmpty(spriteID))
         {
-            sprite = GFX.SpriteBank.Create(spriteID);
-            
-            sprite.Play("spin");
-            if (IsGhost && !disableGhost)
-                sprite.Color = Color.White * 0.8f;
-            
             switch (spriteID)
             {
                 case "heartgem0":
@@ -66,6 +63,51 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
                     shineParticle = new ParticleType(P_BlueShine) { Color = color };
                     break;
             }
+            
+            if (IsGhost && !disableGhost)
+            {
+                sprite = GFX.SpriteBank.Create("heartGemGhost");
+                sprite.Color = Color.White * 0.8f;
+            }
+            else 
+                sprite = GFX.SpriteBank.Create(spriteID);
+        }
+        else if (!string.IsNullOrEmpty(spritePath))
+        {
+            switch (spritePath)
+            {
+                case "collectables/heartGem/0/":
+                    color = Color.Aqua;
+                    shineParticle = P_BlueShine;
+                    break;
+                
+                case "collectables/heartGem/1/":
+                    color = Color.Red;
+                    shineParticle = P_RedShine;
+                    break;
+                
+                case "collectables/heartGem/2/":
+                    color = Color.Gold;
+                    shineParticle = P_GoldShine;
+                    break;
+                
+                case "collectables/heartGem/3/":
+                    color = Calc.HexToColor("dad8cc");
+                    shineParticle = P_FakeShine;
+                    break;
+                
+                default:
+                    shineParticle = new ParticleType(P_BlueShine) { Color = color };
+                    break;
+            }
+            
+            if (IsGhost && !disableGhost)
+            {
+                sprite = GFX.SpriteBank.Create("heartGemGhost");
+                sprite.Color = Color.White * 0.8f;
+            }
+            else 
+                sprite = BuildSprite(spritePath);
         }
         else
         {
@@ -74,6 +116,7 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
             sprite.Color = IsGhost && !fake && !disableGhost ? Color.Lerp(color, Color.White, 0.8f) * 0.8f : color;
             shineParticle = new ParticleType(P_BlueShine) { Color = color };
         }
+        
         sprite.OnLoop = anim =>
         {
             if (!Visible || anim != "spin" || !autoPulse)
@@ -84,15 +127,36 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
             ScaleWiggler.Start();
             level.Displacement.AddBurst(Position, 0.35f, 8f, 48f, 0.25f);
         };
-        Add(sprite);
-        if (spriteOutline is not null)
-            Add(spriteOutline);
         
+        sprite.Play("spin");
+        Add(sprite);
+        
+        if (spriteOutline is not null)
+        {
+            spriteOutline.Play("spin");
+            Add(spriteOutline);
+        }
+
         Remove(ScaleWiggler);
         ScaleWiggler = Wiggler.Create(0.5f, 4f, f => sprite.Scale = Vector2.One * (1f + f * 0.25f));
         Add(ScaleWiggler);
         
         light.Color = Color.Lerp(color, Color.White, 0.5f);
+    }
+
+    private static Sprite BuildSprite(string spritePath)
+    {
+        Sprite sprite = new(GFX.Game, spritePath);
+        
+        // <Loop id="idle" path="" frames="0" />
+        sprite.AddLoop("idle", "", 0f, 0);
+        // <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
+        sprite.AddLoop("spin", "", 0.1f, Enumerable.Repeat(0, 10).Concat(Enumerable.Range(1, 13)).ToArray());
+        // <Loop id="fastspin" path="" delay="0.1"/>
+        sprite.AddLoop("fastspin", "", 0.1f);
+
+        sprite.CenterOrigin();
+        return sprite;
     }
 
     public override void Update()

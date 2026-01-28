@@ -6,18 +6,21 @@ entities.aonHelper/ResizableHeart.placements.name.blue=Resizable Heart (Blue)
 entities.aonHelper/ResizableHeart.placements.name.red=Resizable Heart (Red)
 entities.aonHelper/ResizableHeart.placements.name.gold=Resizable Heart (Gold)
 entities.aonHelper/ResizableHeart.placements.name.white=Resizable Heart (White)
+entities.aonHelper/ResizableHeart.attributes.description.color=Color of the Resizable Heart for when no custom sprite is selected. If a custom (non-vanilla) sprite is selected, this sets the color of the Resizable Heart's particles.
+entities.aonHelper/ResizableHeart.attributes.description.spritePath=A path to custom sprites to use for this Resizable Heart, relative to Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nLeave empty to use the template sprites.
+entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the Resizable Heart will respawn. Only has an effect if "Is Fake" is enabled.
+entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the Resizable Heart acts like a Fake Heart.
+entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this Resizable Heart if it has already been collected.
+# Legacy Attributes
 entities.aonHelper/ResizableHeart.attributes.name.path=Sprite ID
-entities.aonHelper/ResizableHeart.attributes.description.color=Color of the heart for when no path is selected. If a custom (non-vanilla) path is selected, this sets the color of the heart's particles.
-entities.aonHelper/ResizableHeart.attributes.description.path=Sprite ID of the heart. Leave empty to use the template heart.\nCustom sprites can be used (by adding to the vanilla Sprites.xml) if they include the required animations. See "heartgem0" in the vanilla Sprites.xml for an example.
-entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the heart will respawn. Only works if Is Fake is on.
-entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the heart acts like a Fake Heart.
-entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this heart if it has already been collected.
+entities.aonHelper/ResizableHeart.attributes.description.path=Sprite ID of the heart. Leave empty to use the template sprites.\nCustom sprites can be used (by adding to the vanilla Sprites.xml) if they include the required animations. See "heartgem0" in the vanilla Sprites.xml for an example.
 
 # Feather Dash Switch
 entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchDown=Feather Dash Switch (Down)
 entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchUp=Feather Dash Switch (Up)
 entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchLeft=Feather Dash Switch (Left)
 entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchRight=Feather Dash Switch (Right)
+entities.aonHelper/FeatherDashSwitchV2.attributes.name.spriteDir=Sprite Path
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.side=The orientation of the dash switch.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.holdableActivated=Whether this Feather Dash Switch should activate when a holdable is thrown into it.
@@ -29,7 +32,7 @@ entities.aonHelper/FeatherDashSwitchV2.attributes.description.allGates=Whether t
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.spriteDir=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The primary color of particles emitted when this Feather Dash Switch is activated.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
-# Legacy
+# Legacy Placements
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchDown=[LEGACY] Feather Dash Switch (Down)
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchUp=[LEGACY] Feather Dash Switch (Up)
 entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchLeft=[LEGACY] Feather Dash Switch (Left)
@@ -52,10 +55,10 @@ entities.aonHelper/ReboundModifyController.attributes.name.leftRightXMode=Left-R
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightYMode=Left-Right Collision Y Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXModifier=Left-Right Collision X Modifier
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightYModifier=Left-Right Collision Y Modifier
-entities.aonHelper/ReboundModifyController.attributes.name.topXMode=Top Collision X Mode
-entities.aonHelper/ReboundModifyController.attributes.name.topYMode=Top Collision Y Mode
-entities.aonHelper/ReboundModifyController.attributes.name.topXModifier=Top Collision X Modifier
-entities.aonHelper/ReboundModifyController.attributes.name.topYModifier=Top Collision Y Modifier
+entities.aonHelper/ReboundModifyController.attributes.name.topXMode=Top-Bottom Collision X Mode
+entities.aonHelper/ReboundModifyController.attributes.name.topYMode=Top-Bottom Collision Y Mode
+entities.aonHelper/ReboundModifyController.attributes.name.topXModifier=Top-Bottom Collision X Modifier
+entities.aonHelper/ReboundModifyController.attributes.name.topYModifier=Top-Bottom Collision Y Modifier
 entities.aonHelper/ReboundModifyController.attributes.description.leftRightXMode=Whether to interpret the Left-Right Collision X Modifier as a multiplier to the player's current X speed or as a value to set its X speed to. Affects rebounds on the left or right of entities only.
 entities.aonHelper/ReboundModifyController.attributes.description.leftRightYMode=Whether to interpret the Left-Right Collision Y Modifier as a multiplier to the player's current Y speed or as a value to set its Y speed to. Affects rebounds on the left or right of entities only.
 entities.aonHelper/ReboundModifyController.attributes.description.leftRightXModifier=Either a multiplier to the player's current X speed or a value to set it to, depending on the Left-Right Collision X Mode.
@@ -85,7 +88,8 @@ entities.aonHelper/UnforgivingSpikesUp.placements.name.up_outline=Unforgiving Sp
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_cliffside=Unforgiving Spikes (Up, Cliffside)
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_reflection=Unforgiving Spikes (Up, Reflection)
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_tentacles=Unforgiving Spikes (Up, Tentacles)
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=Determines the visual appearance of the spike.
+entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
 entities.aonHelper/UnforgivingSpikesUp.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
 entities.aonHelper/UnforgivingSpikesUp.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 # Right
@@ -94,7 +98,8 @@ entities.aonHelper/UnforgivingSpikesRight.placements.name.right_outline=Unforgiv
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_cliffside=Unforgiving Spikes (Right, Cliffside)
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_reflection=Unforgiving Spikes (Right, Reflection)
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_tentacles=Unforgiving Spikes (Right, Tentacles)
-entities.aonHelper/UnforgivingSpikesRight.attributes.description.type=Determines the visual appearance of the spike.
+entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
 entities.aonHelper/UnforgivingSpikesRight.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
 entities.aonHelper/UnforgivingSpikesRight.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 # Down
@@ -103,7 +108,8 @@ entities.aonHelper/UnforgivingSpikesDown.placements.name.down_outline=Unforgivin
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_cliffside=Unforgiving Spikes (Down, Cliffside)
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_reflection=Unforgiving Spikes (Down, Reflection)
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_tentacles=Unforgiving Spikes (Down, Tentacles)
-entities.aonHelper/UnforgivingSpikesDown.attributes.description.type=Determines the visual appearance of the spike.
+entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
 entities.aonHelper/UnforgivingSpikesDown.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
 entities.aonHelper/UnforgivingSpikesDown.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 # Left
@@ -112,27 +118,28 @@ entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_outline=Unforgivin
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_cliffside=Unforgiving Spikes (Left, Cliffside)
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_reflection=Unforgiving Spikes (Left, Reflection)
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_tentacles=Unforgiving Spikes (Left, Tentacles)
-entities.aonHelper/UnforgivingSpikesLeft.attributes.description.type=Determines the visual appearance of the spike.
+entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
 entities.aonHelper/UnforgivingSpikesLeft.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
 entities.aonHelper/UnforgivingSpikesLeft.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 
 # Clamp Light Color Controller
 entities.aonHelper/ClampLightColorController.placements.name.clampLightColorController=Clamp Light Color Controller
-entities.aonHelper/ClampLightColorController.attributes.description.color=The color to clamp the light color to.\nThis means that all light will "cap out" at this color, i.e. if this is set to pure red (#ff0000) and there is a white light source, that light source will appear red instead.
+entities.aonHelper/ClampLightColorController.attributes.description.color=The color to clamp the light color to.\nThis means that all light will "cap out" at this color, e.g. if this is set to pure red (#ff0000) and there is a white light source, that light source will appear red instead.
 entities.aonHelper/ClampLightColorController.attributes.description.clampMethod=The method with which to clamp the light color.\nClamp: no light values below the specified color will be affected, all light values above the specified color will be clamped to the clamp color (newLightColor = min(lightColor, clampColor)).\nTint: All light values will be modified such that white light will appear as the clamp color, and everything else will be darker (newLightColor = lightColor * clampColor).
 
 # Darker Matter
 entities.aonHelper/DarkerMatter.placements.name.darkerMatter=Darker Matter
-entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the darker matter when exiting horizontally. 
-entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the darker matter when exiting vertically.
+entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the Darker Matter when exiting horizontally. 
+entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the Darker Matter when exiting vertically.
 entities.aonHelper/DarkerMatter.attributes.description.refillDash=Whether the player's dash should be refilled on exit.
-entities.aonHelper/DarkerMatter.attributes.description.speedThreshold=The speed threshold for entering the darker matter state.
-entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limit for the darker matter state. Negative values mean the player's speed will never be limited.
-entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use for the darker matter.
-entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the darker matter.
+entities.aonHelper/DarkerMatter.attributes.description.speedThreshold=The speed threshold for entering the Darker Matter state.
+entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limit for the Darker Matter state. Negative values mean the player's speed will never be limited.
+entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use for the Darker Matter.
+entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the Darker Matter.
 
 # Lightning Cornerboost Controller
-entities.aonHelper/LightningCornerboostController.placements.name.lightningCornerboostController=Lightning Cornerboost Controller
+entities.aonHelper/LightningCornerboostController.placements.name.lightningCornerboostController=Lightning Wallbounce Controller
 entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether lightning should always have solid hitboxes instead of only while the player is dashing.
 entities.aonHelper/LightningCornerboostController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
@@ -141,12 +148,16 @@ entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightning
 
 # Intro Facing Controller
 entities.aonHelper/IntroFacingController.placements.name.introFacingController=Intro Facing Controller
-entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation.
+entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation. Also affects the temple fall animation.
 entities.aonHelper/IntroFacingController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Quantize Colorgrade Controller
-entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=Quantize Colorgrade Controller
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=Colorgrading Fixes Controller
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantize=Colorgrading Fixes Controller (Quantize)
+entities.aonHelper/QuantizeColorgradeController.placements.name.normalize=Colorgrading Fixes Controller (Normalize)
+entities.aonHelper/QuantizeColorgradeController.placements.name.both=Colorgrading Fixes Controller (Both)
 entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedColorgrades=The colorgrades to affect. Use "*" to affect all colorgrades.
+entities.aonHelper/QuantizeColorgradeController.attributes.description.mode=The fix to apply.\nQuantize: Makes colorgrades always choose the nearest color to the color being graded.\nNormalize: Removes the slight input gain to the green channel that is normally applied when colorgrading.\nBoth: Applies both of these fixes.
 
 # Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dreamDashThroughTransitionController=Dream Dash Through Transition Controller
@@ -181,6 +192,9 @@ entities.aonHelper/DreamLockBlock.attributes.description.below=Whether this lock
 entities.aonHelper/DreamLockBlock.attributes.description.ignoreInventory=Whether this lock block is able to be dream dashed through while unlocked even if the player's inventory (for example the OldSite inventory) forbids it.
 entities.aonHelper/DreamLockBlock.attributes.description.useVanillaKeys=Whether this lock block can be unlocked by vanilla keys.
 entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key groups (if any) this lock block can be unlocked by.\nLeft empty: this lock block cannot be unlocked by Dzhake Helper keys.\n*: this lock block can be unlocked by any Dzhake Helper key.\nAny integer: this lock block can only be unlocked by a Dzhake Helper key with the specified Group. 
+
+# Light Occlusion Fix Controller
+entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_fix_controller=Light Occlusion Fix Controller
 
 ### Triggers
 
