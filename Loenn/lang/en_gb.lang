@@ -194,7 +194,12 @@ entities.aonHelper/DreamLockBlock.attributes.description.useVanillaKeys=Whether 
 entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key groups (if any) this lock block can be unlocked by.\nLeft empty: this lock block cannot be unlocked by Dzhake Helper keys.\n*: this lock block can be unlocked by any Dzhake Helper key.\nAny integer: this lock block can only be unlocked by a Dzhake Helper key with the specified Group. 
 
 # Light Occlusion Fix Controller
-entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_fix_controller=Light Occlusion Fix Controller
+entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_fix_controller=Fg Tile Light Occlusion Fix Controller
+entities.aonHelper/LightOcclusionFixController.attributes.description.noOcclusionTileTypes=A list of foreground tile types to remove light occlusion from.
+
+# Disable Auto Camera Offset Controller
+entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Disable Auto Camera Offset Controller
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 ### Triggers
 

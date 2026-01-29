@@ -41,6 +41,10 @@ current features:
   - a lock block version of Glass Blocks from vanilla
 - Glass Lock Block Controller
   - a controller for the colors and visuals of Glass Lock Blocks
+- Fg Tile Light Occlusion Fix Controller
+  - fixes lights with non-multiple of 8 radii clipping through foreground tiles and allows some fg tile types to not block light sources
+- Disable Auto Camera Offset Controller
+  - disables the automatic camera offset applied in some player states such as red bubbles and feathers
 
 for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set. if want to report any bugs or feature requests then ping me in celestecord (@aonkeeper4)
 

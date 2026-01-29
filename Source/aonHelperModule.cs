@@ -50,6 +50,7 @@ public class aonHelperModule : EverestModule
         GlassLockBlockController.Load();
         DreamLockBlock.DreamBlockDummy.Load();
         LightOcclusionFixController.Load();
+        DisableAutoCameraOffsetController.Load();
         
         #region Legacy
         
@@ -90,6 +91,7 @@ public class aonHelperModule : EverestModule
         GlassLockBlockController.Unload();
         DreamLockBlock.DreamBlockDummy.Unload();
         LightOcclusionFixController.Unload();
+        DisableAutoCameraOffsetController.Unload();
         
         #region Legacy
         
