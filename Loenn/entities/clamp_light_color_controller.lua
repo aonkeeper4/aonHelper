@@ -52,10 +52,17 @@ function clampLightColorController.sprite(room, entity)
     
     local baseSprite = drawableSprite.fromTexture(spritePath .. "00", entity)
     baseSprite:setColor({ 1.0, 1.0, 1.0, 1.0 })
-    local overlaySprite = drawableSprite.fromTexture(spritePath .. "01", entity)
-    overlaySprite:setColor(clampColor)
+    local colorSpriteA = drawableSprite.fromTexture(spritePath .. "01", entity)
+    colorSpriteA:setColor(clampColor)
+    local colorSpriteB = drawableSprite.fromTexture(spritePath .. "02", entity)
+    colorSpriteB:setColor({
+        math.min(clampColor[1] * 2, 1.0),
+        math.min(clampColor[2] * 2, 1.0),
+        math.min(clampColor[3] * 2, 1.0),
+        1.0
+    })
     
-    return { baseSprite, overlaySprite }
+    return { baseSprite, colorSpriteA, colorSpriteB }
 end
 
 function clampLightColorController.selection(room, entity)

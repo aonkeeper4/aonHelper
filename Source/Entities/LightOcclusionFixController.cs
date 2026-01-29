@@ -10,6 +10,8 @@ using System.Linq;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
+// todo: make this actually fix all cases
+
 [CustomEntity("aonHelper/LightOcclusionFixController")]
 [Tracked]
 public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTileTypes) : Entity(position)
