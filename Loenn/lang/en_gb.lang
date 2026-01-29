@@ -152,12 +152,12 @@ entities.aonHelper/IntroFacingController.attributes.description.facing=The direc
 entities.aonHelper/IntroFacingController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Quantize Colorgrade Controller
-entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=Colorgrading Fixes Controller
-entities.aonHelper/QuantizeColorgradeController.placements.name.quantize=Colorgrading Fixes Controller (Quantize)
-entities.aonHelper/QuantizeColorgradeController.placements.name.normalize=Colorgrading Fixes Controller (Normalize)
-entities.aonHelper/QuantizeColorgradeController.placements.name.both=Colorgrading Fixes Controller (Both)
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=More Colorgrade Options Controller
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantize=More Colorgrade Options Controller (Quantize)
+entities.aonHelper/QuantizeColorgradeController.placements.name.normalize=More Colorgrade Options Controller (Normalize)
+entities.aonHelper/QuantizeColorgradeController.placements.name.both=More Colorgrade Options Controller (Both)
 entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedColorgrades=The colorgrades to affect. Use "*" to affect all colorgrades.
-entities.aonHelper/QuantizeColorgradeController.attributes.description.mode=The fix to apply.\nQuantize: Makes colorgrades always choose the nearest color to the color being graded.\nNormalize: Removes the slight input gain to the green channel that is normally applied when colorgrading.\nBoth: Applies both of these fixes.
+entities.aonHelper/QuantizeColorgradeController.attributes.description.mode=The option to apply to the specified colorgrades.\nQuantize: Makes colorgrades always choose the nearest color to the color being graded.\nNormalize: Removes the slight input gain to the green channel that is normally applied when colorgrading.\nBoth: Applies both of these fixes.
 
 # Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dreamDashThroughTransitionController=Dream Dash Through Transition Controller
