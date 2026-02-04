@@ -4,6 +4,8 @@ yea this mod does stuff alright
 
 current features:
 
+### Entities
+
 - Resizable Heart
   - its a crystal heart. you can resize it too (pretty funky)
 - Feather Dash Switch
@@ -21,8 +23,6 @@ current features:
   - spikes that kill you no matter what. basically pretty killboxes
 - Clamp Light Color Controller
   - allows you to set the "maximum" light color, i.e. no light is allowed to have a color brighter than this. useful for when you want overlapping light sources to not blend into white or when you want to make white stuff a different color. allows both "clamp" and "tint" options
-- Parallax Alpha Fade and Parallax Color Fade Triggers
-  - allows you to fade alpha/color of a parallax. note that you do need to reset it after every save and quit because i don't understand what black magic frosthelper is doing to make styleground blend modes persist
 - Darker Matter
   - basically a port of the Ahorn-only entity Dark Matter, but with 2000% less crashes
 - Lightning Cornerboost Controller
@@ -45,7 +45,14 @@ current features:
   - fixes lights with non-multiple of 8 radii clipping through foreground tiles and allows some fg tile types to not block light sources
 - Disable Auto Camera Offset Controller
   - disables the automatic camera offset applied in some player states such as red bubbles and feathers
+- Formation Backdrop Color Controller
+  - lets you change the colour of the screen darkening effect that gets applied when you collect a crystal heart for example
 
-for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set. if want to report any bugs or feature requests then ping me in celestecord (@aonkeeper4)
+for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set.
 
+### Triggers
+- Parallax Fade Trigger
+  - allows you to fade alpha/color of a parallax. note that you do need to reset it after every save and quit because i don't understand what black magic frosthelper is doing to make styleground blend modes persist
+
+if you want to report any bugs or suggest any features then ping me in celestecord (@aonkeeper4)
 happy modding :glumbsup:

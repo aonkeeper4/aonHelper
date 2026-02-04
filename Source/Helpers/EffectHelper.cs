@@ -15,8 +15,11 @@ public static class EffectHelper
         string path = $"aonHelper:/Effects/aonHelper/{id}.cso";
 
         if (Everest.Content.TryGet(path, out ModAsset effect))
+        {
+            Logger.Info(LogID, $"Loaded effect from {path}.");
             return new Effect(Engine.Graphics.GraphicsDevice, effect.Data);
-        
+        }
+
         Logger.Error(LogID, $"Failed to find effect at {path}!");
         return null;
     }

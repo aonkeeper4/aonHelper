@@ -82,18 +82,6 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
         : this(data.Position + offset, data.Bool("always", true), data.Attr("flag"))
     { }
 
-    public override void Added(Scene scene)
-    {
-        if (scene.Tracker.GetEntities<LightningCornerboostController>().Count >= 1)
-        {
-            Logger.Warn(LogID, $"Tried to load a {nameof(LightningCornerboostController)} when one was already present!");
-            RemoveSelf();
-            return;
-        }
-        
-        base.Added(scene);
-    }
-
     #region Hooks
 
     internal static void Load()

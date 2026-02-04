@@ -20,7 +20,8 @@ public class aonHelperModule : EverestModule
     public aonHelperModule()
     {
         Instance = this;
-       
+        
+        // if i accidentally leave a debug log in a build i'll explode into a million pieces and die
         Logger.SetLogLevel(nameof(aonHelper), LogLevel.Debug);
     }
 
@@ -51,6 +52,7 @@ public class aonHelperModule : EverestModule
         DreamLockBlock.DreamBlockDummy.Load();
         LightOcclusionFixController.Load();
         DisableAutoCameraOffsetController.Load();
+        FormationBackdropColorController.Load();
         
         #region Legacy
         
@@ -92,6 +94,7 @@ public class aonHelperModule : EverestModule
         DreamLockBlock.DreamBlockDummy.Unload();
         LightOcclusionFixController.Unload();
         DisableAutoCameraOffsetController.Unload();
+        FormationBackdropColorController.Unload();
         
         #region Legacy
         

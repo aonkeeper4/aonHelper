@@ -14,7 +14,7 @@ public class ClampLightColorController(Vector2 position, Color clampColor, Clamp
 
     public enum ClampMethod {
         Clamp,
-        Tint,
+        Tint
     }
     private readonly ClampMethod clampMethod = clampMethod;
 
@@ -25,7 +25,7 @@ public class ClampLightColorController(Vector2 position, Color clampColor, Clamp
         ColorSourceBlend = Blend.One,
         ColorDestinationBlend = Blend.One,
         AlphaSourceBlend = Blend.Zero,
-        AlphaDestinationBlend = Blend.One,
+        AlphaDestinationBlend = Blend.One
     };
     private static readonly BlendState TintColorState = new()
     {
@@ -33,7 +33,7 @@ public class ClampLightColorController(Vector2 position, Color clampColor, Clamp
         ColorSourceBlend = Blend.DestinationColor,
         ColorDestinationBlend = Blend.Zero,
         AlphaSourceBlend = Blend.Zero,
-        AlphaDestinationBlend = Blend.One,
+        AlphaDestinationBlend = Blend.One
     };
 
     public ClampLightColorController(EntityData data, Vector2 offset)

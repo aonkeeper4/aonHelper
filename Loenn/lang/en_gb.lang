@@ -201,18 +201,28 @@ entities.aonHelper/LightOcclusionFixController.attributes.description.noOcclusio
 entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Disable Auto Camera Offset Controller
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
+# Formation Backdrop Color Controller
+entities.aonHelper/FormationBackdropColorController.placements.name.formation_backdrop_color_controller=Formation Backdrop Color Controller
+entities.aonHelper/FormationBackdropColorController.attributes.description.color=The color to use for the Formation Backdrop.
+
 ### Triggers
 
-# Parallax Alpha Fade
-triggers.aonHelper/ParallaxAlphaFadeTrigger.placements.name.parallaxAlphaFade=Parallax Alpha Fade
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The end alpha of the affected stylegrounds.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.positionMode=Determines how the styleground alpha fades as the player moves across the trigger.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
-
-# Parallax Color Fade
+# Parallax Fade
+triggers.aonHelper/ParallaxFadeTrigger.placements.name.parallax_fade=Parallax Fade
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorFrom=The end color of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The end alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
+# Legacy Placements
 triggers.aonHelper/ParallaxColorFadeTrigger.placements.name.parallaxColorFade=Parallax Color Fade
 triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds.
 triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.colorFrom=The end color of the affected stylegrounds.
 triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
 triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.placements.name.parallaxAlphaFade=Parallax Alpha Fade
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The end alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
+triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.

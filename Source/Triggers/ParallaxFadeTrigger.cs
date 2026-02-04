@@ -6,11 +6,15 @@ using Monocle;
 
 namespace Celeste.Mod.aonHelper.Triggers;
 
-[CustomEntity("aonHelper/ParallaxColorFadeTrigger")]
-public class ParallaxColorFadeTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)
+[CustomEntity("aonHelper/ParallaxFadeTrigger", "aonHelper/ParallaxColorFadeTrigger", "aonHelper/ParallaxAlphaFadeTrigger")]
+public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)
 {
     private readonly Color colorFrom = data.HexColor("colorFrom", Color.Black);
     private readonly Color colorTo = data.HexColor("colorTo", Color.White);
+    
+    private readonly float alphaFrom = data.Float("alphaFrom", 0f);
+    private readonly float alphaTo = data.Float("alphaTo", 1f);
+	
     private readonly PositionModes positionMode = data.Enum("positionMode", PositionModes.LeftToRight);
 
     private readonly string tagToAffect = string.IsNullOrEmpty(data.Attr("tagToAffect")) ? null : data.Attr("tagToAffect");
@@ -29,8 +33,13 @@ public class ParallaxColorFadeTrigger(EntityData data, Vector2 offset) : Trigger
 
     public override void OnStay(Player player)
     {
-	    Color value = Color.Lerp(colorFrom, colorTo, GetPositionLerp(player, positionMode));
+	    Color color = Color.Lerp(colorFrom, colorTo, GetPositionLerp(player, positionMode));
+	    float alpha = Calc.ClampedMap(GetPositionLerp(player, positionMode), 0f, 1f, alphaFrom, alphaTo);
+	    
 	    foreach (Parallax parallax in allParallaxes.Where(parallax => parallax is not null))
-		    parallax.Color = value;
+	    {
+		    parallax.Color = color;
+		    parallax.Alpha = alpha;
+	    }
     }
 }
