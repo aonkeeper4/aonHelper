@@ -51,6 +51,7 @@ current features:
 for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set.
 
 ### Triggers
+
 - Parallax Fade Trigger
   - allows you to fade alpha/color of a parallax. note that you do need to reset it after every save and quit because i don't understand what black magic frosthelper is doing to make styleground blend modes persist
 
