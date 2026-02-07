@@ -1,6 +1,7 @@
 local aonHelper = {}
 
 -- validators
+
 function aonHelper.dzhakeHelperKeySettings(settings)
     return settings == "" or settings == "*" or (tonumber(settings) ~= nil and not string.find(settings, ".", 1, true))
 end
