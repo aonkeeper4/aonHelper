@@ -1,8 +1,10 @@
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Celeste.Mod.aonHelper.Helpers;
 
@@ -26,6 +28,21 @@ public static class IEnumerableExtensions
             index++;
         }
         return resultIndex;
+    }
+}
+
+public static class EntityDataExtensions
+{
+    public static Color? NullableHexColor(this EntityData data, string key)
+    {
+        string value = data.Attr(key);
+        return string.IsNullOrEmpty(value) ? null : Calc.HexToColor(value);
+    }
+
+    public static T? Nullable<T>(this EntityData data, string key) where T : struct, IParsable<T>
+    {
+        string value = data.Attr(key);
+        return string.IsNullOrEmpty(value) ? null : T.Parse(value, CultureInfo.InvariantCulture);
     }
 }
 

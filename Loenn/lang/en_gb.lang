@@ -11,9 +11,6 @@ entities.aonHelper/ResizableHeart.attributes.description.spritePath=A path to cu
 entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the Resizable Heart will respawn. Only has an effect if "Is Fake" is enabled.
 entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the Resizable Heart acts like a Fake Heart.
 entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this Resizable Heart if it has already been collected.
-# Legacy Attributes
-entities.aonHelper/ResizableHeart.attributes.name.path=Sprite ID
-entities.aonHelper/ResizableHeart.attributes.description.path=Sprite ID of the heart. Leave empty to use the template sprites.\nCustom sprites can be used (by adding to the vanilla Sprites.xml) if they include the required animations. See "heartgem0" in the vanilla Sprites.xml for an example.
 
 # Feather Dash Switch
 entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchDown=Feather Dash Switch (Down)
@@ -32,17 +29,6 @@ entities.aonHelper/FeatherDashSwitchV2.attributes.description.allGates=Whether t
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.spriteDir=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The primary color of particles emitted when this Feather Dash Switch is activated.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
-# Legacy Placements
-entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchDown=[LEGACY] Feather Dash Switch (Down)
-entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchUp=[LEGACY] Feather Dash Switch (Up)
-entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchLeft=[LEGACY] Feather Dash Switch (Left)
-entities.aonHelper/FeatherDashSwitch.placements.name.featherDashSwitchRight=[LEGACY] Feather Dash Switch (Right)
-entities.aonHelper/FeatherDashSwitch.attributes.description.side=The orientation of the dash switch.
-entities.aonHelper/FeatherDashSwitch.attributes.description.persistent=Whether once this dash switch is activated, it should stay activated, even if the player dies.
-entities.aonHelper/FeatherDashSwitch.attributes.description.allGates=Whether this dash switch should open all temple gates instead of opening only the closest one.
-entities.aonHelper/FeatherDashSwitch.attributes.description.spriteDir=A path to custom sprites to use for this dash switch, relative to Graphics/Atlases/Gameplay.
-entities.aonHelper/FeatherDashSwitch.attributes.description.particleColor1=The primary color of particles emitted when this dash switch is activated.
-entities.aonHelper/FeatherDashSwitch.attributes.description.particleColor2=The secondary color of particles emitted when this dash switch is activated.
 
 # Feather Bounce Scam Controller
 entities.aonHelper/FeatherBounceScamController.placements.name.featherBounceScamController=Feather Bounce Scam Controller
@@ -69,9 +55,6 @@ entities.aonHelper/ReboundModifyController.attributes.description.topXModifier=E
 entities.aonHelper/ReboundModifyController.attributes.description.topYModifier=Either a multiplier to the player's current Y speed or a value to set it to, depending on the Top Collision Y Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.refillDash=Whether to refill dash on rebound.
 entities.aonHelper/ReboundModifyController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
-# Legacy Attributes
-entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeed=Whether to reflect the speed that the player currently has.
-entities.aonHelper/ReboundModifyController.attributes.description.reflectSpeedMultiplier=The multiplier that will be applied to the reflected speed.\nFor example, if this is 0.5, then a player coming in will be reflected with half their speed.\nNote that this does not do anything if Reflect Speed is off. To make the rebound affect momentum in the player's current direction, turn Reflect Speed on, then use a negative value here.
 
 # Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.name.flingBirdNoSkipController=Fling Bird No Skip Controller
@@ -209,20 +192,9 @@ entities.aonHelper/FormationBackdropColorController.attributes.description.color
 
 # Parallax Fade
 triggers.aonHelper/ParallaxFadeTrigger.placements.name.parallax_fade=Parallax Fade
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds.
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorFrom=The end color of the affected stylegrounds.
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds.
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The end alpha of the affected stylegrounds.
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds. Leave empty to not affect the color of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorTo=The end color of the affected stylegrounds. Leave empty to not affect the color of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds. Leave empty to not affect the alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaTo=The end alpha of the affected stylegrounds. Leave empty to not affect the alpha of the affected stylegrounds.
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.positionMode=Determines how the styleground attributes fade as the player moves across the trigger.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
-# Legacy Placements
-triggers.aonHelper/ParallaxColorFadeTrigger.placements.name.parallaxColorFade=Parallax Color Fade
-triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds.
-triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.colorFrom=The end color of the affected stylegrounds.
-triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
-triggers.aonHelper/ParallaxColorFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.placements.name.parallaxAlphaFade=Parallax Alpha Fade
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.alphaFrom=The end alpha of the affected stylegrounds.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.positionMode=Determines how the styleground color fades as the player moves across the trigger.
-triggers.aonHelper/ParallaxAlphaFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.

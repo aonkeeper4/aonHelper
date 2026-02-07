@@ -32,7 +32,7 @@ dreamLockBlock.fieldOrder = {
 dreamLockBlock.fieldInformation = {
     dzhakeHelperKeySettings = {
         fieldType = "string",
-        validator = aonHelper.dzhakeHelperKeySettingsValidator
+        validator = aonHelper.dzhakeHelperKeySettings
     }
 }
 

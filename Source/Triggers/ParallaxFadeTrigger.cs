@@ -1,3 +1,4 @@
+using Celeste.Mod.aonHelper.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Celeste.Mod.Entities;
@@ -9,11 +10,11 @@ namespace Celeste.Mod.aonHelper.Triggers;
 [CustomEntity("aonHelper/ParallaxFadeTrigger", "aonHelper/ParallaxColorFadeTrigger", "aonHelper/ParallaxAlphaFadeTrigger")]
 public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data, offset)
 {
-    private readonly Color colorFrom = data.HexColor("colorFrom", Color.Black);
-    private readonly Color colorTo = data.HexColor("colorTo", Color.White);
+    private readonly Color? colorFrom = data.NullableHexColor("colorFrom");
+    private readonly Color? colorTo = data.NullableHexColor("colorTo");
     
-    private readonly float alphaFrom = data.Float("alphaFrom", 0f);
-    private readonly float alphaTo = data.Float("alphaTo", 1f);
+    private readonly float? alphaFrom = data.Nullable<float>("alphaFrom");
+    private readonly float? alphaTo = data.Nullable<float>("alphaTo");
 	
     private readonly PositionModes positionMode = data.Enum("positionMode", PositionModes.LeftToRight);
 
@@ -33,13 +34,14 @@ public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data
 
     public override void OnStay(Player player)
     {
-	    Color color = Color.Lerp(colorFrom, colorTo, GetPositionLerp(player, positionMode));
-	    float alpha = Calc.ClampedMap(GetPositionLerp(player, positionMode), 0f, 1f, alphaFrom, alphaTo);
+	    Parallax[] affected = allParallaxes.Where(parallax => parallax is not null).ToArray();
+
+	    if (colorFrom is { } cFrom && colorTo is { } cTo)
+		    foreach (Parallax parallax in affected)
+				parallax.Color = Color.Lerp(cFrom, cTo, GetPositionLerp(player, positionMode));
 	    
-	    foreach (Parallax parallax in allParallaxes.Where(parallax => parallax is not null))
-	    {
-		    parallax.Color = color;
-		    parallax.Alpha = alpha;
-	    }
+	    if (alphaFrom is { } aFrom && alphaTo is { } aTo)
+		    foreach (Parallax parallax in affected)
+			    parallax.Alpha = Calc.ClampedMap(GetPositionLerp(player, positionMode), 0f, 1f, aFrom, aTo);
     }
 }

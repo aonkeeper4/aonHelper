@@ -31,7 +31,7 @@ glassLockBlock.fieldOrder = {
 glassLockBlock.fieldInformation = {
     dzhakeHelperKeySettings = {
         fieldType = "string",
-        validator = aonHelper.dzhakeHelperKeySettingsValidator
+        validator = aonHelper.dzhakeHelperKeySettings
     }
 }
 
