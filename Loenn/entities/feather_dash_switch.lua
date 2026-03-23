@@ -47,7 +47,7 @@ featherDashSwitch.placements = {}
 
 for dir, side in pairs(directionsOptions) do
     table.insert(featherDashSwitch.placements, {
-        name = "featherDashSwitch" .. dir,
+        name = "feather_dash_switch_" .. dir:lower(),
         data = {
             side = side,
             dashActivated = false,

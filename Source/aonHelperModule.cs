@@ -53,6 +53,7 @@ public class aonHelperModule : EverestModule
         LightOcclusionFixController.Load();
         DisableAutoCameraOffsetController.Load();
         FormationBackdropColorController.Load();
+        JumpThrusApplyLiftSpeedController.Load();
         
         #region Legacy
         
@@ -95,6 +96,7 @@ public class aonHelperModule : EverestModule
         LightOcclusionFixController.Unload();
         DisableAutoCameraOffsetController.Unload();
         FormationBackdropColorController.Unload();
+        JumpThrusApplyLiftSpeedController.Unload();
         
         #region Legacy
         

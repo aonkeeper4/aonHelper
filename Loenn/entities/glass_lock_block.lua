@@ -9,7 +9,7 @@ glassLockBlock.name = "aonHelper/GlassLockBlock"
 glassLockBlock.depth = function(room, entity) return entity.behindFgTiles and -9995 or -10000 end
 glassLockBlock.placements = {
     {
-        name = "glassLockBlock",
+        name = "glass_lock_block",
         data = {
             spritePath = "",
             unlockSfx = "",

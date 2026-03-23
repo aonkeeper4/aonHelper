@@ -8,7 +8,7 @@ darkerMatter.name = "aonHelper/DarkerMatter"
 darkerMatter.depth = -8000
 darkerMatter.placements = {
     {
-        name = "darkerMatter",
+        name = "darker_matter",
         data = {
             width = 16,
             height = 16,

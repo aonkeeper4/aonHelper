@@ -5,7 +5,7 @@ fgStylegroundBloomController.texture = "objects/aonHelper/fgStylegroundBloomCont
 fgStylegroundBloomController.depth = 0
 fgStylegroundBloomController.placements = {
     {
-        name = "fgStylegroundBloomController",
+        name = "fg_styleground_bloom_controller",
         data = {
             bloomTag = ""
         }

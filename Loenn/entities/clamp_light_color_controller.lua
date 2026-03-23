@@ -16,7 +16,7 @@ clampLightColorController.name = "aonHelper/ClampLightColorController"
 clampLightColorController.depth = 0
 clampLightColorController.placements = {
     {
-        name = "clampLightColorController",
+        name = "clamp_light_color_controller",
         data = {
             color = "ffffff",
             clampMethod = clampMethods.clamp

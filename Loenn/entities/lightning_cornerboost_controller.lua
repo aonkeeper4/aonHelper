@@ -5,7 +5,7 @@ lightningCornerboostController.texture = "objects/aonHelper/lightningCornerboost
 lightningCornerboostController.depth = 0
 lightningCornerboostController.placements = {
     {
-        name = "lightningCornerboostController",
+        name = "lightning_cornerboost_controller",
         data = {
             always = false,
             flag = ""

@@ -9,7 +9,7 @@ dreamLockBlock.name = "aonHelper/DreamLockBlock"
 dreamLockBlock.depth = function(room, entity) return entity.below and 5000 or -11000 end
 dreamLockBlock.placements = {
     {
-        name = "dreamLockBlock",
+        name = "dream_lock_block",
         data = {
             spritePath = "",
             unlockSfx = "",

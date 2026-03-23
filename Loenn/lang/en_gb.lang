@@ -13,10 +13,10 @@ entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the Resi
 entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this Resizable Heart if it has already been collected.
 
 # Feather Dash Switch
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchDown=Feather Dash Switch (Down)
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchUp=Feather Dash Switch (Up)
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchLeft=Feather Dash Switch (Left)
-entities.aonHelper/FeatherDashSwitchV2.placements.name.featherDashSwitchRight=Feather Dash Switch (Right)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_down=Feather Dash Switch (Down)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_up=Feather Dash Switch (Up)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_left=Feather Dash Switch (Left)
+entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_right=Feather Dash Switch (Right)
 entities.aonHelper/FeatherDashSwitchV2.attributes.name.spriteDir=Sprite Path
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.side=The orientation of the dash switch.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
@@ -31,12 +31,12 @@ entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
 
 # Feather Bounce Scam Controller
-entities.aonHelper/FeatherBounceScamController.placements.name.featherBounceScamController=Feather Bounce Scam Controller
+entities.aonHelper/FeatherBounceScamController.placements.name.feather_bounce_scam_controller=Feather Bounce Scam Controller
 entities.aonHelper/FeatherBounceScamController.attributes.description.featherBounceScamThreshold=The threshold time in seconds such that when the player's feather timer is below this amount, any feather bounces attempted will fail.
 entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Rebound Modify Controller
-entities.aonHelper/ReboundModifyController.placements.name.reboundModifyController=Modify Rebound Controller
+entities.aonHelper/ReboundModifyController.placements.name.rebound_modify_controller=Modify Rebound Controller
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXMode=Left-Right Collision X Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightYMode=Left-Right Collision Y Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXModifier=Left-Right Collision X Modifier
@@ -57,11 +57,11 @@ entities.aonHelper/ReboundModifyController.attributes.description.refillDash=Whe
 entities.aonHelper/ReboundModifyController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Fling Bird No Skip Controller
-entities.aonHelper/FlingBirdNoSkipController.placements.name.flingBirdNoSkipController=Fling Bird No Skip Controller
+entities.aonHelper/FlingBirdNoSkipController.placements.name.fling_bird_no_skip_controller=Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Fg Styleground Bloom Controller
-entities.aonHelper/FgStylegroundBloomController.placements.name.fgStylegroundBloomController=Fg Styleground Bloom Controller
+entities.aonHelper/FgStylegroundBloomController.placements.name.fg_styleground_bloom_controller=Fg Styleground Bloom Controller
 entities.aonHelper/FgStylegroundBloomController.attributes.description.bloomTag=Foreground stylegrounds with this tag will be affected by bloom. They will also render under all other foreground stylegrounds.\nLeave blank for all foreground stylegrounds to be affected.
 
 # Unforgiving Spikes
@@ -107,12 +107,12 @@ entities.aonHelper/UnforgivingSpikesLeft.attributes.description.attachToSolid=De
 entities.aonHelper/UnforgivingSpikesLeft.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
 
 # Clamp Light Color Controller
-entities.aonHelper/ClampLightColorController.placements.name.clampLightColorController=Clamp Light Color Controller
+entities.aonHelper/ClampLightColorController.placements.name.clamp_light_color_controller=Clamp Light Color Controller
 entities.aonHelper/ClampLightColorController.attributes.description.color=The color to clamp the light color to.\nThis means that all light will "cap out" at this color, e.g. if this is set to pure red (#ff0000) and there is a white light source, that light source will appear red instead.
 entities.aonHelper/ClampLightColorController.attributes.description.clampMethod=The method with which to clamp the light color.\nClamp: no light values below the specified color will be affected, all light values above the specified color will be clamped to the clamp color (newLightColor = min(lightColor, clampColor)).\nTint: All light values will be modified such that white light will appear as the clamp color, and everything else will be darker (newLightColor = lightColor * clampColor).
 
 # Darker Matter
-entities.aonHelper/DarkerMatter.placements.name.darkerMatter=Darker Matter
+entities.aonHelper/DarkerMatter.placements.name.darker_matter=Darker Matter
 entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the Darker Matter when exiting horizontally. 
 entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the Darker Matter when exiting vertically.
 entities.aonHelper/DarkerMatter.attributes.description.refillDash=Whether the player's dash should be refilled on exit.
@@ -122,15 +122,15 @@ entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use 
 entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the Darker Matter.
 
 # Lightning Cornerboost Controller
-entities.aonHelper/LightningCornerboostController.placements.name.lightningCornerboostController=Lightning Wallbounce Controller
+entities.aonHelper/LightningCornerboostController.placements.name.lightning_cornerboost_controller=Lightning Wallbounce Controller
 entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether lightning should always have solid hitboxes instead of only while the player is dashing.
 entities.aonHelper/LightningCornerboostController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Seamless Lightning Controller
-entities.aonHelper/SeamlessLightningController.placements.name.seamlessLightningController=Seamless Lightning Controller
+entities.aonHelper/SeamlessLightningController.placements.name.seamless_lightning_controller=Seamless Lightning Controller
 
 # Intro Facing Controller
-entities.aonHelper/IntroFacingController.placements.name.introFacingController=Intro Facing Controller
+entities.aonHelper/IntroFacingController.placements.name.intro_facing_controller=Intro Facing Controller
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation. Also affects the temple fall animation.
 entities.aonHelper/IntroFacingController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
@@ -143,11 +143,11 @@ entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedC
 entities.aonHelper/QuantizeColorgradeController.attributes.description.mode=The option to apply to the specified colorgrades.\nQuantize: Makes colorgrades always choose the nearest color to the color being graded.\nNormalize: Removes the slight input gain to the green channel that is normally applied when colorgrading.\nBoth: Applies both of these fixes.
 
 # Dream Dash Through Transition Controller
-entities.aonHelper/DreamDashThroughTransitionController.placements.name.dreamDashThroughTransitionController=Dream Dash Through Transition Controller
+entities.aonHelper/DreamDashThroughTransitionController.placements.name.dream_dash_through_transition_controller=Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Glass Lock Block
-entities.aonHelper/GlassLockBlock.placements.name.glassLockBlock=Glass Lock Block
+entities.aonHelper/GlassLockBlock.placements.name.glass_lock_block=Glass Lock Block
 entities.aonHelper/GlassLockBlock.attributes.description.spritePath=The path to use for the lock sprites, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/MoreLockBlocks/generic/lock.
 entities.aonHelper/GlassLockBlock.attributes.description.unlockSfx=The event that will play when the lock block is unlocked. Defaults to "event:/game/03_resort/key_unlock".
 entities.aonHelper/GlassLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this lock block is unlocked.
@@ -167,7 +167,7 @@ entities.aonHelper/GlassLockBlockController.attributes.description.vanillaEdgeBe
 entities.aonHelper/GlassLockBlockController.attributes.description.persistent=Whether this controller's effects should persist after leaving the room this controller is in.
 
 # Dream Lock Block
-entities.aonHelper/DreamLockBlock.placements.name.dreamLockBlock=Dream Lock Block
+entities.aonHelper/DreamLockBlock.placements.name.dream_lock_block=Dream Lock Block
 entities.aonHelper/DreamLockBlock.attributes.description.spritePath=The path to use for the lock sprites, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/MoreLockBlocks/generic/lock.
 entities.aonHelper/DreamLockBlock.attributes.description.unlockSfx=The event that will play when the lock block is unlocked. Defaults to "event:/MoreLockBlocks/game/lockblocks/dreamlockblock_key_unlock".
 entities.aonHelper/DreamLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this lock block is unlocked.
@@ -187,6 +187,10 @@ entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag
 # Formation Backdrop Color Controller
 entities.aonHelper/FormationBackdropColorController.placements.name.formation_backdrop_color_controller=Formation Backdrop Color Controller
 entities.aonHelper/FormationBackdropColorController.attributes.description.color=The color to use for the Formation Backdrop.
+
+# JumpThrus Apply LiftSpeed Controller
+entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.name.jumpthrus_apply_liftspeed_controller=JumpThrus Apply LiftSpeed Controller
+entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 ### Triggers
 

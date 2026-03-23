@@ -5,7 +5,7 @@ featherBounceScamController.texture = "objects/aonHelper/featherBounceScamContro
 featherBounceScamController.depth = 0
 featherBounceScamController.placements = {
     {
-        name = "featherBounceScamController",
+        name = "feather_bounce_scam_controller",
         data = {
             featherBounceScamThreshold = 1,
             flag = "",

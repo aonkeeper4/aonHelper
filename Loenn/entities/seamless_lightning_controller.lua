@@ -5,7 +5,7 @@ seamlessLightningController.texture = "objects/aonHelper/seamlessLightningContro
 seamlessLightningController.depth = 0
 seamlessLightningController.placements = {
     {
-        name = "seamlessLightningController",
+        name = "seamless_lightning_controller",
         data = { }
     }
 }

@@ -7,7 +7,7 @@ reboundModifyController.texture = "objects/aonHelper/reboundModifyController"
 reboundModifyController.depth = 0
 reboundModifyController.placements = {
     {
-        name = "reboundModifyController",
+        name = "rebound_modify_controller",
         data = {
             leftRightXMode = 0,
             leftRightYMode = 1,

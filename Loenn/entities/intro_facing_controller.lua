@@ -15,7 +15,7 @@ introFacingController.scale = function(room, entity) return { entity.facing or f
 introFacingController.depth = 0
 introFacingController.placements = {
     {
-        name = "introFacingController",
+        name = "intro_facing_controller",
         data = {
             facing = facings.right,
             flag = ""

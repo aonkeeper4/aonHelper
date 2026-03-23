@@ -5,7 +5,7 @@ dreamDashThroughTransitionController.texture = "objects/aonHelper/dreamDashThrou
 dreamDashThroughTransitionController.depth = 0
 dreamDashThroughTransitionController.placements = {
     {
-        name = "dreamDashThroughTransitionController",
+        name = "dream_dash_through_transition_controller",
         data = {
             flag = ""
         }
