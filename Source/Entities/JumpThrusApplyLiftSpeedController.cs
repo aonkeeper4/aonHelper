@@ -35,6 +35,11 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag) : 
     private static void JumpThru_MoveHVExact(ILContext il)
     {
         ILCursor cursor = new(il);
+
+        // due to where we hook, the `actor` local is uninitialised the first time we access it, which is technically UB
+        // let's initialise it so we dont like idk corrupt memory or whatever
+        cursor.EmitLdnull();
+        cursor.EmitStloc1();
         
         /*
          * IL_005c: ldloca.s 0
@@ -48,7 +53,7 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag) : 
             throw new HookHelper.HookException(il, "Unable to find end of loop to modify.");
 
         cursor.EmitLdarg0();
-        cursor.EmitLdloc1(); // could this be uninitialised? if it is uninitialised, is it UB to read from?
+        cursor.EmitLdloc1();
         cursor.EmitDelegate(ApplyLiftSpeed);
 
         return;
