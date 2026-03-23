@@ -22,17 +22,15 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag) : 
 
     internal static void Load()
     {
-        IL.Celeste.JumpThru.MoveHExact += JumpThru_MoveHVExact;
-        IL.Celeste.JumpThru.MoveVExact += JumpThru_MoveHVExact;
+        IL.Celeste.JumpThru.MoveHExact += JumpThru_MoveHExact;
     }
 
     internal static void Unload()
     {
-        IL.Celeste.JumpThru.MoveHExact -= JumpThru_MoveHVExact;
-        IL.Celeste.JumpThru.MoveVExact -= JumpThru_MoveHVExact;
+        IL.Celeste.JumpThru.MoveHExact -= JumpThru_MoveHExact;
     }
 
-    private static void JumpThru_MoveHVExact(ILContext il)
+    private static void JumpThru_MoveHExact(ILContext il)
     {
         ILCursor cursor = new(il);
 
