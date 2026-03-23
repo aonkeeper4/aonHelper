@@ -46,6 +46,8 @@ current features:
   - disables the automatic camera offset applied in some player states such as red bubbles and feathers
 - Formation Backdrop Color Controller
   - lets you change the colour of the screen darkening effect that gets applied when you collect a crystal heart or cassette
+- JumpThrus Apply LiftSpeed Controller
+  - makes moving jumpthrough-like entities give you liftboost the same way moving solids do
 
 for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set.
 
