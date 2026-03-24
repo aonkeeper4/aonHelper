@@ -7,6 +7,7 @@ using MonoMod.Cil;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
+// threshold by sungazer reference
 [CustomEntity("aonHelper/SpringSpeedThresholdController")]
 [Tracked]
 public class SpringSpeedThresholdController(Vector2 position, float threshold, string flag)
