@@ -29,8 +29,8 @@ public class aonHelperModule : EverestModule
     {
         aonHelperDependencies.Load();
         
-        aonHelperImports.Initialize();
-        aonHelperExports.Initialize();
+        aonHelperImports.Load();
+        aonHelperExports.Load();
         
         #region Entities
         
@@ -54,6 +54,7 @@ public class aonHelperModule : EverestModule
         DisableAutoCameraOffsetController.Load();
         FormationBackdropColorController.Load();
         JumpThrusApplyLiftSpeedController.Load();
+        SpringSpeedThresholdController.Load();
         
         #region Legacy
         
@@ -97,6 +98,7 @@ public class aonHelperModule : EverestModule
         DisableAutoCameraOffsetController.Unload();
         FormationBackdropColorController.Unload();
         JumpThrusApplyLiftSpeedController.Unload();
+        SpringSpeedThresholdController.Unload();
         
         #region Legacy
         

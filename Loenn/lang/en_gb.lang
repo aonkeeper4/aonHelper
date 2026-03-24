@@ -192,6 +192,11 @@ entities.aonHelper/FormationBackdropColorController.attributes.description.color
 entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.name.jumpthrus_apply_liftspeed_controller=JumpThrus Apply LiftSpeed Controller
 entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
+# Spring Speed Threshold Controller
+entities.aonHelper/SpringSpeedThresholdController.placements.name.spring_speed_threshold_controller=Spring Speed Threshold Controller
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.threshold=Determines the maximum value for the player's X speed where they will still activate sideways springs that are pointing the same direction as they are moving. If negative, this will never happen.
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+
 ### Triggers
 
 # Parallax Fade

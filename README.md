@@ -48,6 +48,8 @@ current features:
   - lets you change the colour of the screen darkening effect that gets applied when you collect a crystal heart or cassette
 - JumpThrus Apply LiftSpeed Controller
   - makes moving jumpthrough-like entities give you liftboost the same way moving solids do
+- Spring Speed Threshold Controller
+  - allows you to change the speed threshold for sideways-facing springs not bouncing you
 
 for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set.
 

@@ -6,7 +6,7 @@ namespace Celeste.Mod.aonHelper;
 
 public static class aonHelperExports
 {
-    internal static void Initialize()
+    internal static void Load()
     {
         typeof(FgStylegroundBloomControllerCompat).ModInterop();
     }

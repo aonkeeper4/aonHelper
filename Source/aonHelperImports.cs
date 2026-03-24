@@ -11,7 +11,7 @@ public static class aonHelperImports
     // do all modinterop stuff here
     // if we need to do anything more than modinterop, that goes in `aonHelperDependencies`
     
-    internal static void Initialize()
+    internal static void Load()
     {
         typeof(ReverseHelper).ModInterop();
     }
