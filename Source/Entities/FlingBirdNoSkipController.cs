@@ -10,10 +10,9 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FlingBirdNoSkipController")]
 [Tracked]
-public class FlingBirdNoSkipController(Vector2 position, string flag) : Entity(position)
+public class FlingBirdNoSkipController(Vector2 position, string flag)
+    : FlagAffectedController<FlingBirdNoSkipController>(position, flag)
 {
-    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
-
     public FlingBirdNoSkipController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("flag"))
     { }
@@ -55,15 +54,9 @@ public class FlingBirdNoSkipController(Vector2 position, string flag) : Entity(p
         cursor.MarkLabel(ret);
 
         return;
-        
+
         static bool ShouldNotSkipNode(FlingBird bird)
-        {
-            Level level = bird.SceneAs<Level>();
-            if (level.Tracker.GetEntity<FlingBirdNoSkipController>() is not { } controller)
-                return false;
-            
-            return level.Session.GetFlag(controller.flag) || controller.flag is null;
-        }
+            => ControllerActive(bird.SceneAs<Level>(), out _);
     }
     
     #endregion

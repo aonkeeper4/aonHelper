@@ -11,10 +11,9 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/JumpThrusApplyLiftSpeedController")]
 [Tracked]
-public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag) : Entity(position)
+public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag)
+    : FlagAffectedController<JumpThrusApplyLiftSpeedController>(position, flag)
 {
-    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
-    
     public JumpThrusApplyLiftSpeedController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("flag"))
     { }
@@ -110,11 +109,8 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag) : 
 
         return;
 
-        static bool ShouldApplyLiftSpeed(JumpThru jumpThru) {
-            Level level = jumpThru.SceneAs<Level>();
-            return level.Tracker.GetEntity<JumpThrusApplyLiftSpeedController>() is { } controller
-                && (level.Session.GetFlag(controller.flag) || controller.flag is null);
-        }
+        static bool ShouldApplyLiftSpeed(JumpThru jumpThru)
+            => ControllerActive(jumpThru.SceneAs<Level>(), out _);
 
         static void PreApplyLiftSpeed(JumpThru jumpThru, Actor actor, bool shouldApplyLiftSpeed)
         {

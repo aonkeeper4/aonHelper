@@ -11,10 +11,10 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/IntroFacingController")]
 [Tracked]
-public class IntroFacingController(Vector2 position, Facings facing, string flag) : Entity(position)
+public class IntroFacingController(Vector2 position, Facings facing, string flag)
+    : FlagAffectedController<IntroFacingController>(position, flag)
 {
     private readonly Facings facing = facing;
-    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
     
     public IntroFacingController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Enum("facing", Facings.Right), data.Attr("flag"))
@@ -42,8 +42,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string flag
     {
         int result = orig(self);
 
-        if (self.Scene.Tracker.GetEntity<IntroFacingController>() is { } controller
-            && (self.SceneAs<Level>().Session.GetFlag(controller.flag) || controller.flag is null))
+        if (ControllerActive(self.SceneAs<Level>(), out IntroFacingController controller))
             self.Facing = controller.facing;
 
         return result;
@@ -71,11 +70,8 @@ public class IntroFacingController(Vector2 position, Facings facing, string flag
 
         static void SetPlayerFacing(Player player)
         {
-            if (player.Scene.Tracker.GetEntities<IntroFacingController>()
-                                    .Concat(player.Scene.Entities.ToAdd)
-                                    .FirstOrDefault(e => e is IntroFacingController) is IntroFacingController controller
-                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None) // not sure if these are the only ones used in gameplay?
-                && (player.SceneAs<Level>().Session.GetFlag(controller.flag) || controller.flag is null))
+            if (ControllerActive(player.SceneAs<Level>(), out IntroFacingController controller, true)
+                && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None)) // not sure if these are the only ones used in gameplay?
                 player.Facing = controller.facing;
         }
     }

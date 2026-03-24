@@ -7,11 +7,10 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/LightningCornerboostController")]
 [Tracked]
-public class LightningCornerboostController(Vector2 position, bool always, string flag) : Entity(position)
+public class LightningCornerboostController(Vector2 position, bool always, string flag)
+    : FlagAffectedController<LightningCornerboostController>(position, flag)
 {
-    private const string LogID = $"{nameof(aonHelper)}/{nameof(LightningCornerboostController)}";
-    
-    private class LightningSolidComponent(LightningCornerboostController controller) : TypeRestrictedComponent<Lightning>(true, false)
+    private class LightningSolidComponent() : TypeRestrictedComponent<Lightning>(true, false)
     {
         protected override string Name => nameof(LightningSolidComponent);
         
@@ -46,8 +45,8 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
             bool inView = Entity.InView();
             bool playerHasDashAttack = Scene.Tracker.GetEntity<Player>()?.DashAttacking ?? false;
             solid.Collidable = inView
-                && (controller.always || playerHasDashAttack)
-                && (level.Session.GetFlag(controller.flag) || controller.flag is null);
+                && ControllerActive(level, out LightningCornerboostController controller)
+                && (controller.always || playerHasDashAttack);
             solid.Visible = inView;
         }
 
@@ -76,8 +75,6 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
 
     private readonly bool always = always;
 
-    private readonly string flag = string.IsNullOrEmpty(flag) ? null : flag;
-
     public LightningCornerboostController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Bool("always", true), data.Attr("flag"))
     { }
@@ -98,10 +95,10 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     {
         orig(self, scene);
 
-        if (self is not Lightning lightning || scene.Tracker.GetEntity<LightningCornerboostController>() is not { } controller)
+        if (self is not Lightning lightning)
             return;
 
-        lightning.Add(new LightningSolidComponent(controller));
+        lightning.Add(new LightningSolidComponent());
     }
 
     #endregion

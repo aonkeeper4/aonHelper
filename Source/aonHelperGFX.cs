@@ -22,6 +22,28 @@ public static class aonHelperGFX
     
     private static VirtualRenderTarget glassLockBlockBeamsBuffer, glassLockBlockStarsBuffer, glassLockBlockStencilBuffer;
     
+    public static void QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out VirtualRenderTarget stencilBuffer)
+    {
+        if (glassLockBlockBeamsBuffer is not { IsDisposed: false }
+            || glassLockBlockStarsBuffer is not { IsDisposed: false }
+            || glassLockBlockStencilBuffer is not { IsDisposed: false })
+        {
+            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockBeamsBuffer);
+            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStarsBuffer);
+            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
+
+            glassLockBlockBeamsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_beams", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
+            glassLockBlockStarsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stars", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
+            glassLockBlockStencilBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stencil", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
+
+            Logger.Info(LogID, "Created new Glass Lock Block buffer triplet.");
+        }
+
+        beamsBuffer = glassLockBlockBeamsBuffer;
+        starsBuffer = glassLockBlockStarsBuffer;
+        stencilBuffer = glassLockBlockStencilBuffer;
+    }
+    
     #endregion
 
     internal static void LoadContent()
@@ -50,27 +72,5 @@ public static class aonHelperGFX
         RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
         
         #endregion
-    }
-    
-    public static void QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out VirtualRenderTarget stencilBuffer)
-    {
-        if (glassLockBlockBeamsBuffer is not { IsDisposed: false }
-            || glassLockBlockStarsBuffer is not { IsDisposed: false }
-            || glassLockBlockStencilBuffer is not { IsDisposed: false })
-        {
-            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockBeamsBuffer);
-            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStarsBuffer);
-            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
-
-            glassLockBlockBeamsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_beams", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
-            glassLockBlockStarsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stars", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
-            glassLockBlockStencilBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stencil", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
-
-            Logger.Info(LogID, "Created new Glass Lock Block buffer triplet.");
-        }
-
-        beamsBuffer = glassLockBlockBeamsBuffer;
-        starsBuffer = glassLockBlockStarsBuffer;
-        stencilBuffer = glassLockBlockStencilBuffer;
     }
 }

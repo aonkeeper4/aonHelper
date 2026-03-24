@@ -12,10 +12,13 @@ namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/DisableAutoCameraOffsetController")]
 [Tracked]
-public class DisableAutoCameraOffsetController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class DisableAutoCameraOffsetController(Vector2 position, string flag)
+    : FlagAffectedController<DisableAutoCameraOffsetController>(position, flag)
 {
-    private readonly string flag = data.Attr("flag");
-    
+    public DisableAutoCameraOffsetController(EntityData data, Vector2 offset)
+        : this(data.Position + offset, data.Attr("flag"))
+    { }
+
     #region Hooks
     
     private static ILHook ilHook_Player_get_CameraTarget;
@@ -113,10 +116,9 @@ public class DisableAutoCameraOffsetController(EntityData data, Vector2 offset) 
         cursor.EmitDelegate(IsControllerActive);
         cursor.Emit(OpCodes.Brtrue, skipStateOffset);
     }
-    
+
     private static bool IsControllerActive(Player player)
-        => player.Scene?.Tracker?.GetEntity<DisableAutoCameraOffsetController>() is { } controller
-            && (string.IsNullOrEmpty(controller.flag) || player.SceneAs<Level>().Session.GetFlag(controller.flag));
-    
+        => ControllerActive(player.SceneAs<Level>(), out _);
+
     #endregion
 }
