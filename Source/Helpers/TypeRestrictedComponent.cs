@@ -6,9 +6,9 @@ namespace Celeste.Mod.aonHelper.Helpers;
 public class TypeRestrictedComponent<T>(bool active, bool visible) : Component(active, visible)
     where T : Entity
 {
-    public new T Entity => EntityAs<T>();
-
     protected virtual string Name => nameof(TypeRestrictedComponent<T>);
+    
+    public new T Entity => EntityAs<T>();
     
     public override void Added(Entity entity)
     {
