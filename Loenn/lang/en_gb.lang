@@ -47,7 +47,7 @@ entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This 
 
 # Rebound Modify Controller
 entities.aonHelper/ReboundModifyController.placements.name.rebound_modify_controller=Modify Rebound Controller
-entities.aonHelper/ReboundModifyController.placements.description.rebound_modify_controller=A controller that modifies the rebound received when dashing into Dash Blocks, Kevins and more.
+entities.aonHelper/ReboundModifyController.placements.description.rebound_modify_controller=A controller that modifies the rebound received when dashing into solids such as Dash Blocks and Kevins.
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXMode=Left-Right Collision X Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightYMode=Left-Right Collision Y Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXModifier=Left-Right Collision X Modifier
@@ -174,7 +174,7 @@ entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro 
 
 # Quantize Colorgrade Controller
 entities.aonHelper/QuantizeColorgradeController.placements.name.quantize_colorgrade_controller=More Colorgrade Options Controller
-entities.aonHelper/QuantizeColorgradeController.placements.description.quantize_colorgrade_controller=A controller that applies some fixes to colorgrades.
+entities.aonHelper/QuantizeColorgradeController.placements.description.quantize_colorgrade_controller=A controller that provides additional options for colorgrades.
 entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedColorgrades=The colorgrades to affect. Use "*" to affect all colorgrades.
 entities.aonHelper/QuantizeColorgradeController.attributes.description.quantize=Whether affected colorgrades should always choose the nearest color to the color being graded.
 entities.aonHelper/QuantizeColorgradeController.attributes.description.normalize=Whether affected colorgrades should have the slight input gain to the green channel when sampling removed.
