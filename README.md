@@ -16,7 +16,7 @@ current features:
   - modifies the rebound you get from breaking dash blocks/hitting kevins to set/conserve speed (allows for independent control of the x and y directions as well as top/bottom vs left/right rebounds)
 - Fling Bird No Skip Controller
   - makes vanilla flingbirds not run to the next position when you're too far past their current position
-- Fg Styleground Bloom Controller
+- Foreground Styleground Bloom Controller
   - allows you to apply bloom to foreground stylegrounds (either all of them or only ones with a certain tag)
 - Unforgiving Spikes
   - spikes that don't check player speed (or check player velocity instead) before killing you
@@ -40,7 +40,7 @@ current features:
   - a lock block version of glass blocks from vanilla
 - Glass Lock Block Controller
   - a controller for the colors and visuals of glass lock blocks
-- Fg Tile Light Occlusion Fix Controller
+- Foreground Tile Light Occlusion Controller
   - fixes lights with nonstandard radii clipping through foreground tiles and allows some fg tile types to not block light sources
 - Disable Auto Camera Offset Controller
   - disables the automatic camera offset applied in some player states such as red bubbles and feathers
@@ -49,7 +49,7 @@ current features:
 - JumpThrus Apply LiftSpeed Controller
   - makes moving jumpthrough-like entities give you liftboost the same way moving solids do
 - Spring Speed Threshold Controller
-  - allows you to change the speed threshold for sideways-facing springs not bouncing you
+  - allows you to change the speed threshold for springs to bounce you
 
 for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set.
 

@@ -2,11 +2,16 @@
 
 # Resizable Heart
 entities.aonHelper/ResizableHeart.placements.name.custom=Resizable Heart (Custom)
+entities.aonHelper/ResizableHeart.placements.description.custom=A Crystal Heart with a resizable hitbox.
 entities.aonHelper/ResizableHeart.placements.name.blue=Resizable Heart (Blue)
+entities.aonHelper/ResizableHeart.placements.description.blue=A Crystal Heart with a resizable hitbox.
 entities.aonHelper/ResizableHeart.placements.name.red=Resizable Heart (Red)
+entities.aonHelper/ResizableHeart.placements.description.red=A Crystal Heart with a resizable hitbox.
 entities.aonHelper/ResizableHeart.placements.name.gold=Resizable Heart (Gold)
+entities.aonHelper/ResizableHeart.placements.description.gold=A Crystal Heart with a resizable hitbox.
 entities.aonHelper/ResizableHeart.placements.name.white=Resizable Heart (White)
-entities.aonHelper/ResizableHeart.attributes.description.color=Color of the Resizable Heart for when no custom sprite is selected. If a custom (non-vanilla) sprite is selected, this sets the color of the Resizable Heart's particles.
+entities.aonHelper/ResizableHeart.placements.description.white=A Crystal Heart with a resizable hitbox.
+entities.aonHelper/ResizableHeart.attributes.description.color=The color of the Resizable Heart when no custom sprite is selected. If a custom (non-vanilla) sprite is selected, this sets the color of the Resizable Heart's particles.
 entities.aonHelper/ResizableHeart.attributes.description.spritePath=A path to custom sprites to use for this Resizable Heart, relative to Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nLeave empty to use the template sprites.
 entities.aonHelper/ResizableHeart.attributes.description.respawnTimer=The number of seconds after which the Resizable Heart will respawn. Only has an effect if "Is Fake" is enabled.
 entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the Resizable Heart acts like a Fake Heart.
@@ -14,9 +19,13 @@ entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to
 
 # Feather Dash Switch
 entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_down=Feather Dash Switch (Down)
+entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_down=A Dash Switch that can be activated by feather bounces.
 entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_up=Feather Dash Switch (Up)
+entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_up=A Dash Switch that can be activated by feather bounces.
 entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_left=Feather Dash Switch (Left)
+entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_left=A Dash Switch that can be activated by feather bounces.
 entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_right=Feather Dash Switch (Right)
+entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_right=A Dash Switch that can be activated by feather bounces.
 entities.aonHelper/FeatherDashSwitchV2.attributes.name.spriteDir=Sprite Path
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.side=The orientation of the dash switch.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
@@ -32,11 +41,13 @@ entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The
 
 # Feather Bounce Scam Controller
 entities.aonHelper/FeatherBounceScamController.placements.name.feather_bounce_scam_controller=Feather Bounce Scam Controller
-entities.aonHelper/FeatherBounceScamController.attributes.description.featherBounceScamThreshold=The threshold time in seconds such that when the player's feather timer is below this amount, any feather bounces attempted will fail.
-entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/FeatherBounceScamController.placements.description.feather_bounce_scam_controller=A controller that prevents feather bounces from being cancelled when the player's feather timer is low enough.
+entities.aonHelper/FeatherBounceScamController.attributes.description.featherBounceScamThreshold=The time in seconds such that when the player's feather timer is below this amount, any feather bounces attempted will fail. If negative, this will not happen.
+entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This Feather Bounce Scam Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Rebound Modify Controller
 entities.aonHelper/ReboundModifyController.placements.name.rebound_modify_controller=Modify Rebound Controller
+entities.aonHelper/ReboundModifyController.placements.description.rebound_modify_controller=A controller that modifies the rebound received when dashing into Dash Blocks, Kevins and more.
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXMode=Left-Right Collision X Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightYMode=Left-Right Collision Y Mode
 entities.aonHelper/ReboundModifyController.attributes.name.leftRightXModifier=Left-Right Collision X Modifier
@@ -54,65 +65,89 @@ entities.aonHelper/ReboundModifyController.attributes.description.topYMode=Wheth
 entities.aonHelper/ReboundModifyController.attributes.description.topXModifier=Either a multiplier to the player's current X speed or a value to set it to, depending on the Top Collision X Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.topYModifier=Either a multiplier to the player's current Y speed or a value to set it to, depending on the Top Collision Y Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.refillDash=Whether to refill dash on rebound.
-entities.aonHelper/ReboundModifyController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/ReboundModifyController.attributes.description.flag=This Modify Rebound Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.name.fling_bird_no_skip_controller=Fling Bird No Skip Controller
-entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/FlingBirdNoSkipController.placements.description.fling_bird_no_skip_controller=A controller that prevents Fling Birds' positions from being skipped when the player is too far ahead of them.
+entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This Fling Bird No Skip Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Fg Styleground Bloom Controller
-entities.aonHelper/FgStylegroundBloomController.placements.name.fg_styleground_bloom_controller=Fg Styleground Bloom Controller
+entities.aonHelper/FgStylegroundBloomController.placements.name.fg_styleground_bloom_controller=Foreground Styleground Bloom Controller
+entities.aonHelper/FgStylegroundBloomController.placements.description.fg_styleground_bloom_controller=A controller that moves bloom application to after foreground stylegrounds are drawn.
 entities.aonHelper/FgStylegroundBloomController.attributes.description.bloomTag=Foreground stylegrounds with this tag will be affected by bloom. They will also render under all other foreground stylegrounds.\nLeave blank for all foreground stylegrounds to be affected.
 
 # Unforgiving Spikes
 # Up
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_default=Unforgiving Spikes (Up, Default)
+entities.aonHelper/UnforgivingSpikesUp.placements.description.up_default=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_outline=Unforgiving Spikes (Up, Outline)
+entities.aonHelper/UnforgivingSpikesUp.placements.description.up_outline=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_cliffside=Unforgiving Spikes (Up, Cliffside)
+entities.aonHelper/UnforgivingSpikesUp.placements.description.up_cliffside=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_reflection=Unforgiving Spikes (Up, Reflection)
+entities.aonHelper/UnforgivingSpikesUp.placements.description.up_reflection=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesUp.placements.name.up_tentacles=Unforgiving Spikes (Up, Tentacles)
+entities.aonHelper/UnforgivingSpikesUp.placements.description.up_tentacles=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
 entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.attachToSolid=Whether these Unforgiving Spikes should attach to solids.
+entities.aonHelper/UnforgivingSpikesUp.attributes.description.checkMoveDirection=Whether these Unforgiving Spikes should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spikes point, they will not die. When disabled, the player will die regardless.
 # Right
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_default=Unforgiving Spikes (Right, Default)
+entities.aonHelper/UnforgivingSpikesRight.placements.description.right_default=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_outline=Unforgiving Spikes (Right, Outline)
+entities.aonHelper/UnforgivingSpikesRight.placements.description.right_outline=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_cliffside=Unforgiving Spikes (Right, Cliffside)
+entities.aonHelper/UnforgivingSpikesRight.placements.description.right_cliffside=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_reflection=Unforgiving Spikes (Right, Reflection)
+entities.aonHelper/UnforgivingSpikesRight.placements.description.right_reflection=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesRight.placements.name.right_tentacles=Unforgiving Spikes (Right, Tentacles)
-entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
-entities.aonHelper/UnforgivingSpikesRight.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesRight.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesRight.placements.description.right_tentacles=Spikes that kill the player based on their movement direction instead of their speed.
+entities.aonHelper/UnforgivingSpikesRight.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesRight.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
+entities.aonHelper/UnforgivingSpikesRight.attributes.description.attachToSolid=Whether these Unforgiving Spikes should attach to solids.
+entities.aonHelper/UnforgivingSpikesRight.attributes.description.checkMoveDirection=Whether these Unforgiving Spikes should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spikes point, they will not die. When disabled, the player will die regardless.
 # Down
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_default=Unforgiving Spikes (Down, Default)
+entities.aonHelper/UnforgivingSpikesDown.placements.description.down_default=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_outline=Unforgiving Spikes (Down, Outline)
+entities.aonHelper/UnforgivingSpikesDown.placements.description.down_outline=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_cliffside=Unforgiving Spikes (Down, Cliffside)
+entities.aonHelper/UnforgivingSpikesDown.placements.description.down_cliffside=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_reflection=Unforgiving Spikes (Down, Reflection)
+entities.aonHelper/UnforgivingSpikesDown.placements.description.down_reflection=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesDown.placements.name.down_tentacles=Unforgiving Spikes (Down, Tentacles)
-entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
-entities.aonHelper/UnforgivingSpikesDown.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesDown.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesDown.placements.description.down_tentacles=Spikes that kill the player based on their movement direction instead of their speed.
+entities.aonHelper/UnforgivingSpikesDown.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesDown.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
+entities.aonHelper/UnforgivingSpikesDown.attributes.description.attachToSolid=Whether these Unforgiving Spikes should attach to solids.
+entities.aonHelper/UnforgivingSpikesDown.attributes.description.checkMoveDirection=Whether these Unforgiving Spikes should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spikes point, they will not die. When disabled, the player will die regardless.
 # Left
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_default=Unforgiving Spikes (Left, Default)
+entities.aonHelper/UnforgivingSpikesLeft.placements.description.left_default=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_outline=Unforgiving Spikes (Left, Outline)
+entities.aonHelper/UnforgivingSpikesLeft.placements.description.left_outline=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_cliffside=Unforgiving Spikes (Left, Cliffside)
+entities.aonHelper/UnforgivingSpikesLeft.placements.description.left_cliffside=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_reflection=Unforgiving Spikes (Left, Reflection)
+entities.aonHelper/UnforgivingSpikesLeft.placements.description.left_reflection=Spikes that kill the player based on their movement direction instead of their speed.
 entities.aonHelper/UnforgivingSpikesLeft.placements.name.left_tentacles=Unforgiving Spikes (Left, Tentacles)
-entities.aonHelper/UnforgivingSpikesUp.attributes.name.type=Sprite Path
-entities.aonHelper/UnforgivingSpikesUp.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
-entities.aonHelper/UnforgivingSpikesLeft.attributes.description.attachToSolid=Determines whether these spikes should attach to solids.
-entities.aonHelper/UnforgivingSpikesLeft.attributes.description.checkMoveDirection=Whether the spike should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spike points, they will not die. When disabled, the player will die regardless.
+entities.aonHelper/UnforgivingSpikesLeft.placements.description.left_tentacles=Spikes that kill the player based on their movement direction instead of their speed.
+entities.aonHelper/UnforgivingSpikesLeft.attributes.name.type=Sprite Path
+entities.aonHelper/UnforgivingSpikesLeft.attributes.description.type=A path to custom textures for these Unforgiving Spikes, relative to Graphics/Atlases/Gameplay/danger/spikes.
+entities.aonHelper/UnforgivingSpikesLeft.attributes.description.attachToSolid=Whether these Unforgiving Spikes should attach to solids.
+entities.aonHelper/UnforgivingSpikesLeft.attributes.description.checkMoveDirection=Whether these Unforgiving Spikes should check the player's move direction before killing them.\nWhen enabled, if the player moves in the same direction as the spikes point, they will not die. When disabled, the player will die regardless.
 
 # Clamp Light Color Controller
 entities.aonHelper/ClampLightColorController.placements.name.clamp_light_color_controller=Clamp Light Color Controller
+entities.aonHelper/ClampLightColorController.placements.description.clamp_light_color_controller=A controller that limits the maximum allowed light color.
 entities.aonHelper/ClampLightColorController.attributes.description.color=The color to clamp the light color to.\nThis means that all light will "cap out" at this color, e.g. if this is set to pure red (#ff0000) and there is a white light source, that light source will appear red instead.
 entities.aonHelper/ClampLightColorController.attributes.description.clampMethod=The method with which to clamp the light color.\nClamp: no light values below the specified color will be affected, all light values above the specified color will be clamped to the clamp color (newLightColor = min(lightColor, clampColor)).\nTint: All light values will be modified such that white light will appear as the clamp color, and everything else will be darker (newLightColor = lightColor * clampColor).
 
 # Darker Matter
 entities.aonHelper/DarkerMatter.placements.name.darker_matter=Darker Matter
+entities.aonHelper/DarkerMatter.placements.description.darker_matter=A field through which the player will continue moving at the speed they entered, similar to a Dream Block.
 entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the Darker Matter when exiting horizontally. 
 entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the Darker Matter when exiting vertically.
 entities.aonHelper/DarkerMatter.attributes.description.refillDash=Whether the player's dash should be refilled on exit.
@@ -123,84 +158,98 @@ entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to 
 
 # Lightning Cornerboost Controller
 entities.aonHelper/LightningCornerboostController.placements.name.lightning_cornerboost_controller=Lightning Wallbounce Controller
-entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether lightning should always have solid hitboxes instead of only while the player is dashing.
-entities.aonHelper/LightningCornerboostController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/LightningCornerboostController.placements.description.lightning_cornerboost_controller=A controller that grants Fire/Ice Barrier-like solid hitboxes to Lightning.
+entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether Lightning's solid hitboxes should be active always or active only while the player is dashing.
+entities.aonHelper/LightningCornerboostController.attributes.description.flag=This Lightning Wallbounce Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Seamless Lightning Controller
 entities.aonHelper/SeamlessLightningController.placements.name.seamless_lightning_controller=Seamless Lightning Controller
+entities.aonHelper/SeamlessLightningController.placements.description.seamless_lightning_controller=A controller that makes the edges of Lightning visually connect to room edges.
 
 # Intro Facing Controller
 entities.aonHelper/IntroFacingController.placements.name.intro_facing_controller=Intro Facing Controller
+entities.aonHelper/IntroFacingController.placements.description.intro_facing_controller=A controller that allows for the map intro animation to face in either direction.
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation. Also affects the temple fall animation.
-entities.aonHelper/IntroFacingController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro Facing Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Quantize Colorgrade Controller
-entities.aonHelper/QuantizeColorgradeController.placements.name.quantizeColorgradeController=More Colorgrade Options Controller
-entities.aonHelper/QuantizeColorgradeController.placements.name.quantize=More Colorgrade Options Controller (Quantize)
-entities.aonHelper/QuantizeColorgradeController.placements.name.normalize=More Colorgrade Options Controller (Normalize)
-entities.aonHelper/QuantizeColorgradeController.placements.name.both=More Colorgrade Options Controller (Both)
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantize_colorgrade_controller=More Colorgrade Options Controller
+entities.aonHelper/QuantizeColorgradeController.placements.description.quantize_colorgrade_controller=A controller that applies some fixes to colorgrades.
 entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedColorgrades=The colorgrades to affect. Use "*" to affect all colorgrades.
-entities.aonHelper/QuantizeColorgradeController.attributes.description.mode=The option to apply to the specified colorgrades.\nQuantize: Makes colorgrades always choose the nearest color to the color being graded.\nNormalize: Removes the slight input gain to the green channel that is normally applied when colorgrading.\nBoth: Applies both of these fixes.
+entities.aonHelper/QuantizeColorgradeController.attributes.description.quantize=Whether affected colorgrades should always choose the nearest color to the color being graded.
+entities.aonHelper/QuantizeColorgradeController.attributes.description.normalize=Whether affected colorgrades should have the slight input gain to the green channel when sampling removed.
 
 # Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dream_dash_through_transition_controller=Dream Dash Through Transition Controller
+entities.aonHelper/DreamDashThroughTransitionController.placements.description.dream_dash_through_transition_controller=A controller that lets screen transitions occur while the player is dashing through a Dream Block.
 entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Glass Lock Block
 entities.aonHelper/GlassLockBlock.placements.name.glass_lock_block=Glass Lock Block
-entities.aonHelper/GlassLockBlock.attributes.description.spritePath=The path to use for the lock sprites, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/MoreLockBlocks/generic/lock.
-entities.aonHelper/GlassLockBlock.attributes.description.unlockSfx=The event that will play when the lock block is unlocked. Defaults to "event:/game/03_resort/key_unlock".
-entities.aonHelper/GlassLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this lock block is unlocked.
-entities.aonHelper/GlassLockBlock.attributes.description.behindFgTiles=Whether this lock block will render behind foreground tiles.
-entities.aonHelper/GlassLockBlock.attributes.description.useVanillaKeys=Whether this lock block can be unlocked by vanilla keys.
-entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key groups (if any) this lock block can be unlocked by.\nLeft empty: this lock block cannot be unlocked by Dzhake Helper keys.\n*: this lock block can be unlocked by any Dzhake Helper key.\nAny integer: this lock block can only be unlocked by a Dzhake Helper key with the specified Group. 
+entities.aonHelper/GlassLockBlock.placements.description.glass_lock_block=A customizable Lock Block with the look and visual effects of Glass Blocks.
+entities.aonHelper/GlassLockBlock.attributes.description.spritePath=The path to use for the lock sprites of this Glass Lock Block, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the ones in this mod.\nDefaults to objects/aonHelper/lockBlocks/lock.
+entities.aonHelper/GlassLockBlock.attributes.description.unlockSfx=The event that will play when this Glass Lock Block is unlocked. Defaults to "event:/game/03_resort/key_unlock".
+entities.aonHelper/GlassLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this Glass Lock Block is unlocked.
+entities.aonHelper/GlassLockBlock.attributes.description.behindFgTiles=Whether this Glass Lock Block will render behind foreground tiles.
+entities.aonHelper/GlassLockBlock.attributes.description.useVanillaKeys=Whether this Glass Lock Block can be unlocked by vanilla keys.
+entities.aonHelper/GlassLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key Groups (if any) this Glass Lock Block can be unlocked by.\nLeft empty: this Glass Lock Block cannot be unlocked by Dzhake Helper keys.\n*: this Glass Lock Block can be unlocked by any Dzhake Helper key.\nAny integer: this Glass Lock Block can only be unlocked by a Dzhake Helper key with the specified Group. 
 
 # Glass Lock Block Controller
 entities.aonHelper/GlassLockBlockController.placements.name.controller=Glass Lock Block Controller
+entities.aonHelper/GlassLockBlockController.placements.description.controller=A controller for the visuals of Glass Lock Blocks.
 entities.aonHelper/GlassLockBlockController.placements.name.controller_vanilla=Glass Lock Block Controller (Vanilla Settings)
-entities.aonHelper/GlassLockBlockController.attributes.description.starColors=The colors of stars on Glass Lock Blocks affected by this controller.
-entities.aonHelper/GlassLockBlockController.attributes.description.bgColor=The color of the background on Glass Lock Blocks affected by this controller.
-entities.aonHelper/GlassLockBlockController.attributes.description.lineColor=The color of the outline on Glass Lock Blocks affected by this controller.
-entities.aonHelper/GlassLockBlockController.attributes.description.rayColor=The color of the rays on Glass Lock Blocks affected by this controller.
-entities.aonHelper/GlassLockBlockController.attributes.description.wavy=Whether to render the wavy effect on Glass Lock Blocks affected by this controller.
-entities.aonHelper/GlassLockBlockController.attributes.description.vanillaEdgeBehavior=Whether to have the edges of Glass Lock Blocks affected by this controller display like vanilla glass block edges.
-entities.aonHelper/GlassLockBlockController.attributes.description.persistent=Whether this controller's effects should persist after leaving the room this controller is in.
+entities.aonHelper/GlassLockBlockController.placements.description.controller_vanilla=A controller for the visuals of Glass Lock Blocks.
+entities.aonHelper/GlassLockBlockController.attributes.description.starColors=The colors of stars on Glass Lock Blocks affected by this Glass Lock Block Controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.bgColor=The color of the background on Glass Lock Blocks affected by this Glass Lock Block Controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.lineColor=The color of the outline on Glass Lock Blocks affected by this Glass Lock Block Controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.rayColor=The color of the rays on Glass Lock Blocks affected by this Glass Lock Block Controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.wavy=Whether to render the wavy effect on Glass Lock Blocks affected by this Glass Lock Block Controller.
+entities.aonHelper/GlassLockBlockController.attributes.description.vanillaEdgeBehavior=Whether to have the edges of Glass Lock Blocks affected by this Glass Lock Block Controller display like vanilla glass block edges.
+entities.aonHelper/GlassLockBlockController.attributes.description.persistent=Whether this Glass Lock Block Controller's effects should persist after leaving the room it is in.
 
 # Dream Lock Block
 entities.aonHelper/DreamLockBlock.placements.name.dream_lock_block=Dream Lock Block
-entities.aonHelper/DreamLockBlock.attributes.description.spritePath=The path to use for the lock sprites, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/MoreLockBlocks/generic/lock.
-entities.aonHelper/DreamLockBlock.attributes.description.unlockSfx=The event that will play when the lock block is unlocked. Defaults to "event:/MoreLockBlocks/game/lockblocks/dreamlockblock_key_unlock".
-entities.aonHelper/DreamLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this lock block is unlocked.
-entities.aonHelper/DreamLockBlock.attributes.description.below=Whether this lock block will render behind foreground tiles.
-entities.aonHelper/DreamLockBlock.attributes.description.ignoreInventory=Whether this lock block is able to be dream dashed through while unlocked even if the player's inventory (for example the OldSite inventory) forbids it.
-entities.aonHelper/DreamLockBlock.attributes.description.useVanillaKeys=Whether this lock block can be unlocked by vanilla keys.
-entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key groups (if any) this lock block can be unlocked by.\nLeft empty: this lock block cannot be unlocked by Dzhake Helper keys.\n*: this lock block can be unlocked by any Dzhake Helper key.\nAny integer: this lock block can only be unlocked by a Dzhake Helper key with the specified Group. 
+entities.aonHelper/DreamLockBlock.placements.description.dream_lock_block=A customizable Lock Block with the look and visual effects of Dream Blocks.
+entities.aonHelper/DreamLockBlock.attributes.description.spritePath=The path to use for the lock sprites of this Dream Lock Block, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/aonHelper/lockBlocks/lock.
+entities.aonHelper/DreamLockBlock.attributes.description.unlockSfx=The event that will play when this Dream Lock Block is unlocked. Defaults to "event:/MoreLockBlocks/game/lockblocks/dreamlockblock_key_unlock".
+entities.aonHelper/DreamLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this Dream Lock Block is unlocked.
+entities.aonHelper/DreamLockBlock.attributes.description.below=Whether this Dream Lock Block will render behind foreground tiles.
+entities.aonHelper/DreamLockBlock.attributes.description.ignoreInventory=Whether this Dream Lock Block is able to be dream dashed through while unlocked even if the player's inventory (for example the OldSite inventory) forbids it.
+entities.aonHelper/DreamLockBlock.attributes.description.useVanillaKeys=Whether this Dream Lock Block can be unlocked by vanilla keys.
+entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key Groups (if any) this Dream Lock Block can be unlocked by.\nLeft empty: this Dream Lock Block cannot be unlocked by Dzhake Helper keys.\n*: this Dream Lock Block can be unlocked by any Dzhake Helper key.\nAny integer: this Dream Lock Block can only be unlocked by a Dzhake Helper key with the specified Group. 
 
-# Light Occlusion Fix Controller
-entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_fix_controller=Fg Tile Light Occlusion Fix Controller
+# Foreground Tile Light Occlusion Controller
+entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_fix_controller=Foreground Tile Light Occlusion Controller
+entities.aonHelper/LightOcclusionFixController.placements.description.light_occlusion_fix_controller=A controller that fixes visual bugs seen when using lights with non-standard sizes around foreground tiles.
 entities.aonHelper/LightOcclusionFixController.attributes.description.noOcclusionTileTypes=A list of foreground tile types to remove light occlusion from.
 
 # Disable Auto Camera Offset Controller
 entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Disable Auto Camera Offset Controller
-entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller that disables the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster.
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Disable Auto Camera Offset Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Formation Backdrop Color Controller
 entities.aonHelper/FormationBackdropColorController.placements.name.formation_backdrop_color_controller=Formation Backdrop Color Controller
+entities.aonHelper/FormationBackdropColorController.placements.description.formation_backdrop_color_controller=A controller that changes the color of the darkening layer applied when a Crystal Heart or Seeded Strawberry is collected.
 entities.aonHelper/FormationBackdropColorController.attributes.description.color=The color to use for the Formation Backdrop.
 
 # JumpThrus Apply LiftSpeed Controller
 entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.name.jumpthrus_apply_liftspeed_controller=JumpThrus Apply LiftSpeed Controller
-entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.description.jumpthrus_apply_liftspeed_controller=A controller that makes moving Jump Through-like entities apply liftboost the same way moving solids do.
+entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This JumpThrus Apply LiftSpeed Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 # Spring Speed Threshold Controller
 entities.aonHelper/SpringSpeedThresholdController.placements.name.spring_speed_threshold_controller=Spring Speed Threshold Controller
-entities.aonHelper/SpringSpeedThresholdController.attributes.description.threshold=Determines the maximum value for the player's X speed where they will still activate sideways springs that are pointing the same direction as they are moving. If negative, this will never happen.
-entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/SpringSpeedThresholdController.placements.description.spring_speed_threshold_controller=A controller that changes the speed threshold required to activate springs facing the same way as the player is moving.
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresholdX=The maximum value for the player's X speed where they will activate sideways springs that are pointing the same direction as they are moving. If negative, this will never happen.\nDefaults to 240.
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresholdY=The minimum value for the player's Y speed where they will activate upwards springs.\nDefaults to 0.
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This Spring Speed Threshold Controller only has an effect if this flag is set. Leave empty for it to be active always.
 
 ### Triggers
 
 # Parallax Fade
 triggers.aonHelper/ParallaxFadeTrigger.placements.name.parallax_fade=Parallax Fade
+triggers.aonHelper/ParallaxFadeTrigger.placements.description.parallax_fade=A trigger that allows fading the color and alpha of Parallax stylegrounds.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorFrom=The start color of the affected stylegrounds. Leave empty to not affect the color of the affected stylegrounds.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.colorTo=The end color of the affected stylegrounds. Leave empty to not affect the color of the affected stylegrounds.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The start alpha of the affected stylegrounds. Leave empty to not affect the alpha of the affected stylegrounds.

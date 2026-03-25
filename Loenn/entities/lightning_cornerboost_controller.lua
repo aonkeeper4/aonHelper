@@ -13,4 +13,9 @@ lightningCornerboostController.placements = {
     }
 }
 
+lightningCornerboostController.fieldOrder = {
+    "x", "y",
+    "always", "flag"
+}
+
 return lightningCornerboostController

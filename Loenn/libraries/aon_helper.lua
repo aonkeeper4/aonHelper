@@ -17,4 +17,10 @@ function aonHelper.numberAllowEmpty(min, max)
     end
 end
 
+-- utils
+
+function aonHelper.mod(x, m)
+    return math.fmod(math.fmod(x, m) + m, m)
+end
+
 return aonHelper

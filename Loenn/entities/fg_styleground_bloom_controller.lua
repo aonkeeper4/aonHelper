@@ -12,4 +12,9 @@ fgStylegroundBloomController.placements = {
     }
 }
 
+fgStylegroundBloomController.fieldOrder = {
+    "x", "y",
+    "bloomTag"
+}
+
 return fgStylegroundBloomController

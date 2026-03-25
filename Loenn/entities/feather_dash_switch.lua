@@ -1,5 +1,6 @@
 local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 
 local directions = {
     up = 0,
@@ -13,6 +14,7 @@ local directionsOptions = {
     ["Right"] = directions.left,
     ["Left"] = directions.right
 }
+local directionsInOrder = { directions.up, directions.right, directions.down, directions.left }
 
 local refillBehavior = {
     none = 0,
@@ -90,7 +92,7 @@ featherDashSwitch.fieldInformation = {
 
 function featherDashSwitch.sprite(room, entity)
     local sprite = drawableSprite.fromTexture("objects/aonHelper/featherDashSwitch/00", entity)
-    local side = entity.side or 0
+    local side = entity.side or directions.up
 
     local options = spriteOptions[side]
     local x, y = options.position.x or 0, options.position.y or 0
@@ -103,9 +105,37 @@ end
 
 function featherDashSwitch.rectangle(room, entity)
     local x, y = entity.x or 0, entity.y or 0
-    local side = entity.side or 0
+    local side = entity.side or directions.up
     
     return selections(x, y)[side]
+end
+
+function featherDashSwitch.rotate(room, entity, direction)
+    local side = entity.side or directions.up
+    local directionIndex = table.flip(directionsInOrder)[side] or 1
+    local newDirectionIndex = aonHelper.mod(directionIndex - 1 + direction, #directionsInOrder) + 1
+    entity.side = directionsInOrder[newDirectionIndex]
+end
+
+function featherDashSwitch.flip(room, entity, horizontal, vertical)
+    local side = entity.side or directions.up
+
+    if horizontal then
+        if side == directions.left then
+            side = directions.right
+        elseif side == directions.right then
+            side = directions.left
+        end
+    end
+    if vertical then
+        if side == directions.up then
+            side = directions.down
+        elseif side == directions.down then
+            side = directions.up
+        end
+    end
+    
+    entity.side = side
 end
 
 return featherDashSwitch

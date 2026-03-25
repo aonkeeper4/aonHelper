@@ -12,4 +12,9 @@ jumpThrusApplyLiftSpeedController.placements = {
     }
 }
 
+lightningCornerboostController.fieldOrder = {
+    "x", "y",
+    "flag"
+}
+
 return jumpThrusApplyLiftSpeedController

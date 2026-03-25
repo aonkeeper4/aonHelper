@@ -7,10 +7,15 @@ featherBounceScamController.placements = {
     {
         name = "feather_bounce_scam_controller",
         data = {
-            featherBounceScamThreshold = 1,
+            featherBounceScamThreshold = 0.2,
             flag = "",
         }
     }
+}
+
+featherBounceScamController.fieldOrder = {
+    "x", "y",
+    "featherBounceScamThreshold", "flag"
 }
 
 return featherBounceScamController

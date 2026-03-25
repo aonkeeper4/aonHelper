@@ -10,7 +10,8 @@ disableAutoCameraOffsetController.placements = {
 }
 
 disableAutoCameraOffsetController.fieldOrder = {
-    "x", "y", "flag"
+    "x", "y",
+    "flag"
 }
 
 return disableAutoCameraOffsetController

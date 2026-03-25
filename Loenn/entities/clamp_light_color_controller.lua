@@ -38,6 +38,7 @@ clampLightColorController.fieldInformation = {
     }
 }
 
+-- unfortunately we have to include the old format :cry:
 local controllerSprites = {
     [clampMethods.clamp] = "objects/aonHelper/clampLightColorController/clamp",
     ["Clamp"] = "objects/aonHelper/clampLightColorController/clamp",

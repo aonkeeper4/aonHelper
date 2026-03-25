@@ -12,4 +12,9 @@ dreamDashThroughTransitionController.placements = {
     }
 }
 
+dreamDashThroughTransitionController.fieldOrder = {
+    "x", "y",
+    "flag"
+}
+
 return dreamDashThroughTransitionController

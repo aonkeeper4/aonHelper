@@ -22,6 +22,13 @@ reboundModifyController.placements = {
         }
     }
 }
+
+reboundModifyController.fieldOrder = {
+    "x", "y",
+    "leftRightXMode", "leftRightYMode", "leftRightXModifier", "leftRightYModifier",
+    "topXMode", "topYMode", "topXModifier", "topYModifier",
+    "refillDash", "flag"
+}
 reboundModifyController.fieldInformation = {
     leftRightXMode = {
         fieldType = "integer",

@@ -7,10 +7,17 @@ springSpeedThresholdController.placements = {
     {
         name = "spring_speed_threshold_controller",
         data = {
-            threshold = 240.0,
+            thresholdX = 240.0,
+            thresholdY = 0.0,
             flag = ""
         }
     }
+}
+
+springSpeedThresholdController.fieldOrder = {
+    "x", "y",
+    "thresholdX", "thresholdY",
+    "flag"
 }
 
 return springSpeedThresholdController

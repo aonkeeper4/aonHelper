@@ -1,6 +1,7 @@
 local drawableRectangle = require("structs.drawable_rectangle")
 local drawableLine = require("structs.drawable_line")
 local utils = require("utils")
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 
 local darkerMatter = {}
 
@@ -50,7 +51,7 @@ darkerMatter.fieldInformation = {
 }
 
 local function valueOrFallbackIfEmpty(value, fallback)
-    return ((value or "") ~= "") and value or fallback
+    return (value or "" ~= "") and value or fallback
 end
 
 function darkerMatter.sprite(room, entity)
@@ -76,6 +77,22 @@ function darkerMatter.sprite(room, entity)
     end
 
     return sprites
+end
+
+function darkerMatter.rotate(room, entity, direction)
+    local warpHorizontal = entity.warpHorizontal or false
+    local warpVertical = entity.warpVertical or false
+    
+    local shouldRotate = aonHelper.mod(direction, 2) ~= 0
+    if not shouldRotate then return end
+
+    if warpHorizontal and not warpVertical then
+        entity.warpHorizontal = false
+        entity.warpVertical = true
+    elseif warpVertical and not warpHorizontal then
+        entity.warpHorizontal = true
+        entity.warpVertical = false
+    end
 end
 
 return darkerMatter

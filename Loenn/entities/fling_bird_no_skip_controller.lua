@@ -12,4 +12,9 @@ flingBirdNoSkipController.placements = {
     }
 }
 
+flingBirdNoSkipController.fieldOrder = {
+    "x", "y",
+    "flag"
+}
+
 return flingBirdNoSkipController
