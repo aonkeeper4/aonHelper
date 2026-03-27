@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Sprites>
-    <aonHelper_resizableHeart path="collectables/aonHelper/resizableHeart/heart" start="spin">
+    <resizableHeart path="collectables/aonHelper/resizableHeart/heart" start="spin">
         <Center/>
         <Loop id="idle" path="" frames="0" />
         <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
         <Loop id="fastspin" path="" delay="0.1"/>
-    </aonHelper_resizableHeart>
-    <aonHelper_resizableHeartOutline path="collectables/aonHelper/resizableHeart/outline" start="spin">
+    </resizableHeart>
+    <resizableHeartOutline path="collectables/aonHelper/resizableHeart/outline" start="spin">
         <Center/>
         <Loop id="idle" path="" frames="0" />
         <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
         <Loop id="fastspin" path="" delay="0.1"/>
-    </aonHelper_resizableHeartOutline>
+    </resizableHeartOutline>
 
-    <aonHelper_legacyFeatherDashSwitch path="objects/aonHelper/featherDashSwitch/legacy" start="idle">
+    <legacyFeatherDashSwitch path="objects/aonHelper/featherDashSwitch/legacy" start="idle">
         <Justify x="0.5" y="0.5"/>
         <Loop id="idle" path="" delay="0.08" frames="0-20"/>
         <Loop id="pushed" path="" delay="0.08" frames="27"/>
         <Anim id="push" path="" delay="0.07" frames="21-27" goto="pushed"/>
-    </aonHelper_legacyFeatherDashSwitch>
-    <aonHelper_featherDashSwitch path="objects/aonHelper/featherDashSwitch/" start="idle">
+    </legacyFeatherDashSwitch>
+    <featherDashSwitch path="objects/aonHelper/featherDashSwitch/" start="idle">
         <Justify x="0.5" y="0.5"/>
         <Loop id="idle" path="" delay="0.08" frames="0-20"/>
         <Loop id="pushed" path="" delay="0.08" frames="27"/>
         <Anim id="push" path="" delay="0.07" frames="21-27" goto="pushed"/>
-    </aonHelper_featherDashSwitch>
+    </featherDashSwitch>
 
-    <aonHelper_darkerMatterWarp path="objects/aonHelper/darkerMatter/" start="boost">
+    <darkerMatterWarp path="objects/aonHelper/darkerMatter/" start="boost">
         <Loop id="boost" path="warp" delay="0.06" frames="0-21"/>
-    </aonHelper_darkerMatterWarp>
+    </darkerMatterWarp>
     
-    <aonHelper_lockBlockLock path="objects/aonHelper/lockBlocks/lock" start="idle">
+    <lockBlockLock path="objects/aonHelper/lockBlocks/lock" start="idle">
         <Justify x="0.5" y="0.5" />
         <Loop id="idle" delay="0.1" frames="0"/>
         <Anim id="open" delay="0.06" frames="0-9"/>
         <Anim id="burst" delay="0.06" frames="10-18"/>
 
         <Metadata bounds="-16,-16,32,32;-15,-16,30,32;-16,-16,32,32;-15,-16,30,32;-20,-16,40,32;-22,-16,44,32;-23,-16,46,32;-23,-16,46,32;-27,-10,54,20;-35,-3,70,5;x;x;x;x;x;x;x;x;x"/>
-    </aonHelper_lockBlockLock>
+    </lockBlockLock>
 </Sprites>

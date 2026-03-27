@@ -12,7 +12,7 @@ namespace Celeste.Mod.aonHelper.Entities;
 [CustomEntity("aonHelper/GlassLockBlock", "MoreLockBlocks/GlassLockBlock")]
 public class GlassLockBlock : BaseLockBlock
 {
-    private const string SpriteID = "aonHelper_lockBlockLock";
+    private const string SpriteID = "lockBlockLock";
 
     private List<Rectangle?> frameMetadata;
     

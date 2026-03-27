@@ -51,7 +51,7 @@ public class FeatherDashSwitch : DashSwitch
         Remove(sprite);
         
         sprite = string.IsNullOrEmpty(spritePath)
-            ? aonHelperGFX.SpriteBank.Create("aonHelper_featherDashSwitch")
+            ? aonHelperGFX.SpriteBank.Create("featherDashSwitch")
             : BuildSprite(spritePath);
         sprite.Position = spritePos;
         sprite.Rotation = spriteRot;

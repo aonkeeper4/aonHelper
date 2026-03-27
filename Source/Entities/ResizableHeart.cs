@@ -1,6 +1,7 @@
 using Celeste.Mod.Entities;
 using Monocle;
 using Microsoft.Xna.Framework;
+using System;
 using System.Linq;
 
 namespace Celeste.Mod.aonHelper.Entities;
@@ -111,8 +112,8 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
         }
         else
         {
-            sprite = aonHelperGFX.SpriteBank.Create("aonHelper_resizableHeart");
-            spriteOutline = aonHelperGFX.SpriteBank.Create("aonHelper_resizableHeartOutline");
+            sprite = aonHelperGFX.SpriteBank.Create("resizableHeart");
+            spriteOutline = aonHelperGFX.SpriteBank.Create("resizableHeartOutline");
             sprite.Color = IsGhost && !fake && !disableGhost ? Color.Lerp(color, Color.White, 0.8f) * 0.8f : color;
             shineParticle = new ParticleType(P_BlueShine) { Color = color };
         }
@@ -147,11 +148,19 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     private static Sprite BuildSprite(string spritePath)
     {
         Sprite sprite = new(GFX.Game, spritePath);
+        int frameCount = GFX.Game.GetAtlasSubtextures(spritePath).Count;
+        if (frameCount <= 0)
+            throw new ArgumentException($"No sprites were found at path '{spritePath}'.");
         
         // <Loop id="idle" path="" frames="0" />
         sprite.AddLoop("idle", "", 0f, 0);
         // <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
-        sprite.AddLoop("spin", "", 0.1f, Enumerable.Repeat(0, 10).Concat(Enumerable.Range(1, 13)).ToArray());
+        int[] spinFrames = Enumerable.Repeat(0, 10)
+                                     .Concat(frameCount > 1
+                                         ? Enumerable.Range(1, frameCount - 1)
+                                         : [])
+                                     .ToArray();
+        sprite.AddLoop("spin", "", 0.1f, spinFrames);
         // <Loop id="fastspin" path="" delay="0.1"/>
         sprite.AddLoop("fastspin", "", 0.1f);
 
@@ -217,30 +226,27 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     
     private static void HeartGem_OnHoldable(On.Celeste.HeartGem.orig_OnHoldable orig, HeartGem self, Holdable holdable)
     {
-        if (self is not ResizableHeart resizable)
+        if (self is not ResizableHeart { Visible: true, fake: true } resizable
+            || !holdable.Dangerous(resizable.holdableCollider))
         {
             orig(self, holdable);
             return;
         }
         
-        Player entity = resizable.Scene.Tracker.GetEntity<Player>();
-        if (resizable.fake && resizable.Visible && holdable.Dangerous(resizable.holdableCollider))
-            resizable.CollectFake(entity, holdable.GetSpeed().Angle());
-        else
-            orig(self, holdable);
+        Player player = resizable.Scene.Tracker.GetEntity<Player>();
+        resizable.CollectFake(player, holdable.GetSpeed().Angle());
     }
 
     private static void HeartGem_OnPlayer(On.Celeste.HeartGem.orig_OnPlayer orig, HeartGem self, Player player)
     {
-        if (self is not ResizableHeart { fake: true } resizable)
+        if (self is not ResizableHeart { Visible: true, fake: true } resizable)
         {
             orig(self, player);
             return;
         }
 
         Level level = resizable.SceneAs<Level>();
-        
-        if (!resizable.Visible || level.Frozen)
+        if (level.Frozen)
             return;
         
         if (player.DashAttacking)

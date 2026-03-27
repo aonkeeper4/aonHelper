@@ -36,7 +36,7 @@ public abstract class BaseLockBlock : Solid
         string spritePath,
         string unlockSfx, bool stepMusicProgress,
         OpeningSettingsData openingSettings,
-        string defaultSpriteId = "aonHelper_lockBlockLock", string defaultUnlockSfx = SFX.game_03_key_unlock)
+        string defaultSpriteId = "lockBlockLock", string defaultUnlockSfx = SFX.game_03_key_unlock)
         : base(position, 32f, 32f, false)
     {
         DisableLightsInside = false;

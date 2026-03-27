@@ -229,29 +229,18 @@ public class GlassLockBlockController : Entity
         Vector2 cameraPos = SceneAs<Level>().Camera.Position;
         GlassLockBlock[] glassBlocks = GetGlassBlocksToAffect();
         aonHelperGFX.QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out _);
+        Dictionary<GlassLockBlock, Rectangle> blockRenderBounds = glassBlocks.Where(block => block.RenderBounds is not null)
+                                                                             .ToDictionary(block => block, block => block.RenderBounds ?? new Rectangle(0, 0, -1, -1));
 
-        foreach (GlassLockBlock block in glassBlocks)
-        {
-            if (block.RenderBounds is not { } rb)
-                continue;
-            
+        foreach ((GlassLockBlock block, Rectangle rb) in blockRenderBounds)
             Draw.Rect(block.Center.X + rb.Left, block.Center.Y + rb.Top, rb.Width, rb.Height, BgColor);
-        }
-
-        foreach (GlassLockBlock block in glassBlocks)
+        foreach ((GlassLockBlock block, Rectangle rb) in blockRenderBounds)
         {
-            if (block.RenderBounds is not { } rb)
-                continue;
-            
             Rectangle clipTarget = new((int)(block.Center.X + rb.Left - cameraPos.X), (int)(block.Center.Y + rb.Top - cameraPos.Y), rb.Width, rb.Height);
             Draw.SpriteBatch.Draw(starsBuffer, block.Center + rb.TopLeft(), clipTarget, Color.White);
         }
-
-        foreach (GlassLockBlock block in glassBlocks)
+        foreach ((GlassLockBlock block, Rectangle rb) in blockRenderBounds)
         {
-            if (block.RenderBounds is not { } rb)
-                continue;
-            
             Rectangle clipTarget = new((int)(block.Center.X + rb.Left - cameraPos.X), (int)(block.Center.Y + rb.Top - cameraPos.Y), rb.Width, rb.Height);
             Draw.SpriteBatch.Draw(beamsBuffer, block.Center + rb.TopLeft(), clipTarget, Color.White);
         }

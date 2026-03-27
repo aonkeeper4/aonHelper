@@ -25,7 +25,7 @@ internal class LegacyFeatherDashSwitch : DashSwitch
         sprite.Stop();
         Remove(sprite);
         
-        sprite = string.IsNullOrEmpty(spriteDir) ? aonHelperGFX.SpriteBank.Create("aonHelper_legacyFeatherDashSwitch") : BuildSprite(spriteDir);
+        sprite = string.IsNullOrEmpty(spriteDir) ? aonHelperGFX.SpriteBank.Create("legacyFeatherDashSwitch") : BuildSprite(spriteDir);
         sprite.Position = spritePos;
         sprite.Rotation = spriteRot;
         Add(sprite);
