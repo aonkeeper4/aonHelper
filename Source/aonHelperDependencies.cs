@@ -3,6 +3,8 @@ namespace Celeste.Mod.aonHelper;
 public static class aonHelperDependencies
 {
     // add mods to this class if we actually need to know they exist at load time, i.e. we need to do more than just modinterop
+
+    private const string LogID = $"{nameof(aonHelper)}/{nameof(aonHelperDependencies)}";
     
     #region DzhakeHelper
     
@@ -43,17 +45,28 @@ public static class aonHelperDependencies
     {
         foreach ((EverestModuleMetadata metadata, DependencyState state) in Dependencies)
         {
-            if (!state.Loaded && Everest.Loader.TryGetDependency(metadata, out EverestModule module))
-                state.Loaded = state.Load?.Invoke(module) ?? true;
+            if (state.Loaded || !Everest.Loader.TryGetDependency(metadata, out EverestModule module))
+                continue;
+            
+            bool loaded = state.Load?.Invoke(module) ?? true;
+            state.Loaded = loaded;
+                
+            if (loaded)
+                Logger.Info(LogID, $"Registered support for {metadata.Name} (version {metadata.Version}).");
         }
     }
     
     internal static void Unload()
     {
-        foreach (DependencyState state in Dependencies.Values.Where(state => state.Loaded))
+        foreach ((EverestModuleMetadata metadata, DependencyState state) in Dependencies)
         {
+            if (!state.Loaded)
+                continue;
+            
             state.Unload?.Invoke();
             state.Loaded = false;
+            
+            Logger.Info(LogID, $"Unregistered support for {metadata.Name}.");
         }
     }
 }

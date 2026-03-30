@@ -1,9 +1,11 @@
 namespace Celeste.Mod.aonHelper.Components;
 
 [Tracked]
-public class UnforgivingPlayerCollider(Func<Player, Vector2, bool> onCollide, Collider collider = null) : Component(false, false)
+public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandler onCollide, Collider collider = null) : Component(false, false)
 {
     private static readonly string[] EntitySIDPrefixes = [UnforgivingSpikes.EntitySIDPrefix];
+
+    public delegate bool CollisionHandler(Player player, Vector2 moveDir);
 
     private bool Check(Player player, Vector2 moveDir, Vector2? checkPosition = null)
     {
@@ -24,9 +26,7 @@ public class UnforgivingPlayerCollider(Func<Player, Vector2, bool> onCollide, Co
     
     [OnLoad]
     internal static void Load()
-    {
-        HookHelper.HookLazyLoadingManager.Register(nameof(UnforgivingSpikes), LazyLoad, LazyUnload);
-    }
+        => HookHelper.HookLazyLoadingManager.Register(nameof(UnforgivingPlayerCollider), LazyLoad, LazyUnload);
 
     private static bool LazyLoad(MapData mapData)
     {
