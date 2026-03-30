@@ -26,17 +26,16 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
     
     [OnLoad]
     internal static void Load()
-        => HookHelper.HookLazyLoadingManager.Register(nameof(UnforgivingPlayerCollider), LazyLoad, LazyUnload);
+        => HookHelper.HookLazyLoadingManager.Register(nameof(UnforgivingPlayerCollider), ShouldLazyLoad, LazyLoad, LazyUnload);
 
-    private static bool LazyLoad(MapData mapData)
+    private static bool ShouldLazyLoad(MapData mapData)
+        => mapData.Levels.SelectMany(levelData => levelData.Entities)
+                         .Any(entityData => EntitySIDPrefixes.Any(prefix => entityData.Name.StartsWith(prefix)));
+    
+    private static void LazyLoad()
     {
-        if (mapData.Levels.SelectMany(levelData => levelData.Entities)
-                          .All(entityData => EntitySIDPrefixes.All(p => !entityData.Name.StartsWith(p))))
-            return false;
-        
         IL.Celeste.Actor.MoveHExact += Actor_MoveHExact;
         IL.Celeste.Actor.MoveVExact += Actor_MoveVExact;
-        return true;
     }
 
     private static void LazyUnload()

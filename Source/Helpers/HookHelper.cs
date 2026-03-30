@@ -83,43 +83,42 @@ public class HookHelper
     public static class HookLazyLoadingManager
     {
         private const string LogID = $"{nameof(aonHelper)}/{nameof(HookLazyLoadingManager)}";
+
+        public delegate bool ShouldLazyLoadHandler(MapData mapData);
+        public delegate void LazyLoadHandler();
+        public delegate void LazyUnloadHandler();
         
-        public delegate bool HookLoadHandler(MapData mapData);
-        public delegate void HookUnloadHandler();
-        
-        private class HookState(HookLoadHandler load, HookUnloadHandler unload)
+        private class HookState(ShouldLazyLoadHandler shouldLazyLoad , LazyLoadHandler lazyLoad, LazyUnloadHandler lazyUnload)
         {
             public bool Loaded;
-            
-            public readonly HookLoadHandler Load = load;
-            public readonly HookUnloadHandler Unload = unload;
+
+            public readonly ShouldLazyLoadHandler ShouldLazyLoad = shouldLazyLoad;
+            public readonly LazyLoadHandler LazyLoad = lazyLoad;
+            public readonly LazyUnloadHandler LazyUnload = lazyUnload;
         }
         private static readonly Dictionary<string, HookState> Hooks = new();
         
-        public static void Register(string tag, HookLoadHandler load, HookUnloadHandler unload)
-            => Hooks.TryAdd(tag, new HookState(load, unload));
+        public static void Register(string tag, ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler load, LazyUnloadHandler unload)
+            => Hooks.TryAdd(tag, new HookState(shouldLazyLoad, load, unload));
         
         private static void UpdateHooks(Session session)
         {
-            bool load = session is not null;
             foreach ((string tag, HookState state) in Hooks)
             {
-                if (load == state.Loaded)
+                bool shouldLoad = session?.MapData is { } mapData && state.ShouldLazyLoad(mapData);
+                if (shouldLoad == state.Loaded)
                     continue;
 
-                if (load)
+                if (shouldLoad)
                 {
-                    bool loaded = state.Load(session.MapData);
-                    state.Loaded = loaded;
-                    
-                    if (loaded)
-                        Logger.Info(LogID, $"Lazily loaded hooks for {tag}.");
+                    state.LazyLoad();
+                    state.Loaded = true;
+                    Logger.Info(LogID, $"Lazily loaded hooks for {tag}.");
                 }
                 else
                 {
-                    state.Unload();
+                    state.LazyUnload();
                     state.Loaded = false;
-                    
                     Logger.Info(LogID, $"Lazily unloaded hooks for {tag}.");
                 }
             }
