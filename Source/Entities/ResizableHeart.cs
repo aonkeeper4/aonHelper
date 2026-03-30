@@ -142,19 +142,11 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     private static Sprite BuildSprite(string spritePath)
     {
         Sprite sprite = new(GFX.Game, spritePath);
-        int frameCount = GFX.Game.GetAtlasSubtextures(spritePath).Count;
-        if (frameCount <= 0)
-            throw new ArgumentException($"No sprites were found at path '{spritePath}'.");
         
         // <Loop id="idle" path="" frames="0" />
         sprite.AddLoop("idle", "", 0f, 0);
         // <Loop id="spin" path="" frames="0*10,1-13" delay="0.1"/>
-        int[] spinFrames = Enumerable.Repeat(0, 10)
-                                     .Concat(frameCount > 1
-                                         ? Enumerable.Range(1, frameCount - 1)
-                                         : [])
-                                     .ToArray();
-        sprite.AddLoop("spin", "", 0.1f, spinFrames);
+        sprite.AddLoop("spin", "", 0.1f, Enumerable.Repeat(0, 10).Concat(Enumerable.Range(1, 13)).ToArray());
         // <Loop id="fastspin" path="" delay="0.1"/>
         sprite.AddLoop("fastspin", "", 0.1f);
 
