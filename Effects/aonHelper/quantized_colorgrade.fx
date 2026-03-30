@@ -1,4 +1,5 @@
 // i have verified that this has the exact same behaviour as the vanilla shader when all custom parameters are 0
+// i agree it is a bit evil but there's not rly another way :fire:
 
 texture tex : register(t0);
 sampler tex_sampler : register(s0);
