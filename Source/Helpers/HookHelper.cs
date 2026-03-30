@@ -88,7 +88,7 @@ public class HookHelper
         public delegate void LazyLoadHandler();
         public delegate void LazyUnloadHandler();
         
-        private class HookState(ShouldLazyLoadHandler shouldLazyLoad , LazyLoadHandler lazyLoad, LazyUnloadHandler lazyUnload)
+        private class HookState(ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler lazyLoad, LazyUnloadHandler lazyUnload)
         {
             public bool Loaded;
 
