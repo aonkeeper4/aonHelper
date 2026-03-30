@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Helpers;
 
-public class HookHelper
+public static class HookHelper
 {
     public const string DetourConfigID = "aonHelper";
     public const string StyleMaskHelperDetourConfigID = "StyleMaskHelper";
@@ -80,6 +80,7 @@ public class HookHelper
         { }
     }
 
+    // heavily referenced from gravityhelper
     public static class HookLazyLoadingManager
     {
         private const string LogID = $"{nameof(aonHelper)}/{nameof(HookLazyLoadingManager)}";
@@ -131,7 +132,7 @@ public class HookHelper
         {
             Hooks.Clear();
             
-            // i'm not entirely sure whether we should be using the everest events? but gravityhelper doesn't so
+            // i'm not sure whether we could be using everest events but applying hooks on a different thread (in `LevelLoader`'s case) doesn't sound like a good idea
             On.Celeste.LevelLoader.ctor += LevelLoader_ctor;
             On.Celeste.OverworldLoader.ctor += OverworldLoader_ctor;
         }
@@ -155,7 +156,7 @@ public class HookHelper
         {
             orig(self, startmode, snow);
 
-            // i assume this is for collabutils2 support
+            // i assume this is for collabutils2 support?
             if (startmode is (Overworld.StartMode) (-1))
                 return;
             

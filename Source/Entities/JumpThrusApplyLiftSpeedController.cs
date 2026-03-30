@@ -96,9 +96,9 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string conditio
             instr => instr.MatchPop()))
             throw new HookHelper.HookException(il, "Unable to find `entity.TreatNaive` if-else to modify.");
         
-        // make the `br.s` point to our `PostApplyLiftSpeed` call. this is technically destructive but  ehh if it becomes a problem i'll fix it
-        cursor.Next!.OpCode = OpCodes.Br; // just in case a `br.s` can't be used somehow
-        cursor.Next!.Operand = postApplyLiftSpeed.Target!;
+        // make the `br.s` point to our `PostApplyLiftSpeed` call
+        cursor.Next!.OpCode = OpCodes.Br; // just in case a `br.s` can't be used somehow. should still match the same, if it doesn't then fix ur mod
+        cursor.Next!.Operand = postApplyLiftSpeed.Target!; // this is technically destructive but  ehh if it becomes a problem i'll fix it
 
         return;
 
