@@ -1,12 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Monocle;
-using Microsoft.Xna.Framework;
-using System;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities.Legacy;
 
 [CustomEntity("aonHelper/FeatherDashSwitch")]
@@ -119,12 +110,14 @@ internal class LegacyFeatherDashSwitch : DashSwitch
     
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.Player.OnCollideH += Player_OnCollideH;
         IL.Celeste.Player.OnCollideV += Player_OnCollideV;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.Player.OnCollideH -= Player_OnCollideH;

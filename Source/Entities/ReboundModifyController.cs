@@ -1,19 +1,11 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
-using System;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/ReboundModifyController")]
 [Tracked]
 public class ReboundModifyController(Vector2 position,
     ReboundModifyController.ReboundData leftRightData, ReboundModifyController.ReboundData topBottomData, bool refillDash,
-    string flag)
-    : FlagAffectedController<ReboundModifyController>(position, flag)
+    string condition)
+    : ConditionalController<ReboundModifyController>(position, condition)
 {
     public struct ReboundData
     {
@@ -53,11 +45,13 @@ public class ReboundModifyController(Vector2 position,
     
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.Player.Rebound += Player_Rebound;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.Player.Rebound -= Player_Rebound;

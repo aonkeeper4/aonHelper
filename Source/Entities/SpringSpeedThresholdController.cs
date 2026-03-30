@@ -1,17 +1,10 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Microsoft.Xna.Framework;
-using Monocle;
-using MonoMod.Cil;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 // threshold by sungazer reference
 [CustomEntity("aonHelper/SpringSpeedThresholdController")]
 [Tracked]
-public class SpringSpeedThresholdController(Vector2 position, float thresholdX, float thresholdY, string flag)
-    : FlagAffectedController<SpringSpeedThresholdController>(position, flag)
+public class SpringSpeedThresholdController(Vector2 position, float thresholdX, float thresholdY, string condition)
+    : ConditionalController<SpringSpeedThresholdController>(position, condition)
 {
     private readonly Vector2 threshold = new(thresholdX, thresholdY);
     
@@ -21,12 +14,14 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
     
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.Player.SideBounce += Player_SideBounce;
         IL.Celeste.Spring.OnCollide += Spring_OnCollide;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.Player.SideBounce -= Player_SideBounce;

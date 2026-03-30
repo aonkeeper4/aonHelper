@@ -1,7 +1,4 @@
-using Monocle;
-using System;
-
-namespace Celeste.Mod.aonHelper.Helpers;
+namespace Celeste.Mod.aonHelper.Components;
 
 public class TypeRestrictedComponent<T>(bool active, bool visible) : Component(active, visible)
     where T : Entity

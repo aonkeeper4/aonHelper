@@ -1,6 +1,3 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Monocle;
 using System.IO;
 using System.Xml;
 
@@ -30,7 +27,7 @@ public static class EffectHelper
         effect = null;
     }
 
-    public static Atlas LoadAtlasFromMod(string path)
+    public static Atlas LoadAtlas(string path)
     {
         Atlas atlas = new() { Sources = [] };
 

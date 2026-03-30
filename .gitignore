@@ -363,3 +363,8 @@ MigrationBackup/
 
 # Mod audio
 Audio/
+
+# Referenced DLLs / tools
+lib/
+lib-stripped/
+Effects/aonHelper/lib/

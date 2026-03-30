@@ -1,14 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FgStylegroundBloomController")]
@@ -52,6 +41,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : E
     
     #endregion
     
+    [OnLoad]
     internal static void Load()
     {
         // guarantee hook order
@@ -59,6 +49,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : E
             IL.Celeste.Level.Render += Level_Render;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.Level.Render -= Level_Render;
@@ -75,7 +66,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : E
          * IL_00af: ldarg.0
          * IL_00b0: callvirt instance void Celeste.BloomRenderer::Apply(class Monocle.VirtualRenderTarget, class Monocle.Scene)
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+        if (!cursor.TryGotoNextBestFit(MoveType.Before,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("Bloom"),
             instr => instr.MatchLdsfld(typeof(GameplayBuffers), "Level"),
@@ -99,7 +90,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : E
          * IL_00bb: ldarg.0
          * IL_00bc: callvirt instance void Monocle.Renderer::Render(class Monocle.Scene)
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+        if (!cursor.TryGotoNextBestFit(MoveType.Before,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("Foreground"),
             instr => instr.MatchLdarg0(),

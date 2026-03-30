@@ -1,17 +1,9 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FlingBirdNoSkipController")]
 [Tracked]
-public class FlingBirdNoSkipController(Vector2 position, string flag)
-    : FlagAffectedController<FlingBirdNoSkipController>(position, flag)
+public class FlingBirdNoSkipController(Vector2 position, string condition)
+    : ConditionalController<FlingBirdNoSkipController>(position, condition)
 {
     public FlingBirdNoSkipController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("flag"))
@@ -19,11 +11,13 @@ public class FlingBirdNoSkipController(Vector2 position, string flag)
 
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.FlingBird.Update += FlingBird_Update;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.FlingBird.Update -= FlingBird_Update;

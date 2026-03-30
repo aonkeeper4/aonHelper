@@ -1,17 +1,8 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using System;
-using MonoMod.Cil;
-using MonoMod;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 // i really hate to do this but i don't know how to preserve the legacy behaviour + it's been used in too many maps to just  fix the bugs
 [CustomEntity("aonHelper/FeatherDashSwitchV2")]
+[TrackedAs(typeof(DashSwitch))]
 public class FeatherDashSwitch : DashSwitch
 {
     private new readonly ParticleType P_PressA, P_PressB;
@@ -229,6 +220,7 @@ public class FeatherDashSwitch : DashSwitch
     
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         On.Celeste.DashSwitch.OnDashed += DashSwitch_OnDashed;
@@ -244,6 +236,7 @@ public class FeatherDashSwitch : DashSwitch
         IL.Celeste.Player.OnCollideV += Player_OnCollideHV;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         On.Celeste.DashSwitch.OnDashed -= DashSwitch_OnDashed;

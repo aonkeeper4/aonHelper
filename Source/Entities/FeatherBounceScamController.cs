@@ -1,17 +1,9 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FeatherBounceScamController")]
 [Tracked]
-public class FeatherBounceScamController(Vector2 position, float featherBounceScamThreshold, string flag)
-    : FlagAffectedController<FeatherBounceScamController>(position, flag)
+public class FeatherBounceScamController(Vector2 position, float featherBounceScamThreshold, string condition)
+    : ConditionalController<FeatherBounceScamController>(position, condition)
 {
     private readonly float featherBounceScamThreshold = featherBounceScamThreshold;
 
@@ -21,12 +13,14 @@ public class FeatherBounceScamController(Vector2 position, float featherBounceSc
 
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.Player.OnCollideH += ControlFeatherBounceScam;
         IL.Celeste.Player.OnCollideV += ControlFeatherBounceScam;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.Player.OnCollideH -= ControlFeatherBounceScam;

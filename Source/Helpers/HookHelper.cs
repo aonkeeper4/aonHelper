@@ -1,9 +1,4 @@
-using Mono.Cecil.Cil;
-using Monocle;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
-using System;
 using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Helpers;
@@ -41,7 +36,7 @@ public class HookHelper
 
         ILLabel failedCheck = null;
 
-        // todo: add support for ceq-based checks
+        // todo: add support for `ceq`-based checks
         ILCursor cloned = cursor.Clone();
         if (!cloned.TryGotoNext(MoveType.After, instr => equal ^ canShortCircuit ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck)))
             return;
@@ -83,5 +78,91 @@ public class HookHelper
         public HookException(ILContext il, string message, Exception inner = null)
             : this($"ILHook application on method {il.Method.FullName} failed: {message}", inner)
         { }
+    }
+
+    public static class HookLazyLoadingManager
+    {
+        private const string LogID = $"{nameof(aonHelper)}/{nameof(HookLazyLoadingManager)}";
+        
+        public delegate bool HookLoadHandler(MapData mapData);
+        public delegate void HookUnloadHandler();
+        
+        private class HookState(HookLoadHandler load, HookUnloadHandler unload)
+        {
+            public bool Loaded;
+            
+            public readonly HookLoadHandler Load = load;
+            public readonly HookUnloadHandler Unload = unload;
+        }
+        private static readonly Dictionary<string, HookState> Hooks = new();
+        
+        public static void Register(string tag, HookLoadHandler load, HookUnloadHandler unload)
+            => Hooks.TryAdd(tag, new HookState(load, unload));
+        
+        private static void UpdateHooks(Session session)
+        {
+            bool load = session is not null;
+            foreach ((string tag, HookState state) in Hooks)
+            {
+                if (load == state.Loaded)
+                    continue;
+
+                if (load)
+                {
+                    bool loaded = state.Load(session.MapData);
+                    state.Loaded = loaded;
+                    
+                    if (loaded)
+                        Logger.Info(LogID, $"Lazily loaded hooks for {tag}.");
+                }
+                else
+                {
+                    state.Unload();
+                    state.Loaded = false;
+                    
+                    Logger.Info(LogID, $"Lazily unloaded hooks for {tag}.");
+                }
+            }
+        }
+
+        #region Hooks
+    
+        // we need to make sure these are loaded *before* any other hooks are loaded and *after* all other hooks are unloaded, so we don't use the mod lifecycle attributes
+        internal static void Load()
+        {
+            Hooks.Clear();
+            
+            // i'm not entirely sure whether we should be using the everest events? but gravityhelper doesn't so
+            On.Celeste.LevelLoader.ctor += LevelLoader_ctor;
+            On.Celeste.OverworldLoader.ctor += OverworldLoader_ctor;
+        }
+
+        internal static void Unload()
+        {
+            UpdateHooks(null);
+            
+            On.Celeste.LevelLoader.ctor -= LevelLoader_ctor;
+            On.Celeste.OverworldLoader.ctor -= OverworldLoader_ctor;
+        }
+        
+        private static void LevelLoader_ctor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startposition)
+        {
+            orig(self, session, startposition);
+
+            UpdateHooks(session);
+        }
+        
+        private static void OverworldLoader_ctor(On.Celeste.OverworldLoader.orig_ctor orig, OverworldLoader self, Overworld.StartMode startmode, HiresSnow snow)
+        {
+            orig(self, startmode, snow);
+
+            // i assume this is for collabutils2 support
+            if (startmode is (Overworld.StartMode) (-1))
+                return;
+            
+            UpdateHooks(null);
+        }
+        
+        #endregion
     }
 }

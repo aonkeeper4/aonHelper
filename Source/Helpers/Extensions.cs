@@ -1,9 +1,3 @@
-using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
-using Monocle;
-using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Celeste.Mod.aonHelper.Helpers;

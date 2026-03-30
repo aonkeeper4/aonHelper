@@ -1,54 +1,87 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+    <!-- assembly metadata -->
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>aonHelper</AssemblyName>
         <RootNamespace>Celeste.Mod.aonHelper</RootNamespace>
         <LangVersion>preview</LangVersion>
-        <CelestePrefix Condition="'$(CelestePrefix)' == '' And Exists('..\..\..\Celeste.dll')">..\..\..</CelestePrefix>
-        <CelestePrefix Condition="'$(CelestePrefix)' == ''">lib-stripped</CelestePrefix>
-        <ZippedFiles>..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Ahorn\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso</ZippedFiles>
+        <PathMap>$(MSBuildProjectDirectory)=aonHelper/</PathMap>
     </PropertyGroup>
 
-    <!--Disable "Copy Local" for all references-->
+    <!-- disable "Copy Local" for all references -->
     <ItemDefinitionGroup>
         <PackageReference PrivateAssets="all" ExcludeAssets="runtime" />
         <Reference Private="false" />
     </ItemDefinitionGroup>
 
+    <!-- references from the celeste install itself -->
+    <PropertyGroup>
+        <CelestePrefix Condition="'$(CelestePrefix)' == '' And Exists('..\..\..\Celeste.dll')">..\..\..</CelestePrefix>
+        <CelestePrefix Condition="'$(CelestePrefix)' == ''">lib-stripped</CelestePrefix>
+    </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="MonoMod.RuntimeDetour" Version="25.3.1" PrivateAssets="all" ExcludeAssets="runtime" />
-        <PackageReference Include="MonoMod.Patcher" Version="25.0.0-prerelease.2" />
-        <PackageReference Include="CelesteAnalyzer" Version="*" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="CelesteMod.Publicizer" Version="*" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll" Private="false" />
         <Reference Include="$(CelestePrefix)\FNA.dll" Private="false" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Reference Include="$(CelestePrefix)\Mods\Cache\DzhakeHelper.DzhakeHelper.dll" Private="false" />
+        <Reference Include="$(CelestePrefix)\YamlDotNet.dll" Private="false" />
     </ItemGroup>
 
+    <!-- references from nuget -->
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0"/>
+        <PackageReference Include="MonoMod.RuntimeDetour" Version="25.3.1" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="MonoMod.Patcher" Version="25.0.0-prerelease.2" />
+        <PackageReference Include="CelesteMod.Publicizer" Version="1.1.2" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
+        <PackageReference Include="CelesteAnalyzer" Version="1.0.3.1" />
+        <PackageReference Include="ModInteropImportGenerator" Version="1.1.3" />
+    </ItemGroup>
+
+    <!-- references from the mod cache -->
+    <PropertyGroup>
+        <ModCachePrefix Condition="$(ModCachePrefix) == '' And '$(CelestePrefix)' == 'lib-stripped'">$(CelestePrefix)</ModCachePrefix>
+        <ModCachePrefix Condition="$(ModCachePrefix) == ''">$(CelestePrefix)\Mods\Cache</ModCachePrefix>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="$(ModCachePrefix)\DzhakeHelper.DzhakeHelper.dll" Private="false" />
+    </ItemGroup>
+    
+    <!-- references from disk -->
+    <PropertyGroup>
+        <DependenciesPrefix>lib</DependenciesPrefix>
+    </PropertyGroup>
+    <ItemGroup>
+        <Analyzer Include="$(DependenciesPrefix)\ModLifecycleAttributes.dll" />
+    </ItemGroup>
+
+    <!-- compile all shaders before building -->
+    <ItemGroup>
+        <EffectFiles Include="..\Effects\**\*.fx" />
+    </ItemGroup>
+    <PropertyGroup>
+        <EffectCompilerPath>..\Effects\aonHelper\lib\fxc.exe</EffectCompilerPath>
+    </PropertyGroup>
+    <Target Name="GetWineStatus" Condition="Exists('$(EffectCompilerPath)')" BeforeTargets="Build">
+        <Exec Command="wine --version" IgnoreExitCode="true">
+            <Output TaskParameter="ExitCode" PropertyName="WineStatus" />
+        </Exec>
+    </Target>
+    <Target Name="CompileShaders" AfterTargets="GetWineStatus" BeforeTargets="Build" Inputs="@(EffectFiles)" Outputs="@(EffectFiles -> '%(RelativeDir)%(Filename).cso')">
+        <Exec Condition="$([MSBuild]::IsOSPlatform('Windows'))" Command="@(EffectFiles -> 'echo &quot;Compiling effect: %(RelativeDir)%(Filename).fx&quot; &amp;&amp; &quot;$(EffectCompilerPath)&quot; &quot;%(RelativeDir)%(Filename).fx&quot; /T fx_2_0 /Fo &quot;%(RelativeDir)%(Filename).cso&quot;')" />
+        <Exec Condition="$([MSBuild]::IsOSUnixLike()) And $(WineStatus) == 0" Command="@(EffectFiles -> 'echo &quot;Compiling effect: %(RelativeDir)%(Filename).fx&quot; &amp;&amp; wine &quot;$(EffectCompilerPath)&quot; &quot;%(RelativeDir)%(Filename).fx&quot; /T fx_2_0 /Fo &quot;%(RelativeDir)%(Filename).cso&quot;')" />
+    </Target>
+
+    <!-- copy files to output directory after building -->
     <Target Name="CopyFiles" AfterTargets="Build" Inputs="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\$(AssemblyName).pdb" Outputs="..\bin\$(AssemblyName).dll;..\bin\$(AssemblyName).pdb">
         <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="..\bin" />
         <Copy SourceFiles="$(OutputPath)\$(AssemblyName).pdb" DestinationFolder="..\bin" />
     </Target>
 
-    <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="$(ZippedFiles)" Outputs="..\aonHelper.zip" Condition="'$(Configuration)' == 'Release'">
-        <ItemGroup>
-            <FilesToPackage Include="$(ZippedFiles)" />
-        </ItemGroup>
-        <PackageMod Files="@(FilesToPackage)" OutputPath="..\aonHelper.zip" />
+    <!-- package the mod when building in release -->
+    <ItemGroup>
+        <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Ahorn\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso" />
+    </ItemGroup>
+    <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="@(ZippedFiles)" Outputs="..\aonHelper.zip" Condition="'$(Configuration)' == 'Release'">
+        <PackageMod Files="@(ZippedFiles)" OutputPath="..\aonHelper.zip" />
     </Target>
-
-    <PropertyGroup>
-        <PathMap>$(MSBuildProjectDirectory)=aonHelper/</PathMap>
-    </PropertyGroup>
-
-    <!-- Inline task used to create a .zip for the mod -->
     <UsingTask TaskName="PackageMod" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
         <ParameterGroup>
             <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
@@ -100,5 +133,4 @@
             </Code>
         </Task>
     </UsingTask>
-
 </Project>

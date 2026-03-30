@@ -1,16 +1,7 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
-using System.Collections.Generic;
-using Celeste.Mod.Entities;
-using System;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
-[Tracked]
 [CustomEntity("aonHelper/GlassLockBlockController", "MoreLockBlocks/GlassLockBlockController")]
+[Tracked]
 public class GlassLockBlockController : Entity
 {
     private static readonly string[] EntitySIDs = ["aonHelper/GlassLockBlockController", "MoreLockBlocks/GlassLockBlockController"];
@@ -72,7 +63,7 @@ public class GlassLockBlockController : Entity
             Add(new DisplacementRenderHook(OnDisplacementRender));
 
         if (persistent)
-            aonHelperModule.Session.GlassLockBlockCurrentSettings = new aonHelperModuleSession.GlassLockBlockState
+            aonHelperModule.Session.GlassLockBlockCurrentSettings = new aonHelperSession.GlassLockBlockState
             {
                 BgColor = bgColor,
                 LineColor = lineColor,
@@ -296,11 +287,13 @@ public class GlassLockBlockController : Entity
 
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         Everest.Events.Level.OnLoadLevel += OnLoadLevel;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         Everest.Events.Level.OnLoadLevel += OnLoadLevel;

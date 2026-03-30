@@ -1,18 +1,9 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
-using Monocle;
-using MonoMod.Cil;
-using System.Collections.Generic;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/JumpThrusApplyLiftSpeedController")]
 [Tracked]
-public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag)
-    : FlagAffectedController<JumpThrusApplyLiftSpeedController>(position, flag)
+public class JumpThrusApplyLiftSpeedController(Vector2 position, string condition)
+    : ConditionalController<JumpThrusApplyLiftSpeedController>(position, condition)
 {
     public JumpThrusApplyLiftSpeedController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("flag"))
@@ -20,11 +11,13 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string flag)
     
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.JumpThru.MoveHExact += JumpThru_MoveHExact;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.JumpThru.MoveHExact -= JumpThru_MoveHExact;

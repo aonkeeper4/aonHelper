@@ -1,13 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Monocle;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/DarkerMatter")]
@@ -364,6 +354,7 @@ public class DarkerMatter : Entity
     private static ILHook ilHook_Player_orig_Update;
     private static ILHook ilHook_Player_orig_UpdateSprite;
     
+    [OnLoad]
     internal static void Load()
     {
         // everest events
@@ -379,6 +370,7 @@ public class DarkerMatter : Entity
         ilHook_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookHelper.Bind.NonPublicInstance)!, Player_orig_UpdateSprite);
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         Everest.Events.Player.OnRegisterStates -= OnRegisterStates;

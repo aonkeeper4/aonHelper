@@ -1,19 +1,11 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Microsoft.Xna.Framework;
-using Monocle;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
 using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/DisableAutoCameraOffsetController")]
 [Tracked]
-public class DisableAutoCameraOffsetController(Vector2 position, string flag)
-    : FlagAffectedController<DisableAutoCameraOffsetController>(position, flag)
+public class DisableAutoCameraOffsetController(Vector2 position, string condition)
+    : ConditionalController<DisableAutoCameraOffsetController>(position, condition)
 {
     public DisableAutoCameraOffsetController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("flag"))
@@ -23,11 +15,13 @@ public class DisableAutoCameraOffsetController(Vector2 position, string flag)
     
     private static ILHook ilHook_Player_get_CameraTarget;
 
+    [OnLoad]
     internal static void Load()
     {
         ilHook_Player_get_CameraTarget = new ILHook(typeof(Player).GetMethod("get_CameraTarget", BindingFlags.Public | BindingFlags.Instance)!, Player_get_CameraTarget);
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         ilHook_Player_get_CameraTarget.Dispose();

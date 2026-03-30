@@ -1,8 +1,3 @@
-using Celeste.Mod.aonHelper.Entities;
-using Celeste.Mod.aonHelper.Helpers;
-using Microsoft.Xna.Framework.Graphics;
-using Monocle;
-
 namespace Celeste.Mod.aonHelper;
 
 public static class aonHelperGFX
@@ -46,7 +41,8 @@ public static class aonHelperGFX
     
     #endregion
 
-    internal static void LoadContent()
+    [OnLoadContent]
+    internal static void LoadContent(bool _)
     {
         SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
 
@@ -57,6 +53,7 @@ public static class aonHelperGFX
         #endregion
     }
 
+    [OnUnload]
     internal static void UnloadContent()
     {
         #region Effects

@@ -1,9 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
-using MonoMod.Cil;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/FormationBackdropColorController")]
@@ -19,11 +13,13 @@ public class FormationBackdropColorController(Vector2 position, Color color, flo
     
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.FormationBackdrop.Render += FormationBackdrop_Render;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.FormationBackdrop.Render -= FormationBackdrop_Render;

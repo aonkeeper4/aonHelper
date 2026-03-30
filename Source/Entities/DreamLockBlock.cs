@@ -1,22 +1,12 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using Celeste.Mod.Entities;
-using System.Collections;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
 using Celeste.Mod.DzhakeHelper;
 using Celeste.Mod.DzhakeHelper.Entities;
-using Celeste.Mod.Helpers;
 using System.Runtime.CompilerServices;
-using System;
 using MonoMod.Utils;
-using MonoMod.RuntimeDetour;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
-[Tracked]
 [CustomEntity("aonHelper/DreamLockBlock", "MoreLockBlocks/DreamLockBlock")]
+[Tracked]
 public class DreamLockBlock : BaseLockBlock
 {
     [TrackedAs(typeof(DreamBlock))]
@@ -50,8 +40,11 @@ public class DreamLockBlock : BaseLockBlock
 
         private void SetReverseHelperDummyState(bool value)
         {
-            aonHelperImports.ReverseHelper.ConfigureSetFromEnum?.Invoke(this, 1 << 1, value); // set `alwaysEnable`
-            aonHelperImports.ReverseHelper.ConfigureSetFromEnum?.Invoke(this, 1 << 2, !value); // set `alwaysDisable`
+            if (!ReverseHelper.IsImported)
+                return;
+            
+            ReverseHelper.ConfigureSetFromEnum(this, 1 << 1, value); // set `alwaysEnable`
+            ReverseHelper.ConfigureSetFromEnum(this, 1 << 2, !value); // set `alwaysDisable`
         }
 
         private bool Unlocked => aonHelperModule.Session.UnlockedDreamLockBlocks.Contains(parent.ID); // whether we can change state
@@ -103,6 +96,7 @@ public class DreamLockBlock : BaseLockBlock
         
         private static ILHook ilHook_Player_DashCoroutine;
 
+        [OnLoad]
         public static void Load()
         {
             On.Celeste.DreamBlock.Activate += DreamBlock_Activate;
@@ -122,6 +116,7 @@ public class DreamLockBlock : BaseLockBlock
             }
         }
 
+        [OnUnload]
         public static void Unload()
         {
             On.Celeste.DreamBlock.Activate -= DreamBlock_Activate;

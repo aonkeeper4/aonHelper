@@ -1,7 +1,3 @@
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/SeamlessLightningController")]
@@ -10,11 +6,13 @@ public class SeamlessLightningController(EntityData data, Vector2 offset) : Enti
 {
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         On.Celeste.LightningRenderer.Edge.ctor += LightningRenderer_Edge_ctor;
     }
     
+    [OnUnload]
     internal static void Unload()
     {
         On.Celeste.LightningRenderer.Edge.ctor -= LightningRenderer_Edge_ctor;

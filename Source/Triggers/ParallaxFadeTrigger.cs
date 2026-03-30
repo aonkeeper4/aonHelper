@@ -1,10 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using System.Collections.Generic;
-using System.Linq;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
-
 namespace Celeste.Mod.aonHelper.Triggers;
 
 [CustomEntity("aonHelper/ParallaxFadeTrigger", "aonHelper/ParallaxColorFadeTrigger", "aonHelper/ParallaxAlphaFadeTrigger")]
@@ -18,7 +11,7 @@ public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data
 	
     private readonly PositionModes positionMode = data.Enum("positionMode", PositionModes.LeftToRight);
 
-    private readonly string tagToAffect = string.IsNullOrEmpty(data.Attr("tagToAffect")) ? null : data.Attr("tagToAffect");
+    private readonly string tagToAffect = data.Attr("tagToAffect") is var t && !string.IsNullOrEmpty(t) ? t : null;
     private List<Parallax> allParallaxes;
 
     public override void Awake(Scene scene)

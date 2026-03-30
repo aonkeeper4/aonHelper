@@ -1,5 +1,3 @@
-using Monocle;
-
 namespace Celeste.Mod.aonHelper.Helpers;
 
 public static class RenderTargetHelper

@@ -1,9 +1,6 @@
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-
 namespace Celeste.Mod.aonHelper;
 
-public class aonHelperModuleSession : EverestModuleSession
+public class aonHelperSession : EverestModuleSession
 {
     public class GlassLockBlockState
     {

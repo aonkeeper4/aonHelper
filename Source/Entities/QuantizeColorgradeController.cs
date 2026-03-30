@@ -1,12 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Monocle;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System;
-using System.Linq;
 using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Entities;
@@ -45,6 +36,7 @@ public class QuantizeColorgradeController(
 
     private static Hook hook_ColorGrade_get_Effect;
     
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.ColorGrade.Set_MTexture_MTexture_float += ColorGrade_Set;
@@ -52,6 +44,7 @@ public class QuantizeColorgradeController(
         hook_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, ColorGrade_get_Effect);
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.ColorGrade.Set_MTexture_MTexture_float -= ColorGrade_Set;

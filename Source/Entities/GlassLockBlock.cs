@@ -1,15 +1,7 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using Celeste.Mod.Entities;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
-[Tracked]
 [CustomEntity("aonHelper/GlassLockBlock", "MoreLockBlocks/GlassLockBlock")]
+[Tracked]
 public class GlassLockBlock : BaseLockBlock
 {
     private const string SpriteID = "lockBlockLock";

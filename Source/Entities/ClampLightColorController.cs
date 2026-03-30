@@ -1,9 +1,3 @@
-using Monocle;
-using Microsoft.Xna.Framework;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/ClampLightColorController")]
@@ -42,11 +36,13 @@ public class ClampLightColorController(Vector2 position, Color clampColor, Clamp
 
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         On.Celeste.LightingRenderer.BeforeRender += LightingRenderer_BeforeRender;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         On.Celeste.LightingRenderer.BeforeRender -= LightingRenderer_BeforeRender;

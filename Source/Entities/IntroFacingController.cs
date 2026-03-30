@@ -1,18 +1,9 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Microsoft.Xna.Framework;
-using Monocle;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/IntroFacingController")]
 [Tracked]
-public class IntroFacingController(Vector2 position, Facings facing, string flag)
-    : FlagAffectedController<IntroFacingController>(position, flag)
+public class IntroFacingController(Vector2 position, Facings facing, string condition)
+    : ConditionalController<IntroFacingController>(position, condition)
 {
     private readonly Facings facing = facing;
     
@@ -24,6 +15,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string flag
 
     private static ILHook ilHook_Player_orig_Added;
 
+    [OnLoad]
     internal static void Load()
     {
         On.Celeste.Player.TempleFallUpdate += Player_TempleFallUpdate;
@@ -31,6 +23,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string flag
         ilHook_Player_orig_Added = new ILHook(typeof(Player).GetMethod("orig_Added", HookHelper.Bind.PublicInstance)!, Player_orig_Added);
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         On.Celeste.Player.TempleFallUpdate -= Player_TempleFallUpdate;

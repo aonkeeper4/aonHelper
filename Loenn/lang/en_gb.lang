@@ -43,7 +43,7 @@ entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The
 entities.aonHelper/FeatherBounceScamController.placements.name.feather_bounce_scam_controller=Feather Bounce Scam Controller
 entities.aonHelper/FeatherBounceScamController.placements.description.feather_bounce_scam_controller=A controller that prevents feather bounces from being cancelled when the player's feather timer is low enough.
 entities.aonHelper/FeatherBounceScamController.attributes.description.featherBounceScamThreshold=The time in seconds such that when the player's feather timer is below this amount, any feather bounces attempted will fail. If negative, this will not happen.
-entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This Feather Bounce Scam Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This Feather Bounce Scam Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Rebound Modify Controller
 entities.aonHelper/ReboundModifyController.placements.name.rebound_modify_controller=Modify Rebound Controller
@@ -65,12 +65,12 @@ entities.aonHelper/ReboundModifyController.attributes.description.topYMode=Wheth
 entities.aonHelper/ReboundModifyController.attributes.description.topXModifier=Either a multiplier to the player's current X speed or a value to set it to, depending on the Top Collision X Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.topYModifier=Either a multiplier to the player's current Y speed or a value to set it to, depending on the Top Collision Y Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.refillDash=Whether to refill dash on rebound.
-entities.aonHelper/ReboundModifyController.attributes.description.flag=This Modify Rebound Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/ReboundModifyController.attributes.description.flag=This Modify Rebound Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.name.fling_bird_no_skip_controller=Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.description.fling_bird_no_skip_controller=A controller that prevents Fling Birds' positions from being skipped when the player is too far ahead of them.
-entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This Fling Bird No Skip Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This Fling Bird No Skip Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Fg Styleground Bloom Controller
 entities.aonHelper/FgStylegroundBloomController.placements.name.fg_styleground_bloom_controller=Foreground Styleground Bloom Controller
@@ -160,7 +160,7 @@ entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to 
 entities.aonHelper/LightningCornerboostController.placements.name.lightning_cornerboost_controller=Lightning Wallbounce Controller
 entities.aonHelper/LightningCornerboostController.placements.description.lightning_cornerboost_controller=A controller that grants Fire/Ice Barrier-like solid hitboxes to Lightning.
 entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether Lightning's solid hitboxes should be active always or active only while the player is dashing.
-entities.aonHelper/LightningCornerboostController.attributes.description.flag=This Lightning Wallbounce Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/LightningCornerboostController.attributes.description.flag=This Lightning Wallbounce Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Seamless Lightning Controller
 entities.aonHelper/SeamlessLightningController.placements.name.seamless_lightning_controller=Seamless Lightning Controller
@@ -170,7 +170,7 @@ entities.aonHelper/SeamlessLightningController.placements.description.seamless_l
 entities.aonHelper/IntroFacingController.placements.name.intro_facing_controller=Intro Facing Controller
 entities.aonHelper/IntroFacingController.placements.description.intro_facing_controller=A controller that allows for the map intro animation to face in either direction.
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation. Also affects the temple fall animation.
-entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro Facing Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro Facing Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Quantize Colorgrade Controller
 entities.aonHelper/QuantizeColorgradeController.placements.name.quantize_colorgrade_controller=More Colorgrade Options Controller
@@ -182,7 +182,7 @@ entities.aonHelper/QuantizeColorgradeController.attributes.description.normalize
 # Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dream_dash_through_transition_controller=Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.description.dream_dash_through_transition_controller=A controller that lets screen transitions occur while the player is dashing through a Dream Block.
-entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Glass Lock Block
 entities.aonHelper/GlassLockBlock.placements.name.glass_lock_block=Glass Lock Block
@@ -226,7 +226,7 @@ entities.aonHelper/LightOcclusionFixController.attributes.description.noOcclusio
 # Disable Auto Camera Offset Controller
 entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Disable Auto Camera Offset Controller
 entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller that disables the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster.
-entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Disable Auto Camera Offset Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Disable Auto Camera Offset Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Formation Backdrop Color Controller
 entities.aonHelper/FormationBackdropColorController.placements.name.formation_backdrop_color_controller=Formation Backdrop Color Controller
@@ -236,14 +236,14 @@ entities.aonHelper/FormationBackdropColorController.attributes.description.color
 # JumpThrus Apply LiftSpeed Controller
 entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.name.jumpthrus_apply_liftspeed_controller=JumpThrus Apply LiftSpeed Controller
 entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.description.jumpthrus_apply_liftspeed_controller=A controller that makes moving Jump Through-like entities apply liftboost the same way moving solids do.
-entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This JumpThrus Apply LiftSpeed Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This JumpThrus Apply LiftSpeed Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Spring Speed Threshold Controller
 entities.aonHelper/SpringSpeedThresholdController.placements.name.spring_speed_threshold_controller=Spring Speed Threshold Controller
 entities.aonHelper/SpringSpeedThresholdController.placements.description.spring_speed_threshold_controller=A controller that changes the speed threshold required to activate springs facing the same way as the player is moving.
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresholdX=The maximum value for the player's X speed where they will activate sideways springs that are pointing the same direction as they are moving. If negative, this will never happen.\nDefaults to 240.
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresholdY=The minimum value for the player's Y speed where they will activate upwards springs.\nDefaults to 0.
-entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This Spring Speed Threshold Controller only has an effect if this flag is set. Leave empty for it to be active always.
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This Spring Speed Threshold Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 ### Triggers
 

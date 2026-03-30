@@ -1,13 +1,3 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Microsoft.Xna.Framework;
-using Monocle;
-using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 // todo: make this actually fix all cases
@@ -24,11 +14,13 @@ public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTil
     
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         IL.Celeste.LightingRenderer.DrawLightOccluders += LightingRenderer_DrawLightOccluders;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         IL.Celeste.LightingRenderer.DrawLightOccluders -= LightingRenderer_DrawLightOccluders;

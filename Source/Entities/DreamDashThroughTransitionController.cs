@@ -1,18 +1,9 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Celeste.Mod.Helpers;
-using Monocle;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/DreamDashThroughTransitionController")]
 [Tracked]
-public class DreamDashThroughTransitionController(Vector2 position, string flag)
-    : FlagAffectedController<DreamDashThroughTransitionController>(position, flag)
+public class DreamDashThroughTransitionController(Vector2 position, string condition)
+    : ConditionalController<DreamDashThroughTransitionController>(position, condition)
 {
     public DreamDashThroughTransitionController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("flag"))
@@ -22,6 +13,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string flag)
 
     private static ILHook ilHook_Player_orig_Update;
     
+    [OnLoad]
     internal static void Load()
     {
         On.Celeste.Player.OnBoundsH += Player_OnBoundsH;
@@ -35,6 +27,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string flag)
         IL.Celeste.Level.EnforceBounds += Level_EnforceBounds;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         On.Celeste.Player.OnBoundsH -= Player_OnBoundsH;
@@ -108,12 +101,12 @@ public class DreamDashThroughTransitionController(Vector2 position, string flag)
         ILCursor cursor = new(il);
 
         // IL_0013: call instance void Celeste.Actor::MoveTowardsX(float32, float32, class Celeste.Collision)
-        if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchCall<Actor>("MoveTowardsX")))
+        if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCall<Actor>("MoveTowardsX")))
             throw new HookHelper.HookException(il, "Unable to find call to `Actor.MoveTowardsX`.");
         UseInsteadIfDreamDashing(cursor, NaiveMoveTowardsX);
         
         // IL_002b: call instance void Celeste.Actor::MoveTowardsY(float32, float32, class Celeste.Collision)
-        if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchCall<Actor>("MoveTowardsY")))
+        if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCall<Actor>("MoveTowardsY")))
             throw new HookHelper.HookException(il, "Unable to find call to `Actor.MoveTowardsY`.");
         UseInsteadIfDreamDashing(cursor, NaiveMoveTowardsY);
         
@@ -164,7 +157,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string flag)
          * IL_11d6: ldfld bool Celeste.Player::EnforceLevelBounds
          * IL_11db: brfalse.s IL_11e9
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+        if (!cursor.TryGotoNextBestFit(MoveType.Before,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Player>("StateMachine"),
             instr => instr.MatchCallvirt<StateMachine>("get_State"),

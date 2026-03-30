@@ -1,14 +1,9 @@
-using Celeste.Mod.aonHelper.Helpers;
-using Celeste.Mod.Entities;
-using Microsoft.Xna.Framework;
-using Monocle;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
 [CustomEntity("aonHelper/LightningCornerboostController")]
 [Tracked]
-public class LightningCornerboostController(Vector2 position, bool always, string flag)
-    : FlagAffectedController<LightningCornerboostController>(position, flag)
+public class LightningCornerboostController(Vector2 position, bool always, string condition)
+    : ConditionalController<LightningCornerboostController>(position, condition)
 {
     private class LightningSolidComponent() : TypeRestrictedComponent<Lightning>(true, false)
     {
@@ -81,11 +76,13 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
 
     #region Hooks
 
+    [OnLoad]
     internal static void Load()
     {
         On.Monocle.Entity.Awake += Entity_Awake;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         On.Monocle.Entity.Awake -= Entity_Awake;

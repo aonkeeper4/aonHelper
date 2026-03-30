@@ -1,13 +1,7 @@
-using Celeste.Mod.Entities;
-using Monocle;
-using Microsoft.Xna.Framework;
-using System;
-using System.Linq;
-
 namespace Celeste.Mod.aonHelper.Entities;
 
-[TrackedAs(typeof(HeartGem))]
 [CustomEntity("aonHelper/ResizableHeart")]
+[TrackedAs(typeof(HeartGem))]
 public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, offset)
 {
     private readonly int width = data.Width, height = data.Height;
@@ -212,12 +206,14 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     
     #region Hooks
     
+    [OnLoad]
     internal static void Load()
     {
         On.Celeste.HeartGem.OnPlayer += HeartGem_OnPlayer;
         On.Celeste.HeartGem.OnHoldable += HeartGem_OnHoldable;
     }
 
+    [OnUnload]
     internal static void Unload()
     {
         On.Celeste.HeartGem.OnPlayer -= HeartGem_OnPlayer;

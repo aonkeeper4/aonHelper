@@ -1,10 +1,6 @@
-using Microsoft.Xna.Framework;
-using Monocle;
-using System.Collections;
 using System.Runtime.CompilerServices;
 using Celeste.Mod.DzhakeHelper;
 using Celeste.Mod.DzhakeHelper.Entities;
-using System.Linq;
 
 namespace Celeste.Mod.aonHelper.Entities;
 
