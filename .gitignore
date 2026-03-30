@@ -365,6 +365,6 @@ MigrationBackup/
 Audio/
 
 # Referenced DLLs / tools
+# should these be in here?
 lib/
-lib-stripped/
 Effects/aonHelper/lib/
