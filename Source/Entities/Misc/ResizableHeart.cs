@@ -9,13 +9,14 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     private readonly string spriteID = data.Attr("path");
     private readonly string spritePath = data.Attr("spritePath");
     private Sprite spriteOutline;
+    
     private Color color = data.HexColor("color", Calc.HexToColor("00a81f"));
-    private readonly bool disableGhost = data.Bool("disableGhost");
 
     private readonly float respawnTime = data.Float("respawnTimer", 3f);
     private float respawnTimer;
 
     private readonly bool fake = data.Bool("isFake");
+    private readonly bool disableGhost = data.Bool("disableGhost");
 
     public override void Awake(Scene scene)
     {

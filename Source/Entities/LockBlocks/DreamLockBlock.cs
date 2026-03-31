@@ -1,6 +1,5 @@
 using Celeste.Mod.DzhakeHelper;
 using Celeste.Mod.DzhakeHelper.Entities;
-using MonoMod.Utils;
 using System.Runtime.CompilerServices;
 
 namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
@@ -96,9 +95,8 @@ public class DreamLockBlock : BaseLockBlock
         
         private static ILHook ilHook_Player_DashCoroutine;
 
-        // these need to happen on initialize instead of load because optional dependencies don't get handled until then
-        [OnInitialize]
-        public static void Initialize()
+        [OnLoad]
+        public static void Load()
         {
             On.Celeste.DreamBlock.Activate += DreamBlock_Activate;
             On.Celeste.DreamBlock.FastActivate += DreamBlock_FastActivate;
@@ -108,17 +106,22 @@ public class DreamLockBlock : BaseLockBlock
             On.Celeste.DreamBlock.DeactivateNoRoutine += DreamBlock_DeactivateNoRoutine;
             
             IL.Celeste.DreamBlock.Added += DreamBlock_Added;
+        }
+        
+        // these need to happen on initialize instead of load because optional dependencies don't get handled until then
+        [OnInitialize]
+        public static void Initialize()
+        {
+            if (aonHelperDependencies.ReverseHelperLoaded is not aonHelperDependencies.DependencyState.Unloaded)
+                return;
+            
+            IL.Celeste.Player.DreamDashCheck += Player_DreamDashCheck;
 
-            if (!aonHelperDependencies.ReverseHelperLoaded)
-            {
-                IL.Celeste.Player.DreamDashCheck += Player_DreamDashCheck;
-
-                ilHook_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, Player_DashCoroutine);
-            }
+            ilHook_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, Player_DashCoroutine);
         }
 
         [OnUnload]
-        public static void Uninitialize()
+        public static void Unload()
         {
             On.Celeste.DreamBlock.Activate -= DreamBlock_Activate;
             On.Celeste.DreamBlock.FastActivate -= DreamBlock_FastActivate;
@@ -129,7 +132,7 @@ public class DreamLockBlock : BaseLockBlock
             
             IL.Celeste.DreamBlock.Added -= DreamBlock_Added;
 
-            if (!aonHelperDependencies.ReverseHelperLoaded)
+            if (aonHelperDependencies.ReverseHelperLoaded is aonHelperDependencies.DependencyState.Unloaded)
             {
                 IL.Celeste.Player.DreamDashCheck -= Player_DreamDashCheck;
 

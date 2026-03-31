@@ -1,4 +1,3 @@
-using MonoMod.Utils;
 using System.Reflection;
 
 namespace Celeste.Mod.aonHelper.Helpers;
@@ -89,7 +88,7 @@ public static class HookHelper
         public delegate void LazyLoadHandler();
         public delegate void LazyUnloadHandler();
         
-        private class HookState(ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler lazyLoad, LazyUnloadHandler lazyUnload)
+        private class HookHandler(ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler lazyLoad, LazyUnloadHandler lazyUnload)
         {
             public bool Loaded;
 
@@ -97,29 +96,29 @@ public static class HookHelper
             public readonly LazyLoadHandler LazyLoad = lazyLoad;
             public readonly LazyUnloadHandler LazyUnload = lazyUnload;
         }
-        private static readonly Dictionary<string, HookState> Hooks = new();
+        private static readonly Dictionary<string, HookHandler> Hooks = new();
         
         public static void Register(string tag, ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler load, LazyUnloadHandler unload)
-            => Hooks.Add(tag, new HookState(shouldLazyLoad, load, unload));
+            => Hooks.Add(tag, new HookHandler(shouldLazyLoad, load, unload));
         
         private static void UpdateHooks(Session session)
         {
-            foreach ((string tag, HookState state) in Hooks)
+            foreach ((string tag, HookHandler handler) in Hooks)
             {
-                bool shouldLoad = session?.MapData is { } mapData && state.ShouldLazyLoad(mapData);
-                if (shouldLoad == state.Loaded)
+                bool shouldLoad = session?.MapData is { } mapData && handler.ShouldLazyLoad(mapData);
+                if (shouldLoad == handler.Loaded)
                     continue;
 
                 if (shouldLoad)
                 {
-                    state.LazyLoad();
-                    state.Loaded = true;
+                    handler.LazyLoad();
+                    handler.Loaded = true;
                     Logger.Info(LogID, $"Lazily loaded hooks for {tag}.");
                 }
                 else
                 {
-                    state.LazyUnload();
-                    state.Loaded = false;
+                    handler.LazyUnload();
+                    handler.Loaded = false;
                     Logger.Info(LogID, $"Lazily unloaded hooks for {tag}.");
                 }
             }
