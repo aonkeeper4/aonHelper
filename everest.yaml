@@ -4,8 +4,3 @@
   Dependencies:
     - Name: EverestCore
       Version: 1.6194.0
-  OptionalDependencies:
-    - Name: DzhakeHelper
-      Version: 1.4.20
-    - Name: ReverseHelper
-      Version: 1.15.20

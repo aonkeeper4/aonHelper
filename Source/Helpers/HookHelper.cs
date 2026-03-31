@@ -100,7 +100,7 @@ public static class HookHelper
         private static readonly Dictionary<string, HookState> Hooks = new();
         
         public static void Register(string tag, ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler load, LazyUnloadHandler unload)
-            => Hooks.TryAdd(tag, new HookState(shouldLazyLoad, load, unload));
+            => Hooks.Add(tag, new HookState(shouldLazyLoad, load, unload));
         
         private static void UpdateHooks(Session session)
         {

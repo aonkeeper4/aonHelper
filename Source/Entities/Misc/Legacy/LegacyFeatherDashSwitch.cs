@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities.Legacy;
+namespace Celeste.Mod.aonHelper.Entities.Misc.Legacy;
 
 [CustomEntity("aonHelper/FeatherDashSwitch")]
 internal class LegacyFeatherDashSwitch : DashSwitch

@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 // yess generics jank
 public class ConditionalController<T>(Vector2 position, string condition) : Entity(position) where T : ConditionalController<T>

@@ -1,3 +1,5 @@
+using Celeste.Mod.aonHelper.Entities.Misc;
+
 namespace Celeste.Mod.aonHelper.Components;
 
 [Tracked]

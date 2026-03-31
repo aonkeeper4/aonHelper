@@ -1,9 +1,9 @@
 using Celeste.Mod.DzhakeHelper;
 using Celeste.Mod.DzhakeHelper.Entities;
-using System.Runtime.CompilerServices;
 using MonoMod.Utils;
+using System.Runtime.CompilerServices;
 
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
 
 [CustomEntity("aonHelper/DreamLockBlock", "MoreLockBlocks/DreamLockBlock")]
 [Tracked]
@@ -96,8 +96,9 @@ public class DreamLockBlock : BaseLockBlock
         
         private static ILHook ilHook_Player_DashCoroutine;
 
-        [OnLoad]
-        public static void Load()
+        // these need to happen on initialize instead of load because optional dependencies don't get handled until then
+        [OnInitialize]
+        public static void Initialize()
         {
             On.Celeste.DreamBlock.Activate += DreamBlock_Activate;
             On.Celeste.DreamBlock.FastActivate += DreamBlock_FastActivate;
@@ -117,7 +118,7 @@ public class DreamLockBlock : BaseLockBlock
         }
 
         [OnUnload]
-        public static void Unload()
+        public static void Uninitialize()
         {
             On.Celeste.DreamBlock.Activate -= DreamBlock_Activate;
             On.Celeste.DreamBlock.FastActivate -= DreamBlock_FastActivate;

@@ -1,3 +1,5 @@
+using Celeste.Mod.aonHelper.Entities.LockBlocks;
+
 namespace Celeste.Mod.aonHelper;
 
 public static class aonHelperGFX
@@ -41,8 +43,7 @@ public static class aonHelperGFX
     
     #endregion
 
-    [OnLoadContent]
-    internal static void LoadContent(bool _)
+    internal static void LoadContent()
     {
         SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
 
@@ -53,7 +54,6 @@ public static class aonHelperGFX
         #endregion
     }
 
-    [OnUnload]
     internal static void UnloadContent()
     {
         #region Effects

@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 // threshold by sungazer reference
 [CustomEntity("aonHelper/SpringSpeedThresholdController")]

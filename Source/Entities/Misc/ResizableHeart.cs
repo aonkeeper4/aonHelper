@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Misc;
 
 [CustomEntity("aonHelper/ResizableHeart")]
 [TrackedAs(typeof(HeartGem))]

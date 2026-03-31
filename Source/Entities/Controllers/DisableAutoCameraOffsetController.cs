@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/DisableAutoCameraOffsetController")]
 [Tracked]

@@ -1,10 +1,10 @@
+using Celeste.Mod.aonHelper.Entities.Controllers;
 using MonoMod.ModInterop;
 
 namespace Celeste.Mod.aonHelper;
 
 public static class aonHelperExports
 {
-    [OnLoad]
     internal static void Load()
     {
         typeof(FgStylegroundBloomControllerCompat).ModInterop();

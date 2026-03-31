@@ -1,8 +1,8 @@
-using System.Runtime.CompilerServices;
 using Celeste.Mod.DzhakeHelper;
 using Celeste.Mod.DzhakeHelper.Entities;
+using System.Runtime.CompilerServices;
 
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
 
 public abstract class BaseLockBlock : Solid
 {

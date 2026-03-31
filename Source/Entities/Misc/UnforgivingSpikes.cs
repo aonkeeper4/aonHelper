@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Misc;
 
 [CustomEntity(
     $"{EntitySIDPrefix}Up = LoadUp",

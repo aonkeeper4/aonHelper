@@ -9,14 +9,14 @@ public static class aonHelperDependencies
     #region DzhakeHelper
     
     private static readonly EverestModuleMetadata DzhakeHelper = new() { Name = "DzhakeHelper", Version = new Version(1, 4, 20) };
-    internal static bool DzhakeHelperLoaded;
+    internal static bool DzhakeHelperLoaded { get; private set; }
     
     #endregion
     
     #region ReverseHelper
 
     private static readonly EverestModuleMetadata ReverseHelper = new() { Name = "ReverseHelper", Version = new Version(1, 15, 20) };
-    internal static bool ReverseHelperLoaded;
+    internal static bool ReverseHelperLoaded { get; private set; }
     
     #endregion
 
@@ -48,6 +48,8 @@ public static class aonHelperDependencies
     {
         foreach ((EverestModuleMetadata metadata, DependencyState state) in Dependencies)
         {
+            string moduleName = metadata.Name;
+            
             EverestModule module = null;
             bool shouldLoad = load
                 && Everest.Loader.TryGetDependency(metadata, out module)
@@ -59,21 +61,20 @@ public static class aonHelperDependencies
             {
                 state.LoadDependency?.Invoke();
                 state.Loaded = true;
-                Logger.Info(LogID, $"Registered support for {metadata.Name} (version {module!.Metadata.Version.ToString()}).");
+                Logger.Info(LogID, $"Registered support for {moduleName} (version {module!.Metadata.Version}).");
             }
             else
             {
                 state.UnloadDependency?.Invoke();
                 state.Loaded = false;
-                Logger.Info(LogID, $"Unregistered support for {metadata.Name}.");
+                Logger.Info(LogID, $"Unregistered support for {moduleName}.");
             }
         }
     }
     
-    // we need to make sure these are loaded *before* any hooks are loaded and *after* all hooks are unloaded, so we don't use the mod lifecycle attributes
-    internal static void Load()
+    internal static void Initialize()
         => UpdateDependencies(true);
     
-    internal static void Unload()
+    internal static void Uninitialize()
         => UpdateDependencies(false);
 }

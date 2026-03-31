@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
 
 [CustomEntity("aonHelper/GlassLockBlock", "MoreLockBlocks/GlassLockBlock")]
 [Tracked]

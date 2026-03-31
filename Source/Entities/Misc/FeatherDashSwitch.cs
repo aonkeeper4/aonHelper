@@ -1,4 +1,4 @@
-namespace Celeste.Mod.aonHelper.Entities;
+namespace Celeste.Mod.aonHelper.Entities.Misc;
 
 // i really hate to do this but i don't know how to preserve the legacy behaviour + it's been used in too many maps to just  fix the bugs
 [CustomEntity("aonHelper/FeatherDashSwitchV2")]
