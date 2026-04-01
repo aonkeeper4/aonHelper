@@ -44,7 +44,7 @@ public class FeatherBounceScamController(Vector2 position, float featherBounceSc
         return;
         
         static float FeatherBounceScamThresholdMultiplier(Player player)
-            => ControllerActive(player.SceneAs<Level>(), out FeatherBounceScamController controller)
+            => TryGetActiveController(player.SceneAs<Level>(), out FeatherBounceScamController controller)
                 ? controller.featherBounceScamThreshold / Player.StarFlyEndNoBounceTime
                 : 1f;
     }

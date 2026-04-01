@@ -1,5 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
 
+// not really a controller, more of a renderer entity
 [CustomEntity("aonHelper/GlassLockBlockController", "MoreLockBlocks/GlassLockBlockController")]
 [Tracked]
 public class GlassLockBlockController : Entity

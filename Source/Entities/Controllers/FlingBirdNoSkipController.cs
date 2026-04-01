@@ -50,7 +50,7 @@ public class FlingBirdNoSkipController(Vector2 position, string condition)
         return;
 
         static bool ShouldNotSkipNode(FlingBird bird)
-            => ControllerActive(bird.SceneAs<Level>(), out _);
+            => TryGetActiveController(bird.SceneAs<Level>(), out _);
     }
     
     #endregion

@@ -5,19 +5,25 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 public class LightningCornerboostController(Vector2 position, bool always, string condition)
     : ConditionalController<LightningCornerboostController>(position, condition)
 {
-    private class LightningSolidComponent() : TypeRestrictedComponent<Lightning>(true, false)
+    private class LightningSolidComponent(LightningCornerboostController controller) : TypeRestrictedComponent<Lightning>(true, false)
     {
         protected override string Name => nameof(LightningSolidComponent);
+
+        private readonly LightningCornerboostController controller = controller;
         
         private Solid solid;
-
-        private static readonly Vector2 Offset = new(3f, 4f);
+        private static readonly Vector2 SolidOffset = new(3f, 4f);
 
         public override void Added(Entity entity)
         {
             base.Added(entity);
 
-            solid = new Solid(Entity.Position + Offset, Entity.Width - 4f, Entity.Height - 5f, safe: false);
+            solid = new Solid(Entity.Position + SolidOffset, Entity.Width - 4f, Entity.Height - 5f, safe: false)
+            {
+                Active = false,
+                Collidable = false,
+                Visible = false
+            };
             
             // is this just a Monocle bug?
             if (entity.Scene is { } scene)
@@ -33,16 +39,11 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
 
         public override void Update()
         {
-            Level level = SceneAs<Level>();
-            
-            solid.Position = Entity.Position + Offset;
+            solid.MoveTo(Entity.Position + SolidOffset);
 
             bool inView = Entity.InView();
             bool playerHasDashAttack = Scene.Tracker.GetEntity<Player>()?.DashAttacking ?? false;
-            solid.Collidable = inView
-                && ControllerActive(level, out LightningCornerboostController controller)
-                && (controller.always || playerHasDashAttack);
-            solid.Visible = inView;
+            solid.Collidable = inView && controller.Active && (controller.always || playerHasDashAttack);
         }
 
         private void RemoveSolid()
@@ -92,10 +93,11 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     {
         orig(self, scene);
 
-        if (self is not Lightning lightning)
+        if (self is not Lightning lightning 
+            || lightning.Scene.Tracker.GetEntity<LightningCornerboostController>() is not { } controller)
             return;
 
-        lightning.Add(new LightningSolidComponent());
+        lightning.Add(new LightningSolidComponent(controller));
     }
 
     #endregion

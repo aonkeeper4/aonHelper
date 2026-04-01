@@ -103,7 +103,7 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string conditio
         return;
 
         static bool ShouldApplyLiftSpeed(JumpThru jumpThru)
-            => ControllerActive(jumpThru.SceneAs<Level>(), out _);
+            => TryGetActiveController(jumpThru.SceneAs<Level>(), out _);
 
         static void PreApplyLiftSpeed(JumpThru jumpThru, Actor actor, bool shouldApplyLiftSpeed)
         {

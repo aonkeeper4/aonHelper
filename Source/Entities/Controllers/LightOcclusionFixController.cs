@@ -4,7 +4,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/LightOcclusionFixController")]
 [Tracked]
-public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTileTypes) : Entity(position)
+public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTileTypes) : Controller(position)
 {
 	private readonly char[] noOcclusionTileTypes = noOcclusionTileTypes; 
 	

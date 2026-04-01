@@ -35,7 +35,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string cond
     {
         int result = orig(self);
 
-        if (ControllerActive(self.SceneAs<Level>(), out IntroFacingController controller))
+        if (TryGetActiveController(self.SceneAs<Level>(), out IntroFacingController controller))
             self.Facing = controller.facing;
 
         return result;
@@ -63,7 +63,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string cond
 
         static void SetPlayerFacing(Player player)
         {
-            if (ControllerActive(player.SceneAs<Level>(), out IntroFacingController controller, true)
+            if (TryGetActiveController(player.SceneAs<Level>(), out IntroFacingController controller, true)
                 && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None)) // not sure if these are the only ones used in gameplay?
                 player.Facing = controller.facing;
         }

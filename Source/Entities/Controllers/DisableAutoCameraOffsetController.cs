@@ -112,7 +112,7 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
     }
 
     private static bool IsControllerActive(Player player)
-        => ControllerActive(player.SceneAs<Level>(), out _);
+        => TryGetActiveController(player.SceneAs<Level>(), out _);
 
     #endregion
 }

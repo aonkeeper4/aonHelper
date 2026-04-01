@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/FormationBackdropColorController")]
 [Tracked]
-public class FormationBackdropColorController(Vector2 position, Color color, float alpha) : Entity(position)
+public class FormationBackdropColorController(Vector2 position, Color color, float alpha) : Controller(position)
 {
     private readonly Color color = color;
     private readonly float alpha = alpha;

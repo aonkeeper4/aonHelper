@@ -88,7 +88,7 @@ public class ReboundModifyController(Vector2 position,
         static bool CustomRebound(Player player, int direction)
         {
             Level level = player.SceneAs<Level>();
-            if (!ControllerActive(level, out ReboundModifyController controller))
+            if (!TryGetActiveController(level, out ReboundModifyController controller))
                 return false;
             
             player.Speed = direction switch

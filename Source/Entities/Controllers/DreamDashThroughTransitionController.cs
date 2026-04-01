@@ -42,7 +42,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
     }
 
     private static bool ShouldAffectStateCheck(Player player)
-        => ControllerActive(player?.SceneAs<Level>(), out _);
+        => TryGetActiveController(player?.SceneAs<Level>(), out _);
     
     private static bool IsAffectedAndDreamDashing(Player player)
         => ShouldAffectStateCheck(player) && player.StateMachine.State == Player.StDreamDash;

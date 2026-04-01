@@ -1,7 +1,7 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 // yess generics jank
-public class ConditionalController<T>(Vector2 position, string condition) : Entity(position) where T : ConditionalController<T>
+public class ConditionalController<T>(Vector2 position, string condition) : Controller(position) where T : ConditionalController<T>
 {
     private const string LogID = $"{nameof(aonHelper)}/{nameof(T)}";
     
@@ -74,6 +74,8 @@ public class ConditionalController<T>(Vector2 position, string condition) : Enti
     }
     
     #endregion
+    
+    protected new bool Active => SceneAs<Level>() is { } level && condition.Check(level);
 
     private readonly Condition condition = string.IsNullOrEmpty(condition)
         ? new True()
@@ -81,7 +83,16 @@ public class ConditionalController<T>(Vector2 position, string condition) : Enti
             ? new SessionExpression(condition)
             : new Flag(condition);
 
-    protected static bool ControllerActive(Level level, out T controller, bool checkNewlyAdded = false)
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+
+        // no way to automatically track all instantiations of a generic type and no way to get trackedness information ahead of time
+        if (!Tracker.StoredEntityTypes.Contains(typeof(T)))
+            throw new InvalidOperationException($"{nameof(ConditionalController<T>)} added while {nameof(T)} is untracked!");
+    }
+
+    protected static bool TryGetActiveController(Level level, out T controller, bool checkNewlyAdded = false)
     {
         controller = null;
         if (level is null)
@@ -93,7 +104,7 @@ public class ConditionalController<T>(Vector2 position, string condition) : Enti
                            .OfType<T>()
                            .FirstOrDefault()
             : level.Tracker.GetEntity<T>();
-        if (controllerEntity is null || !controllerEntity.condition.Check(level))
+        if (controllerEntity is null || !controllerEntity.Active)
             return false;
         
         controller = controllerEntity;

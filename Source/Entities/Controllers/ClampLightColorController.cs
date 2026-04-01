@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/ClampLightColorController")]
 [Tracked]
-public class ClampLightColorController(Vector2 position, Color clampColor, ClampLightColorController.ClampMethod clampMethod) : Entity(position)
+public class ClampLightColorController(Vector2 position, Color clampColor, ClampLightColorController.ClampMethod clampMethod) : Controller(position)
 {
     private readonly Color clampColor = clampColor;
 

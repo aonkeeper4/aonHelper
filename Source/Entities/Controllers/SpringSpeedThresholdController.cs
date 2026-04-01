@@ -53,7 +53,7 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
         return;
 
         static float DetermineXSpeedThreshold(float orig, Player player)
-            => ControllerActive(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
+            => TryGetActiveController(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
                 ? controller.threshold.X
                 : orig;
     }
@@ -81,7 +81,7 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
         return;
 
         static float DetermineYSpeedThreshold(float orig, Player player)
-            => ControllerActive(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
+            => TryGetActiveController(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
                 ? controller.threshold.Y
                 : orig;
     }

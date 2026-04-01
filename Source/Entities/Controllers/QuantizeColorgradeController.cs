@@ -7,7 +7,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 public class QuantizeColorgradeController(
     Vector2 position,
     string affectedColorgrades,
-    bool quantize, bool normalize) : Entity(position)
+    bool quantize, bool normalize) : Controller(position)
 {
     private readonly string[] affectedColorgrades = affectedColorgrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     private readonly bool affectAll = affectedColorgrades.Contains('*');

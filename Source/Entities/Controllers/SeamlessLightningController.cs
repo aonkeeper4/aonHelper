@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/SeamlessLightningController")]
 [Tracked]
-public class SeamlessLightningController(EntityData data, Vector2 offset) : Entity(data.Position + offset)
+public class SeamlessLightningController(EntityData data, Vector2 offset) : Controller(data.Position + offset)
 {
     #region Hooks
 

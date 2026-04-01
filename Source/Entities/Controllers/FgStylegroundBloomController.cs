@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/FgStylegroundBloomController")]
 [Tracked]
-public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Entity(position)
+public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Controller(position)
 {
     private readonly string bloomTag = bloomTag;
     
