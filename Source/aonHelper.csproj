@@ -37,7 +37,7 @@
 
     <!-- references from the mod cache -->
     <PropertyGroup>
-        <ModCachePrefix Condition="$(ModCachePrefix) == '' And '$(CelestePrefix)' == 'lib-stripped'">$(CelestePrefix)</ModCachePrefix>
+        <ModCachePrefix Condition="$(ModCachePrefix) == '' And '$(CelestePrefix)' == 'lib-stripped'">lib-stripped</ModCachePrefix>
         <ModCachePrefix Condition="$(ModCachePrefix) == ''">$(CelestePrefix)\Mods\Cache</ModCachePrefix>
     </PropertyGroup>
     <ItemGroup>
