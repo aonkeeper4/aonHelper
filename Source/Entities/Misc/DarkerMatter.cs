@@ -358,10 +358,10 @@ public class DarkerMatter : Entity
     internal static void Load()
     {
         // everest events
-        Everest.Events.Player.OnRegisterStates += OnRegisterStates;
-        Everest.Events.Player.OnSpawn += OnSpawn;
-        Everest.Events.Player.OnAfterUpdate += OnAfterUpdate;
-        Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload;
+        Everest.Events.Player.OnRegisterStates += Event_Player_OnRegisterStates;
+        Everest.Events.Player.OnSpawn += Event_Player_OnSpawn;
+        Everest.Events.Player.OnAfterUpdate += Event_Player_OnAfterUpdate;
+        Everest.Events.AssetReload.OnBeforeReload += Event_AssetReload_OnBeforeReload;
 
         // player hooks
         On.Celeste.Player.UnderwaterMusicCheck += On_Player_UnderwaterMusicCheck;
@@ -373,9 +373,10 @@ public class DarkerMatter : Entity
     [OnUnload]
     internal static void Unload()
     {
-        Everest.Events.Player.OnRegisterStates -= OnRegisterStates;
-        Everest.Events.Player.OnSpawn -= OnSpawn;
-        Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
+        Everest.Events.Player.OnRegisterStates -= Event_Player_OnRegisterStates;
+        Everest.Events.Player.OnSpawn -= Event_Player_OnSpawn;
+        Everest.Events.Player.OnAfterUpdate -= Event_Player_OnAfterUpdate;
+        Everest.Events.AssetReload.OnBeforeReload -= Event_AssetReload_OnBeforeReload;
         
         On.Celeste.Player.UnderwaterMusicCheck -= On_Player_UnderwaterMusicCheck;
         
@@ -385,12 +386,12 @@ public class DarkerMatter : Entity
 
     #region Events
     
-    private static void OnRegisterStates(Player player)
+    private static void Event_Player_OnRegisterStates(Player player)
     {
         StDarkerMatter = player.AddState("DarkerMatter", DarkerMatterState.DarkerMatterUpdate, null, DarkerMatterState.DarkerMatterBegin, DarkerMatterState.DarkerMatterEnd);
     }
 
-    private static void OnSpawn(Player player)
+    private static void Event_Player_OnSpawn(Player player)
     {
         if (player.Get<DarkerMatterComponent>() is not null)
             return;
@@ -406,13 +407,13 @@ public class DarkerMatter : Entity
         player.Add(darkerMatterComponent.WarpSprite);
     }
     
-    private static void OnAfterUpdate(Player player)
+    private static void Event_Player_OnAfterUpdate(Player player)
     {
         if (player.Get<DarkerMatterComponent>() is { } darkerMatterComponent)
             darkerMatterComponent.PreviousExactPosition = player.ExactPosition;
     }
 
-    private static void OnBeforeReload(bool silent)
+    private static void Event_AssetReload_OnBeforeReload(bool silent)
     {
         if (Engine.Scene?.Tracker?.GetEntity<Player>() is { } player)
             player.Remove(player.Get<DarkerMatterComponent>());

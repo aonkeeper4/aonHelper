@@ -24,8 +24,7 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
     [OnUnload]
     internal static void Unload()
     {
-        il_Player_get_CameraTarget.Dispose();
-        il_Player_get_CameraTarget = null;
+        HookHelper.DisposeAndSetNull(ref il_Player_get_CameraTarget);
     }
 
     private static void IL_Player_get_CameraTarget(ILContext il)

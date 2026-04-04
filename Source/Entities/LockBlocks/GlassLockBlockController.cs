@@ -291,16 +291,16 @@ public class GlassLockBlockController : Entity
     [OnLoad]
     internal static void Load()
     {
-        Everest.Events.Level.OnLoadLevel += OnLoadLevel;
+        Everest.Events.Level.OnLoadLevel += Event_Level_OnLoadLevel;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        Everest.Events.Level.OnLoadLevel += OnLoadLevel;
+        Everest.Events.Level.OnLoadLevel -= Event_Level_OnLoadLevel;
     }
 
-    private static void OnLoadLevel(Level level, Player.IntroTypes playerIntro, bool isFromLoader)
+    private static void Event_Level_OnLoadLevel(Level level, Player.IntroTypes playerIntro, bool isFromLoader)
     {
         if (level.Session.LevelData is { } levelData
             && levelData.Entities.All(entity => !EntitySIDs.Contains(entity.Name)))
