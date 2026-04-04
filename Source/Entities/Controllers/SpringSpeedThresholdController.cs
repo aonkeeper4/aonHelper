@@ -17,18 +17,18 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.Player.SideBounce += Player_SideBounce;
-        IL.Celeste.Spring.OnCollide += Spring_OnCollide;
+        IL.Celeste.Player.SideBounce += IL_Player_SideBounce;
+        IL.Celeste.Spring.OnCollide += IL_Spring_OnCollide;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.Player.SideBounce -= Player_SideBounce;
-        IL.Celeste.Spring.OnCollide -= Spring_OnCollide;
+        IL.Celeste.Player.SideBounce -= IL_Player_SideBounce;
+        IL.Celeste.Spring.OnCollide -= IL_Spring_OnCollide;
     }
 
-    private static void Player_SideBounce(ILContext il)
+    private static void IL_Player_SideBounce(ILContext il)
     {
         ILCursor cursor = new(il);
         
@@ -58,7 +58,7 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
                 : orig;
     }
 
-    private static void Spring_OnCollide(ILContext il)
+    private static void IL_Spring_OnCollide(ILContext il)
     {
         ILCursor cursor = new(il);
         

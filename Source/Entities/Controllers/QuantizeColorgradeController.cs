@@ -34,28 +34,28 @@ public class QuantizeColorgradeController(
     
     #region Hooks
 
-    private static Hook hook_ColorGrade_get_Effect;
+    private static Hook on_ColorGrade_get_Effect;
     
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float += ColorGrade_Set;
+        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float += IL_ColorGrade_Set;
         
-        hook_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, ColorGrade_get_Effect);
+        on_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, On_ColorGrade_get_Effect);
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float -= ColorGrade_Set;
+        IL.Celeste.ColorGrade.Set_MTexture_MTexture_float -= IL_ColorGrade_Set;
         
-        HookHelper.DisposeAndSetNull(ref hook_ColorGrade_get_Effect);
+        HookHelper.DisposeAndSetNull(ref on_ColorGrade_get_Effect);
     }
 
     private static FieldInfo f_ColorGrade_from = typeof(ColorGrade).GetField("from", HookHelper.Bind.NonPublicStatic)!;
     private static FieldInfo f_ColorGrade_to = typeof(ColorGrade).GetField("to", HookHelper.Bind.NonPublicStatic)!;
 
-    private static void ColorGrade_Set(ILContext il)
+    private static void IL_ColorGrade_Set(ILContext il)
     {
         ILCursor cursor = new(il);
         
@@ -96,7 +96,7 @@ public class QuantizeColorgradeController(
     }
 
     private delegate Effect orig_ColorGrade_get_Effect();
-    private static Effect ColorGrade_get_Effect(orig_ColorGrade_get_Effect orig)
+    private static Effect On_ColorGrade_get_Effect(orig_ColorGrade_get_Effect orig)
     {
         if (Engine.Scene is not Level level
             || level.Tracker.GetEntity<QuantizeColorgradeController>() is null

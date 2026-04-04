@@ -16,18 +16,18 @@ public class FeatherBounceScamController(Vector2 position, float featherBounceSc
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.Player.OnCollideH += ControlFeatherBounceScam;
-        IL.Celeste.Player.OnCollideV += ControlFeatherBounceScam;
+        IL.Celeste.Player.OnCollideH += IL_Player_OnCollideHV;
+        IL.Celeste.Player.OnCollideV += IL_Player_OnCollideHV;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.Player.OnCollideH -= ControlFeatherBounceScam;
-        IL.Celeste.Player.OnCollideV -= ControlFeatherBounceScam;
+        IL.Celeste.Player.OnCollideH -= IL_Player_OnCollideHV;
+        IL.Celeste.Player.OnCollideV -= IL_Player_OnCollideHV;
     }
 
-    private static void ControlFeatherBounceScam(ILContext il)
+    private static void IL_Player_OnCollideHV(ILContext il)
     {
         ILCursor cursor = new(il);
 

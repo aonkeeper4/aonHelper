@@ -132,26 +132,26 @@ public static class HookHelper
             Hooks.Clear();
             
             // i'm not sure whether we could be using everest events but applying hooks on a different thread (in `LevelLoader`'s case) doesn't sound like a good idea
-            On.Celeste.LevelLoader.ctor += LevelLoader_ctor;
-            On.Celeste.OverworldLoader.ctor += OverworldLoader_ctor;
+            On.Celeste.LevelLoader.ctor += On_LevelLoader_ctor;
+            On.Celeste.OverworldLoader.ctor += On_OverworldLoader_ctor;
         }
 
         internal static void Unload()
         {
             UpdateHooks(null);
             
-            On.Celeste.LevelLoader.ctor -= LevelLoader_ctor;
-            On.Celeste.OverworldLoader.ctor -= OverworldLoader_ctor;
+            On.Celeste.LevelLoader.ctor -= On_LevelLoader_ctor;
+            On.Celeste.OverworldLoader.ctor -= On_OverworldLoader_ctor;
         }
         
-        private static void LevelLoader_ctor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startposition)
+        private static void On_LevelLoader_ctor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startposition)
         {
             orig(self, session, startposition);
 
             UpdateHooks(session);
         }
         
-        private static void OverworldLoader_ctor(On.Celeste.OverworldLoader.orig_ctor orig, OverworldLoader self, Overworld.StartMode startmode, HiresSnow snow)
+        private static void On_OverworldLoader_ctor(On.Celeste.OverworldLoader.orig_ctor orig, OverworldLoader self, Overworld.StartMode startmode, HiresSnow snow)
         {
             orig(self, startmode, snow);
 

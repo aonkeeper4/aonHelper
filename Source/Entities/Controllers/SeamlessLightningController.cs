@@ -9,16 +9,16 @@ public class SeamlessLightningController(EntityData data, Vector2 offset) : Cont
     [OnLoad]
     internal static void Load()
     {
-        On.Celeste.LightningRenderer.Edge.ctor += LightningRenderer_Edge_ctor;
+        On.Celeste.LightningRenderer.Edge.ctor += On_LightningRenderer_Edge_ctor;
     }
     
     [OnUnload]
     internal static void Unload()
     {
-        On.Celeste.LightningRenderer.Edge.ctor -= LightningRenderer_Edge_ctor;
+        On.Celeste.LightningRenderer.Edge.ctor -= On_LightningRenderer_Edge_ctor;
     }
 
-    private static void LightningRenderer_Edge_ctor(On.Celeste.LightningRenderer.Edge.orig_ctor orig, object self, Lightning parent, Vector2 a, Vector2 b)
+    private static void On_LightningRenderer_Edge_ctor(On.Celeste.LightningRenderer.Edge.orig_ctor orig, object self, Lightning parent, Vector2 a, Vector2 b)
     {
         Level level = parent.SceneAs<Level>();
         if (level.Tracker.GetEntity<SeamlessLightningController>() is null)

@@ -11,34 +11,34 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
     
     #region Hooks
 
-    private static ILHook ilHook_Player_orig_Update;
+    private static ILHook il_Player_orig_Update;
     
     [OnLoad]
     internal static void Load()
     {
-        On.Celeste.Player.OnBoundsH += Player_OnBoundsH;
-        On.Celeste.Player.OnBoundsV += Player_OnBoundsV;
+        On.Celeste.Player.OnBoundsH += On_Player_OnBoundsH;
+        On.Celeste.Player.OnBoundsV += On_Player_OnBoundsV;
         
-        IL.Celeste.Player.BeforeUpTransition += Player_BeforeUpTransition;
-        IL.Celeste.Player.BeforeDownTransition += Player_BeforeDownTransition;
-        IL.Celeste.Player.TransitionTo += Player_TransitionTo;
-        ilHook_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, Player_orig_Update);
+        IL.Celeste.Player.BeforeUpTransition += IL_Player_BeforeUpTransition;
+        IL.Celeste.Player.BeforeDownTransition += IL_Player_BeforeDownTransition;
+        IL.Celeste.Player.TransitionTo += IL_Player_TransitionTo;
+        il_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, IL_Player_orig_Update);
         
-        IL.Celeste.Level.EnforceBounds += Level_EnforceBounds;
+        IL.Celeste.Level.EnforceBounds += IL_Level_EnforceBounds;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        On.Celeste.Player.OnBoundsH -= Player_OnBoundsH;
-        On.Celeste.Player.OnBoundsV -= Player_OnBoundsV;
+        On.Celeste.Player.OnBoundsH -= On_Player_OnBoundsH;
+        On.Celeste.Player.OnBoundsV -= On_Player_OnBoundsV;
         
-        IL.Celeste.Player.BeforeUpTransition -= Player_BeforeUpTransition;
-        IL.Celeste.Player.BeforeDownTransition -= Player_BeforeDownTransition;
-        IL.Celeste.Player.TransitionTo -= Player_TransitionTo;
-        HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_Update);
+        IL.Celeste.Player.BeforeUpTransition -= IL_Player_BeforeUpTransition;
+        IL.Celeste.Player.BeforeDownTransition -= IL_Player_BeforeDownTransition;
+        IL.Celeste.Player.TransitionTo -= IL_Player_TransitionTo;
+        HookHelper.DisposeAndSetNull(ref il_Player_orig_Update);
         
-        IL.Celeste.Level.EnforceBounds -= Level_EnforceBounds;
+        IL.Celeste.Level.EnforceBounds -= IL_Level_EnforceBounds;
     }
 
     private static bool ShouldAffectStateCheck(Player player)
@@ -47,7 +47,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
     private static bool IsAffectedAndDreamDashing(Player player)
         => ShouldAffectStateCheck(player) && player.StateMachine.State == Player.StDreamDash;
     
-    private static void Player_OnBoundsH(On.Celeste.Player.orig_OnBoundsH orig, Player self)
+    private static void On_Player_OnBoundsH(On.Celeste.Player.orig_OnBoundsH orig, Player self)
     {
         if (IsAffectedAndDreamDashing(self))
         {
@@ -58,7 +58,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         orig(self);
     }
 
-    private static void Player_OnBoundsV(On.Celeste.Player.orig_OnBoundsV orig, Player self)
+    private static void On_Player_OnBoundsV(On.Celeste.Player.orig_OnBoundsV orig, Player self)
     {
         if (IsAffectedAndDreamDashing(self))
         {
@@ -81,7 +81,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         player.Die(Vector2.Zero, evenIfInvincible);
     }
     
-    private static void Player_BeforeUpTransition(ILContext il)
+    private static void IL_Player_BeforeUpTransition(ILContext il)
     {
         ILCursor cursor = new(il);
 
@@ -89,14 +89,14 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, Player.StDreamDash, ShouldAffectStateCheck);
     }
 
-    private static void Player_BeforeDownTransition(ILContext il)
+    private static void IL_Player_BeforeDownTransition(ILContext il)
     {
         ILCursor cursor = new(il);
 
         HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, Player.StDreamDash, ShouldAffectStateCheck);
     }
 
-    private static void Player_TransitionTo(ILContext il)
+    private static void IL_Player_TransitionTo(ILContext il)
     {
         ILCursor cursor = new(il);
 
@@ -142,7 +142,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         player.NaiveMove(Vector2.UnitY * moveY);
     }
 
-    private static void Player_orig_Update(ILContext il)
+    private static void IL_Player_orig_Update(ILContext il)
     {
         ILCursor cursor = new(il);
         
@@ -180,7 +180,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         cursor.MarkLabel(nextCondition);
     }
 
-    private static void Level_EnforceBounds(ILContext il)
+    private static void IL_Level_EnforceBounds(ILContext il)
     {
         ILCursor cursor = new(il);
 

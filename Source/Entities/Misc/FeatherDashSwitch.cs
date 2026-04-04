@@ -223,49 +223,49 @@ public class FeatherDashSwitch : DashSwitch
     [OnLoad]
     internal static void Load()
     {
-        On.Celeste.DashSwitch.OnDashed += DashSwitch_OnDashed;
+        On.Celeste.DashSwitch.OnDashed += On_DashSwitch_OnDashed;
 
-        On.Celeste.Glider.OnCollideH += Glider_OnCollideH;
+        On.Celeste.Glider.OnCollideH += On_Glider_OnCollideH;
 
-        On.Celeste.TheoCrystal.OnCollideH += TheoCrystal_OnCollideH;
-        On.Celeste.TheoCrystal.OnCollideV += TheoCrystal_OnCollideV;
+        On.Celeste.TheoCrystal.OnCollideH += On_TheoCrystal_OnCollideH;
+        On.Celeste.TheoCrystal.OnCollideV += On_TheoCrystal_OnCollideV;
 
-        On.Celeste.Seeker.SlammedIntoWall += Seeker_SlammedIntoWall;
+        On.Celeste.Seeker.SlammedIntoWall += On_Seeker_SlammedIntoWall;
         
-        IL.Celeste.Player.OnCollideH += Player_OnCollideHV;
-        IL.Celeste.Player.OnCollideV += Player_OnCollideHV;
+        IL.Celeste.Player.OnCollideH += IL_Player_OnCollideHV;
+        IL.Celeste.Player.OnCollideV += IL_Player_OnCollideHV;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        On.Celeste.DashSwitch.OnDashed -= DashSwitch_OnDashed;
+        On.Celeste.DashSwitch.OnDashed -= On_DashSwitch_OnDashed;
         
-        On.Celeste.Glider.OnCollideH -= Glider_OnCollideH;
+        On.Celeste.Glider.OnCollideH -= On_Glider_OnCollideH;
 
-        On.Celeste.TheoCrystal.OnCollideH -= TheoCrystal_OnCollideH;
-        On.Celeste.TheoCrystal.OnCollideV -= TheoCrystal_OnCollideV;
+        On.Celeste.TheoCrystal.OnCollideH -= On_TheoCrystal_OnCollideH;
+        On.Celeste.TheoCrystal.OnCollideV -= On_TheoCrystal_OnCollideV;
 
-        On.Celeste.Seeker.SlammedIntoWall -= Seeker_SlammedIntoWall;
+        On.Celeste.Seeker.SlammedIntoWall -= On_Seeker_SlammedIntoWall;
         
-        IL.Celeste.Player.OnCollideH -= Player_OnCollideHV;
-        IL.Celeste.Player.OnCollideV -= Player_OnCollideHV;
+        IL.Celeste.Player.OnCollideH -= IL_Player_OnCollideHV;
+        IL.Celeste.Player.OnCollideV -= IL_Player_OnCollideHV;
     }
 
     // ensure only our code can activate feather dash switches
     // not sure if anyone actually calls this? but better to be safe than sorry
-    private static DashCollisionResults DashSwitch_OnDashed(On.Celeste.DashSwitch.orig_OnDashed orig, DashSwitch self, Player player, Vector2 direction)
+    private static DashCollisionResults On_DashSwitch_OnDashed(On.Celeste.DashSwitch.orig_OnDashed orig, DashSwitch self, Player player, Vector2 direction)
         => self is FeatherDashSwitch ? DashCollisionResults.NormalCollision : orig(self, player, direction);
     
-    private static void Glider_OnCollideH(On.Celeste.Glider.orig_OnCollideH orig, Glider self, CollisionData data)
+    private static void On_Glider_OnCollideH(On.Celeste.Glider.orig_OnCollideH orig, Glider self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.holdableActivated);
     
-    private static void TheoCrystal_OnCollideH(On.Celeste.TheoCrystal.orig_OnCollideH orig, TheoCrystal self, CollisionData data)
+    private static void On_TheoCrystal_OnCollideH(On.Celeste.TheoCrystal.orig_OnCollideH orig, TheoCrystal self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.holdableActivated);
-    private static void TheoCrystal_OnCollideV(On.Celeste.TheoCrystal.orig_OnCollideV orig, TheoCrystal self, CollisionData data)
+    private static void On_TheoCrystal_OnCollideV(On.Celeste.TheoCrystal.orig_OnCollideV orig, TheoCrystal self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitY, featherDashSwitch => featherDashSwitch.holdableActivated);
     
-    private static void Seeker_SlammedIntoWall(On.Celeste.Seeker.orig_SlammedIntoWall orig, Seeker self, CollisionData data)
+    private static void On_Seeker_SlammedIntoWall(On.Celeste.Seeker.orig_SlammedIntoWall orig, Seeker self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.dashActivated);
 
     private static void PressFeatherDashSwitch(Action callOrig, CollisionData data, Func<Vector2> speedGetter, Vector2 direction, Func<FeatherDashSwitch, bool> condition)
@@ -276,7 +276,7 @@ public class FeatherDashSwitch : DashSwitch
         callOrig();
     }
     
-    private static void Player_OnCollideHV(ILContext il)
+    private static void IL_Player_OnCollideHV(ILContext il)
     {
         ILCursor cursor = new(il);
         

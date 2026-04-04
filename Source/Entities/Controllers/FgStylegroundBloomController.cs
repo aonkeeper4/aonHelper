@@ -46,16 +46,16 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
     {
         // guarantee hook order
         using (new DetourConfigContext(HookHelper.BeforeStyleMaskHelper).Use())
-            IL.Celeste.Level.Render += Level_Render;
+            IL.Celeste.Level.Render += IL_Level_Render;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.Level.Render -= Level_Render;
+        IL.Celeste.Level.Render -= IL_Level_Render;
     }
 
-    private static void Level_Render(ILContext il)
+    private static void IL_Level_Render(ILContext il)
     {
         ILCursor cursor = new(il);
         

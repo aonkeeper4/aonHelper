@@ -80,16 +80,16 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     [OnLoad]
     internal static void Load()
     {
-        On.Monocle.Entity.Awake += Entity_Awake;
+        On.Monocle.Entity.Awake += On_Entity_Awake;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        On.Monocle.Entity.Awake -= Entity_Awake;
+        On.Monocle.Entity.Awake -= On_Entity_Awake;
     }
 
-    private static void Entity_Awake(On.Monocle.Entity.orig_Awake orig, Entity self, Scene scene)
+    private static void On_Entity_Awake(On.Monocle.Entity.orig_Awake orig, Entity self, Scene scene)
     {
         orig(self, scene);
 

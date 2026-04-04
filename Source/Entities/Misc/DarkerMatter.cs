@@ -351,8 +351,8 @@ public class DarkerMatter : Entity
     
     #region Hooks
 
-    private static ILHook ilHook_Player_orig_Update;
-    private static ILHook ilHook_Player_orig_UpdateSprite;
+    private static ILHook il_Player_orig_Update;
+    private static ILHook il_Player_orig_UpdateSprite;
     
     [OnLoad]
     internal static void Load()
@@ -360,14 +360,14 @@ public class DarkerMatter : Entity
         // everest events
         Everest.Events.Player.OnRegisterStates += OnRegisterStates;
         Everest.Events.Player.OnSpawn += OnSpawn;
+        Everest.Events.Player.OnAfterUpdate += OnAfterUpdate;
         Everest.Events.AssetReload.OnBeforeReload += OnBeforeReload;
 
         // player hooks
-        On.Celeste.Player.UnderwaterMusicCheck += Player_UnderwaterMusicCheck;
-        On.Celeste.Player.Update += Player_Update;
+        On.Celeste.Player.UnderwaterMusicCheck += On_Player_UnderwaterMusicCheck;
         
-        ilHook_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, Player_orig_Update);
-        ilHook_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookHelper.Bind.NonPublicInstance)!, Player_orig_UpdateSprite);
+        il_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, IL_Player_orig_Update);
+        il_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookHelper.Bind.NonPublicInstance)!, IL_Player_orig_UpdateSprite);
     }
 
     [OnUnload]
@@ -377,11 +377,10 @@ public class DarkerMatter : Entity
         Everest.Events.Player.OnSpawn -= OnSpawn;
         Everest.Events.AssetReload.OnBeforeReload -= OnBeforeReload;
         
-        On.Celeste.Player.UnderwaterMusicCheck -= Player_UnderwaterMusicCheck;
-        On.Celeste.Player.Update -= Player_Update;
+        On.Celeste.Player.UnderwaterMusicCheck -= On_Player_UnderwaterMusicCheck;
         
-        HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_Update);
-        HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_UpdateSprite);
+        HookHelper.DisposeAndSetNull(ref il_Player_orig_Update);
+        HookHelper.DisposeAndSetNull(ref il_Player_orig_UpdateSprite);
     }
 
     #region Events
@@ -406,6 +405,12 @@ public class DarkerMatter : Entity
         player.Add(darkerMatterComponent);
         player.Add(darkerMatterComponent.WarpSprite);
     }
+    
+    private static void OnAfterUpdate(Player player)
+    {
+        if (player.Get<DarkerMatterComponent>() is { } darkerMatterComponent)
+            darkerMatterComponent.PreviousExactPosition = player.ExactPosition;
+    }
 
     private static void OnBeforeReload(bool silent)
     {
@@ -417,24 +422,11 @@ public class DarkerMatter : Entity
     
     #region Player
 
-    private static bool Player_UnderwaterMusicCheck(On.Celeste.Player.orig_UnderwaterMusicCheck orig, Player self)
+    private static bool On_Player_UnderwaterMusicCheck(On.Celeste.Player.orig_UnderwaterMusicCheck orig, Player self)
         => orig(self) || self.StateMachine.State == StDarkerMatter;
 
-    private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self)
-    {
-        if (self.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
-        {
-            orig(self);
-            return;
-        }
-        
-        orig(self);
-        
-        darkerMatterComponent.PreviousExactPosition = self.ExactPosition;
-    }
-
-    private static void Player_orig_Update(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, StDarkerMatter);
-    private static void Player_orig_UpdateSprite(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, StDarkerMatter);
+    private static void IL_Player_orig_Update(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, StDarkerMatter);
+    private static void IL_Player_orig_UpdateSprite(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, StDarkerMatter);
 
     #endregion
 

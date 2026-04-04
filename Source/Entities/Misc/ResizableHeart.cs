@@ -202,18 +202,18 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
     [OnLoad]
     internal static void Load()
     {
-        On.Celeste.HeartGem.OnPlayer += HeartGem_OnPlayer;
-        On.Celeste.HeartGem.OnHoldable += HeartGem_OnHoldable;
+        On.Celeste.HeartGem.OnPlayer += On_HeartGem_OnPlayer;
+        On.Celeste.HeartGem.OnHoldable += On_HeartGem_OnHoldable;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        On.Celeste.HeartGem.OnPlayer -= HeartGem_OnPlayer;
-        On.Celeste.HeartGem.OnHoldable -= HeartGem_OnHoldable;
+        On.Celeste.HeartGem.OnPlayer -= On_HeartGem_OnPlayer;
+        On.Celeste.HeartGem.OnHoldable -= On_HeartGem_OnHoldable;
     }
     
-    private static void HeartGem_OnHoldable(On.Celeste.HeartGem.orig_OnHoldable orig, HeartGem self, Holdable holdable)
+    private static void On_HeartGem_OnHoldable(On.Celeste.HeartGem.orig_OnHoldable orig, HeartGem self, Holdable holdable)
     {
         if (self is not ResizableHeart { Visible: true, fake: true } resizable
             || !holdable.Dangerous(resizable.holdableCollider))
@@ -226,7 +226,7 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
         resizable.CollectFake(player, holdable.GetSpeed().Angle());
     }
 
-    private static void HeartGem_OnPlayer(On.Celeste.HeartGem.orig_OnPlayer orig, HeartGem self, Player player)
+    private static void On_HeartGem_OnPlayer(On.Celeste.HeartGem.orig_OnPlayer orig, HeartGem self, Player player)
     {
         if (self is not ResizableHeart { Visible: true, fake: true } resizable)
         {

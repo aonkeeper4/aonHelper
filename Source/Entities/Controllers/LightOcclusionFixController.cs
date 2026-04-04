@@ -17,16 +17,16 @@ public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTil
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.LightingRenderer.DrawLightOccluders += LightingRenderer_DrawLightOccluders;
+        IL.Celeste.LightingRenderer.DrawLightOccluders += IL_LightingRenderer_DrawLightOccluders;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.LightingRenderer.DrawLightOccluders -= LightingRenderer_DrawLightOccluders;
+        IL.Celeste.LightingRenderer.DrawLightOccluders -= IL_LightingRenderer_DrawLightOccluders;
     }
 
-    private static void LightingRenderer_DrawLightOccluders(ILContext il)
+    private static void IL_LightingRenderer_DrawLightOccluders(ILContext il)
     {
         ILCursor cursor = new(il);
         

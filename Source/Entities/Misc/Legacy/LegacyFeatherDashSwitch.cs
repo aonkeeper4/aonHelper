@@ -113,18 +113,18 @@ internal class LegacyFeatherDashSwitch : DashSwitch
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.Player.OnCollideH += Player_OnCollideH;
-        IL.Celeste.Player.OnCollideV += Player_OnCollideV;
+        IL.Celeste.Player.OnCollideH += IL_Player_OnCollideH;
+        IL.Celeste.Player.OnCollideV += IL_Player_OnCollideV;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.Player.OnCollideH -= Player_OnCollideH;
-        IL.Celeste.Player.OnCollideV -= Player_OnCollideV;
+        IL.Celeste.Player.OnCollideH -= IL_Player_OnCollideH;
+        IL.Celeste.Player.OnCollideV -= IL_Player_OnCollideV;
     }
 
-    private static void Player_OnCollideH(ILContext il)
+    private static void IL_Player_OnCollideH(ILContext il)
     {
         ILCursor cursor = new(il);
         
@@ -137,7 +137,7 @@ internal class LegacyFeatherDashSwitch : DashSwitch
         cursor.EmitDelegate(CheckOnFeather);
     }
 
-    private static void Player_OnCollideV(ILContext il)
+    private static void IL_Player_OnCollideV(ILContext il)
     {
         ILCursor cursor = new(il);
         

@@ -93,19 +93,19 @@ public class DreamLockBlock : BaseLockBlock
 
         #region DreamBlockDummy Hooks
         
-        private static ILHook ilHook_Player_DashCoroutine;
+        private static ILHook il_Player_DashCoroutine;
 
         [OnLoad]
         public static void Load()
         {
-            On.Celeste.DreamBlock.Activate += DreamBlock_Activate;
-            On.Celeste.DreamBlock.FastActivate += DreamBlock_FastActivate;
-            On.Celeste.DreamBlock.ActivateNoRoutine += DreamBlock_ActivateNoRoutine;
-            On.Celeste.DreamBlock.Deactivate += DreamBlock_Deactivate;
-            On.Celeste.DreamBlock.FastDeactivate += DreamBlock_FastDeactivate;
-            On.Celeste.DreamBlock.DeactivateNoRoutine += DreamBlock_DeactivateNoRoutine;
+            On.Celeste.DreamBlock.Activate += On_DreamBlock_Activate;
+            On.Celeste.DreamBlock.FastActivate += On_DreamBlock_FastActivate;
+            On.Celeste.DreamBlock.ActivateNoRoutine += On_DreamBlock_ActivateNoRoutine;
+            On.Celeste.DreamBlock.Deactivate += On_DreamBlock_Deactivate;
+            On.Celeste.DreamBlock.FastDeactivate += On_DreamBlock_FastDeactivate;
+            On.Celeste.DreamBlock.DeactivateNoRoutine += On_DreamBlock_DeactivateNoRoutine;
             
-            IL.Celeste.DreamBlock.Added += DreamBlock_Added;
+            IL.Celeste.DreamBlock.Added += IL_DreamBlock_Added;
         }
         
         // these need to happen on initialize instead of load because optional dependencies don't get handled until then
@@ -115,32 +115,32 @@ public class DreamLockBlock : BaseLockBlock
             if (aonHelperDependencies.ReverseHelperLoaded is not aonHelperDependencies.DependencyState.Unloaded)
                 return;
             
-            IL.Celeste.Player.DreamDashCheck += Player_DreamDashCheck;
+            IL.Celeste.Player.DreamDashCheck += IL_Player_DreamDashCheck;
 
-            ilHook_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, Player_DashCoroutine);
+            il_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, IL_Player_DashCoroutine);
         }
 
         [OnUnload]
         public static void Unload()
         {
-            On.Celeste.DreamBlock.Activate -= DreamBlock_Activate;
-            On.Celeste.DreamBlock.FastActivate -= DreamBlock_FastActivate;
-            On.Celeste.DreamBlock.ActivateNoRoutine -= DreamBlock_ActivateNoRoutine;
-            On.Celeste.DreamBlock.Deactivate -= DreamBlock_Deactivate;
-            On.Celeste.DreamBlock.FastDeactivate -= DreamBlock_FastDeactivate;
-            On.Celeste.DreamBlock.DeactivateNoRoutine -= DreamBlock_DeactivateNoRoutine;
+            On.Celeste.DreamBlock.Activate -= On_DreamBlock_Activate;
+            On.Celeste.DreamBlock.FastActivate -= On_DreamBlock_FastActivate;
+            On.Celeste.DreamBlock.ActivateNoRoutine -= On_DreamBlock_ActivateNoRoutine;
+            On.Celeste.DreamBlock.Deactivate -= On_DreamBlock_Deactivate;
+            On.Celeste.DreamBlock.FastDeactivate -= On_DreamBlock_FastDeactivate;
+            On.Celeste.DreamBlock.DeactivateNoRoutine -= On_DreamBlock_DeactivateNoRoutine;
             
-            IL.Celeste.DreamBlock.Added -= DreamBlock_Added;
+            IL.Celeste.DreamBlock.Added -= IL_DreamBlock_Added;
 
             if (aonHelperDependencies.ReverseHelperLoaded is aonHelperDependencies.DependencyState.Unloaded)
             {
-                IL.Celeste.Player.DreamDashCheck -= Player_DreamDashCheck;
+                IL.Celeste.Player.DreamDashCheck -= IL_Player_DreamDashCheck;
 
-                HookHelper.DisposeAndSetNull(ref ilHook_Player_DashCoroutine);
+                HookHelper.DisposeAndSetNull(ref il_Player_DashCoroutine);
             }
         }
 
-        private static void DreamBlock_Added(ILContext il)
+        private static void IL_DreamBlock_Added(ILContext il)
         {
             ILCursor cursor = new(il);
 
@@ -166,13 +166,13 @@ public class DreamLockBlock : BaseLockBlock
             }
         }
 
-        private static IEnumerator DreamBlock_Activate(On.Celeste.DreamBlock.orig_Activate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
-        private static IEnumerator DreamBlock_FastActivate(On.Celeste.DreamBlock.orig_FastActivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
-        private static void DreamBlock_ActivateNoRoutine(On.Celeste.DreamBlock.orig_ActivateNoRoutine orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
+        private static IEnumerator On_DreamBlock_Activate(On.Celeste.DreamBlock.orig_Activate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
+        private static IEnumerator On_DreamBlock_FastActivate(On.Celeste.DreamBlock.orig_FastActivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
+        private static void On_DreamBlock_ActivateNoRoutine(On.Celeste.DreamBlock.orig_ActivateNoRoutine orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
 
-        private static IEnumerator DreamBlock_Deactivate(On.Celeste.DreamBlock.orig_Deactivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
-        private static IEnumerator DreamBlock_FastDeactivate(On.Celeste.DreamBlock.orig_FastDeactivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
-        private static void DreamBlock_DeactivateNoRoutine(On.Celeste.DreamBlock.orig_DeactivateNoRoutine orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
+        private static IEnumerator On_DreamBlock_Deactivate(On.Celeste.DreamBlock.orig_Deactivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
+        private static IEnumerator On_DreamBlock_FastDeactivate(On.Celeste.DreamBlock.orig_FastDeactivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
+        private static void On_DreamBlock_DeactivateNoRoutine(On.Celeste.DreamBlock.orig_DeactivateNoRoutine orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
 
         private static void DoNothingIfDummy(Action callOrig, DreamBlock self, bool canDashThrough)
         {
@@ -199,7 +199,7 @@ public class DreamLockBlock : BaseLockBlock
             yield return new SwapImmediately(callOrig());
         }
 
-        private static void Player_DreamDashCheck(ILContext il)
+        private static void IL_Player_DreamDashCheck(ILContext il)
         {
             ILCursor cursor = new(il);
 
@@ -220,7 +220,7 @@ public class DreamLockBlock : BaseLockBlock
             cursor.EmitOr();
         }
 
-        private static void Player_DashCoroutine(ILContext il)
+        private static void IL_Player_DashCoroutine(ILContext il)
         {
             ILCursor cursor = new(il);
             

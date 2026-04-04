@@ -13,25 +13,25 @@ public class IntroFacingController(Vector2 position, Facings facing, string cond
     
     #region Hooks
 
-    private static ILHook ilHook_Player_orig_Added;
+    private static ILHook il_Player_orig_Added;
 
     [OnLoad]
     internal static void Load()
     {
-        On.Celeste.Player.TempleFallUpdate += Player_TempleFallUpdate;
+        On.Celeste.Player.TempleFallUpdate += On_Player_TempleFallUpdate;
         
-        ilHook_Player_orig_Added = new ILHook(typeof(Player).GetMethod("orig_Added", HookHelper.Bind.PublicInstance)!, Player_orig_Added);
+        il_Player_orig_Added = new ILHook(typeof(Player).GetMethod("orig_Added", HookHelper.Bind.PublicInstance)!, IL_Player_orig_Added);
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        On.Celeste.Player.TempleFallUpdate -= Player_TempleFallUpdate;
+        On.Celeste.Player.TempleFallUpdate -= On_Player_TempleFallUpdate;
         
-        HookHelper.DisposeAndSetNull(ref ilHook_Player_orig_Added);
+        HookHelper.DisposeAndSetNull(ref il_Player_orig_Added);
     }
 
-    private static int Player_TempleFallUpdate(On.Celeste.Player.orig_TempleFallUpdate orig, Player self)
+    private static int On_Player_TempleFallUpdate(On.Celeste.Player.orig_TempleFallUpdate orig, Player self)
     {
         int result = orig(self);
 
@@ -41,7 +41,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string cond
         return result;
     }
 
-    private static void Player_orig_Added(ILContext il)
+    private static void IL_Player_orig_Added(ILContext il)
     {
         ILCursor cursor = new(il);
         

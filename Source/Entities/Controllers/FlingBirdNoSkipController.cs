@@ -14,16 +14,16 @@ public class FlingBirdNoSkipController(Vector2 position, string condition)
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.FlingBird.Update += FlingBird_Update;
+        IL.Celeste.FlingBird.Update += IL_FlingBird_Update;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.FlingBird.Update -= FlingBird_Update;
+        IL.Celeste.FlingBird.Update -= IL_FlingBird_Update;
     }
 
-    private static void FlingBird_Update(ILContext il)
+    private static void IL_FlingBird_Update(ILContext il)
     {
         ILCursor cursor = new(il);
         

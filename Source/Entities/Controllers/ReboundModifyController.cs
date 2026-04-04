@@ -48,16 +48,16 @@ public class ReboundModifyController(Vector2 position,
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.Player.Rebound += Player_Rebound;
+        IL.Celeste.Player.Rebound += IL_Player_Rebound;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.Player.Rebound -= Player_Rebound;
+        IL.Celeste.Player.Rebound -= IL_Player_Rebound;
     }
 
-    private static void Player_Rebound(ILContext il)
+    private static void IL_Player_Rebound(ILContext il)
     {
         ILCursor cursor = new(il);
 

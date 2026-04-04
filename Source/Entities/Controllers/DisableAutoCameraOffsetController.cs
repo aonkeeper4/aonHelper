@@ -13,22 +13,22 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
 
     #region Hooks
     
-    private static ILHook ilHook_Player_get_CameraTarget;
+    private static ILHook il_Player_get_CameraTarget;
 
     [OnLoad]
     internal static void Load()
     {
-        ilHook_Player_get_CameraTarget = new ILHook(typeof(Player).GetMethod("get_CameraTarget", BindingFlags.Public | BindingFlags.Instance)!, Player_get_CameraTarget);
+        il_Player_get_CameraTarget = new ILHook(typeof(Player).GetMethod("get_CameraTarget", BindingFlags.Public | BindingFlags.Instance)!, IL_Player_get_CameraTarget);
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        ilHook_Player_get_CameraTarget.Dispose();
-        ilHook_Player_get_CameraTarget = null;
+        il_Player_get_CameraTarget.Dispose();
+        il_Player_get_CameraTarget = null;
     }
 
-    private static void Player_get_CameraTarget(ILContext il)
+    private static void IL_Player_get_CameraTarget(ILContext il)
     {
         ILCursor cursor = new(il);
         

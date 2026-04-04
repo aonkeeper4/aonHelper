@@ -16,16 +16,16 @@ public class FormationBackdropColorController(Vector2 position, Color color, flo
     [OnLoad]
     internal static void Load()
     {
-        IL.Celeste.FormationBackdrop.Render += FormationBackdrop_Render;
+        IL.Celeste.FormationBackdrop.Render += IL_FormationBackdrop_Render;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        IL.Celeste.FormationBackdrop.Render -= FormationBackdrop_Render;
+        IL.Celeste.FormationBackdrop.Render -= IL_FormationBackdrop_Render;
     }
 
-    private static void FormationBackdrop_Render(ILContext il)
+    private static void IL_FormationBackdrop_Render(ILContext il)
     {
         ILCursor cursor = new(il);
 

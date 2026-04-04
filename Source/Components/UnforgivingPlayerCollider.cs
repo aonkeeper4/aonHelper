@@ -36,18 +36,18 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
     
     private static void LazyLoad()
     {
-        IL.Celeste.Actor.MoveHExact += Actor_MoveHExact;
-        IL.Celeste.Actor.MoveVExact += Actor_MoveVExact;
+        IL.Celeste.Actor.MoveHExact += IL_Actor_MoveHExact;
+        IL.Celeste.Actor.MoveVExact += IL_Actor_MoveVExact;
     }
 
     private static void LazyUnload()
     {
-        IL.Celeste.Actor.MoveHExact -= Actor_MoveHExact;
-        IL.Celeste.Actor.MoveVExact -= Actor_MoveVExact;
+        IL.Celeste.Actor.MoveHExact -= IL_Actor_MoveHExact;
+        IL.Celeste.Actor.MoveVExact -= IL_Actor_MoveVExact;
     }
 
-    private static void Actor_MoveHExact(ILContext il) => UnforgivingSpikesCheck(il, true);
-    private static void Actor_MoveVExact(ILContext il) => UnforgivingSpikesCheck(il, false);
+    private static void IL_Actor_MoveHExact(ILContext il) => UnforgivingSpikesCheck(il, true);
+    private static void IL_Actor_MoveVExact(ILContext il) => UnforgivingSpikesCheck(il, false);
 
     private static void UnforgivingSpikesCheck(ILContext il, bool horizontal)
     {

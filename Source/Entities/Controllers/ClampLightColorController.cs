@@ -39,16 +39,16 @@ public class ClampLightColorController(Vector2 position, Color clampColor, Clamp
     [OnLoad]
     internal static void Load()
     {
-        On.Celeste.LightingRenderer.BeforeRender += LightingRenderer_BeforeRender;
+        On.Celeste.LightingRenderer.BeforeRender += On_LightingRenderer_BeforeRender;
     }
 
     [OnUnload]
     internal static void Unload()
     {
-        On.Celeste.LightingRenderer.BeforeRender -= LightingRenderer_BeforeRender;
+        On.Celeste.LightingRenderer.BeforeRender -= On_LightingRenderer_BeforeRender;
     }
 
-    private static void LightingRenderer_BeforeRender(On.Celeste.LightingRenderer.orig_BeforeRender orig, LightingRenderer self, Scene scene)
+    private static void On_LightingRenderer_BeforeRender(On.Celeste.LightingRenderer.orig_BeforeRender orig, LightingRenderer self, Scene scene)
     {
         orig(self, scene);
 
