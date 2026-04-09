@@ -11,7 +11,7 @@ public class aonHelperSession : EverestModuleSession
         public bool Wavy { get; set; }
         public bool VanillaEdgeBehavior { get; set; }
     }
-    public GlassLockBlockState GlassLockBlockCurrentSettings { get; set; } = null;
+    public GlassLockBlockState GlassLockBlockCurrentSettings { get; set; }
 
     public Dictionary<EntityID, bool> DreamBlockDummyStates { get; set; } = new();
     public List<EntityID> UnlockedDreamLockBlocks { get; set; } = [];

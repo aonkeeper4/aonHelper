@@ -11,7 +11,7 @@ public static class aonHelperExports
     }
     
     /// <summary>
-    /// Provides ModInterop exports for interfacing correctly with the rendering changes imposed by Fg Styleground Bloom Controllers.
+    /// Provides ModInterop exports for interfacing correctly with the rendering changes imposed by Foreground Styleground Bloom Controllers.
     /// </summary>
     [ModExportName("aonHelper.FgStylegroundBloomControllerCompat")]
     public static class FgStylegroundBloomControllerCompat

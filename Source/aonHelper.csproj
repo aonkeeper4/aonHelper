@@ -53,7 +53,7 @@
     </ItemGroup>
 
     <!-- compile all shaders before building -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
         <EffectFiles Include="..\Effects\**\*.fx" />
     </ItemGroup>
     <PropertyGroup>
@@ -76,74 +76,8 @@
     </Target>
 
     <!-- package the mod when building in release -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
         <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Ahorn\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso" />
-        <ZippedFiles Update="..\Loenn\entities\controllers\clamp_light_color_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\clamp_light_color_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\disable_auto_camera_offset_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\disable_auto_camera_offset_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\dream_dash_through_transition_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\dream_dash_through_transition_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\feather_bounce_scam_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\feather_bounce_scam_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\fg_styleground_bloom_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\fg_styleground_bloom_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\fling_bird_no_skip_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\fling_bird_no_skip_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\formation_backdrop_color_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\formation_backdrop_color_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\intro_facing_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\intro_facing_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\jumpthrus_apply_liftspeed_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\jumpthrus_apply_liftspeed_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\light_occlusion_fix_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\light_occlusion_fix_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\lightning_cornerboost_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\lightning_cornerboost_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\quantize_colorgrade_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\quantize_colorgrade_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\rebound_modify_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\rebound_modify_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\seamless_lightning_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\seamless_lightning_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\controllers\spring_speed_threshold_controller.lua">
-          <Link>aonHelper\Loenn\entities\controllers\spring_speed_threshold_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\lock_blocks\dream_lock_block.lua">
-          <Link>aonHelper\Loenn\entities\lock_blocks\dream_lock_block.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\lock_blocks\glass_lock_block.lua">
-          <Link>aonHelper\Loenn\entities\lock_blocks\glass_lock_block.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\lock_blocks\glass_lock_block_controller.lua">
-          <Link>aonHelper\Loenn\entities\lock_blocks\glass_lock_block_controller.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\misc\darker_matter.lua">
-          <Link>aonHelper\Loenn\entities\misc\darker_matter.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\misc\feather_dash_switch.lua">
-          <Link>aonHelper\Loenn\entities\misc\feather_dash_switch.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\misc\resizable_heart.lua">
-          <Link>aonHelper\Loenn\entities\misc\resizable_heart.lua</Link>
-        </ZippedFiles>
-        <ZippedFiles Update="..\Loenn\entities\misc\unforgiving_spikes.lua">
-          <Link>aonHelper\Loenn\entities\misc\unforgiving_spikes.lua</Link>
-        </ZippedFiles>
     </ItemGroup>
     <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="@(ZippedFiles)" Outputs="..\aonHelper.zip" Condition="'$(Configuration)' == 'Release'">
         <PackageMod Files="@(ZippedFiles)" OutputPath="..\aonHelper.zip" />
