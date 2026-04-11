@@ -155,6 +155,9 @@ entities.aonHelper/DarkerMatter.attributes.description.speedThreshold=The speed 
 entities.aonHelper/DarkerMatter.attributes.description.speedLimit=The speed limit for the Darker Matter state. Negative values mean the player's speed will never be limited.
 entities.aonHelper/DarkerMatter.attributes.description.colors=The colors to use for the Darker Matter.
 entities.aonHelper/DarkerMatter.attributes.description.warpColors=The colors to use for the warp edges of the Darker Matter.
+entities.aonHelper/DarkerMatter.attributes.description.centerAlpha=The alpha (opacity) of the center of the Darker Matter.
+entities.aonHelper/DarkerMatter.attributes.description.edgeAlpha=The alpha (opacity) of the edges of the Darker Matter.
+entities.aonHelper/DarkerMatter.attributes.description.particleAlpha=The alpha (opacity) of the particles emitted by the Darker Matter.
 
 # Lightning Cornerboost Controller
 entities.aonHelper/LightningCornerboostController.placements.name.lightning_cornerboost_controller=Lightning Wallbounce Controller

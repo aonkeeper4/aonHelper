@@ -35,6 +35,6 @@ public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data
 	    
 	    if (alphaFrom is { } aFrom && alphaTo is { } aTo)
 		    foreach (Parallax parallax in affected)
-			    parallax.Alpha = Calc.ClampedMap(GetPositionLerp(player, positionMode), 0f, 1f, aFrom, aTo);
+			    parallax.Alpha = Calc.LerpClamp(aFrom, aTo, GetPositionLerp(player, positionMode));
     }
 }

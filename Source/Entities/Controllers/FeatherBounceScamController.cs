@@ -38,15 +38,14 @@ public class FeatherBounceScamController(Vector2 position, float featherBounceSc
             throw new HookHelper.HookException(il, "Unable to find check on `Player.starFlyTimer` to modify.");
         
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(FeatherBounceScamThresholdMultiplier);
-        cursor.Emit(OpCodes.Mul);
+        cursor.EmitDelegate(FeatherBounceScamThreshold);
 
         return;
         
-        static float FeatherBounceScamThresholdMultiplier(Player player)
+        static float FeatherBounceScamThreshold(float orig, Player player)
             => TryGetActiveController(player.SceneAs<Level>(), out FeatherBounceScamController controller)
-                ? controller.featherBounceScamThreshold / Player.StarFlyEndNoBounceTime
-                : 1f;
+                ? controller.featherBounceScamThreshold
+                : orig;
     }
     
     #endregion

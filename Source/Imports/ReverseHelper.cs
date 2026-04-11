@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 namespace Celeste.Mod.aonHelper.Imports;
 
 // growls
-[GenerateImports("ReverseHelper.DreamBlock")]
+[GenerateImports("ReverseHelper.DreamBlock", RequiredDependency = false)]
 public static partial class ReverseHelper
 {
     public static partial void RegisterDreamBlockLike(Type type, Action<Entity> activate, Action<Entity> deactivate);
