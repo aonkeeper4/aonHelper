@@ -6,14 +6,13 @@ public class DarkerMatter : Entity
 {
     private class Edge
     {
+        private readonly DarkerMatter parent;
+
         public enum EdgeType
         {
             Normal,
             Warp
         }
-
-        private readonly DarkerMatter parent;
-
         private readonly EdgeType type;
 
         public Vector2 Start;
@@ -28,14 +27,12 @@ public class DarkerMatter : Entity
         }
         
         public Color Color(Level level, int cycleOffset)
-        {
-            return type switch
+        => type switch
             {
-                EdgeType.Normal => parent.ColorCycle(level, cycleOffset),
-                EdgeType.Warp => parent.WarpColorCycle(level, cycleOffset),
+                EdgeType.Normal => parent.ColorCycle(parent.colors, level, cycleOffset),
+                EdgeType.Warp => parent.ColorCycle(parent.warpColors, level, cycleOffset),
                 _ => throw new Exception($"invalid edge type: {type}")
             };
-        }
         
         public void Draw(uint seed, Color color)
         {
@@ -79,17 +76,14 @@ public class DarkerMatter : Entity
         private static float PseudoRandRange(ref uint seed, float min, float max)
             => min + (PseudoRand(ref seed) & 0x3FFu) / 1024f * (max - min);
     }
-
-    private ParticleType P_DarkerMatter;
     
+    private readonly float speedThreshold, speedLimit;
     private readonly bool warpHorizontal, warpVertical;
     private readonly bool refillDash;
-    
-    private readonly float speedThreshold;
-    private readonly float speedLimit;
 
-    private readonly Color[] colors;
-    private readonly Color[] warpColors;
+    private readonly Color[] colors, warpColors;
+    private readonly float centerAlpha, edgeAlpha, particleAlpha;
+    private readonly ParticleType P_DarkerMatter;
     
     private readonly bool lonely;
     private List<Edge> edges;
@@ -97,41 +91,42 @@ public class DarkerMatter : Entity
     
     private float totalTime;
 
-    public DarkerMatter(Vector2 position, int width, int height,
+    public DarkerMatter(Vector2 position, int width, int height, int depth,
         bool warpHorizontal, bool warpVertical, bool refillDash,
         float speedThreshold, float speedLimit,
-        Color[] colors, Color[] warpColors) : base(position)
+        Color[] colors, Color[] warpColors, float centerAlpha, float edgeAlpha, float particleAlpha) : base(position)
     {
+        Tag = Tags.TransitionUpdate;
+        Depth = depth;
+        Collider = new Hitbox(width, height);
+        
+        this.speedThreshold = speedThreshold;
+        this.speedLimit = speedLimit;
         this.warpHorizontal = warpHorizontal;
         this.warpVertical = warpVertical;
         this.refillDash = refillDash;
         lonely = this.warpHorizontal || this.warpVertical;
         
-        this.speedThreshold = speedThreshold;
-        this.speedLimit = speedLimit;
-        
         this.colors = colors;
         this.warpColors = warpColors;
-
-        Tag = Tags.TransitionUpdate;
-        Depth = -8000;
-        Collider = new Hitbox(width, height);
+        this.centerAlpha = centerAlpha;
+        this.edgeAlpha = edgeAlpha;
+        this.particleAlpha = particleAlpha;
+        P_DarkerMatter = new ParticleType(Glider.P_Glow)
+        {
+            Color = colors[0] * this.particleAlpha,
+            Color2 = colors[colors.Length / 2] * this.particleAlpha * 0.6f
+        };
         
         Add(new PlayerCollider(OnPlayer));
         Add(new CustomBloom(OnRenderBloom));
-        
-        P_DarkerMatter = new ParticleType(Glider.P_Glow)
-        {
-            Color = Calc.Random.Choose(colors),
-            Color2 = Calc.Random.Choose(colors) * 0.6f,
-        };
     }
 
     public DarkerMatter(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Width, data.Height,
+        : this(data.Position + offset, data.Width, data.Height, data.Int("depth", -8000),
             data.Bool("warpHorizontal"), data.Bool("warpVertical"), data.Bool("refillDash", true),
             data.Float("speedThreshold"), data.Float("speedLimit"),
-            data.Attr("colors").Split(",").Select(Calc.HexToColor).ToArray(), data.Attr("warpColors").Split(",").Select(Calc.HexToColor).ToArray())
+            data.HexColorArray("colors"), data.HexColorArray("warpColors"), data.Float("centerAlpha", 0.4f), data.Float("edgeAlpha", 1f), data.Float("particleAlpha", 1f))
     { }
 
     public override void Awake(Scene scene)
@@ -172,19 +167,22 @@ public class DarkerMatter : Entity
     }
     
     private bool CheckForDarkerMatter(Vector2 pos)
-        => !lonely && Scene.Tracker.GetEntities<DarkerMatter>().Cast<DarkerMatter>().Any(entity =>
-            !entity.lonely && entity.Collider.Collide(new Rectangle((int) pos.X, (int) pos.Y, 8, 8)));
+        => !lonely && Scene.Tracker.GetEntities<DarkerMatter>()
+                                   .Cast<DarkerMatter>()
+                                   .Any(entity => !entity.lonely && entity.Collider.Collide(new Rectangle((int) pos.X, (int) pos.Y, 8, 8)));
 
     public override void Update()
     {
         base.Update();
         
         totalTime += Engine.DeltaTime;
-        if (Scene.OnInterval(0.1f))
+        if (!Scene.OnInterval(0.1f))
+            return;
+        
+        edgeSeed = (uint)Calc.Random.Next();
+        if (particleAlpha > 0f)
         {
-            edgeSeed = (uint)Calc.Random.Next();
-            
-            int numParticles = (int)MathF.Ceiling(Width * Height * 4 / (32 * 32));
+            int numParticles = (int) MathF.Ceiling(Width * Height * 4 / (32 * 32));
             SceneAs<Level>().ParticlesFG.Emit(P_DarkerMatter, numParticles, Center, new Vector2(Width / 2f, Height / 2f));
         }
     }
@@ -196,33 +194,24 @@ public class DarkerMatter : Entity
         Level level = SceneAs<Level>();
         Camera camera = level.Camera;
         
-        Rectangle view = new((int)camera.Left - 4, (int)camera.Top - 4, (int)(camera.Right - camera.Left) + 8, (int)(camera.Bottom - camera.Top) + 8);
+        Rectangle view = new((int) camera.Left - 4, (int) camera.Top - 4, (int) (camera.Right - camera.Left) + 8, (int) (camera.Bottom - camera.Top) + 8);
         if (!Collider.Bounds.Intersects(view))
             return;
         
-        Draw.Rect(Collider, ColorCycle(level, 0) * 0.4f);
+        Draw.Rect(Collider, ColorCycle(colors, level, 0) * centerAlpha);
         foreach (Edge edge in edges)
         {
-            edge.Draw(edgeSeed, edge.Color(level, 0));
-            edge.Draw(edgeSeed + 1, edge.Color(level, 5));
+            edge.Draw(edgeSeed, edge.Color(level, 0) * edgeAlpha);
+            edge.Draw(edgeSeed + 1, edge.Color(level, 5) * edgeAlpha);
         }
     }
     
-    private Color ColorCycle(Level level, int offset)
+    private Color ColorCycle(Color[] colorCycle, Level level, int offset)
     {
         float time = (totalTime + offset) % 10;
-        int timeInt = (int)time;
+        int timeInt = (int) time;
         return level is not null
-            ? Color.Lerp(colors[timeInt % colors.Length], colors[(timeInt + 1) % colors.Length], time % 1f)
-            : default;
-    }
-
-    private Color WarpColorCycle(Level level, int offset)
-    {
-        float time = (totalTime + offset) % 10;
-        int timeInt = (int)time;
-        return level is not null
-            ? Color.Lerp(warpColors[timeInt % warpColors.Length], warpColors[(timeInt + 1) % warpColors.Length], time % 1f)
+            ? Color.Lerp(colorCycle[timeInt % colorCycle.Length], colorCycle[(timeInt + 1) % colorCycle.Length], time % 1f)
             : default;
     }
     
@@ -233,9 +222,7 @@ public class DarkerMatter : Entity
     }
 
     private void OnRenderBloom()
-    { 
-        Draw.Rect(Collider, Color.White * 0.1f);
-    }
+        => Draw.Rect(Collider, Color.White * 0.1f);
     
     #region States
     
@@ -249,7 +236,7 @@ public class DarkerMatter : Entity
 
         public const float StopGraceThreshold = 0.01f;
         public const float StopGraceTime = 0.05f;
-        public float StopGraceTimer;
+        public float StopGraceTimer = StopGraceTime;
 
         public Vector2 PreviousExactPosition;
         public Vector2 LastNonZeroSpeed;

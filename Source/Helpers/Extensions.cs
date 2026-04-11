@@ -38,6 +38,17 @@ public static class EntityDataExtensions
         string value = data.Attr(key);
         return string.IsNullOrEmpty(value) ? null : T.Parse(value, CultureInfo.InvariantCulture);
     }
+
+    public static Color[] HexColorArray(this EntityData data, string key)
+    {
+        string value = data.Attr(key);
+        if (string.IsNullOrEmpty(value))
+            return [];
+
+        return value.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Select(Calc.HexToColor)
+                    .ToArray();
+    }
 }
 
 public static class ILCursorExtensions
