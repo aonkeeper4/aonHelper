@@ -84,8 +84,8 @@ function darkerMatter.sprite(room, entity)
     
     table.insert(sprites, drawableRectangle.fromRectangle("bordered", x, y, width, height, fillColor, borderColor))
 
-    -- "fun" fact! if you assume that since one mode is called `bordered`, the other one must be called `filled` (as would surely be logical),
-    -- it fucks up rendering so severely that the room disappears and loenn crashes if you touch anything!
+    -- "fun" fact! if you assume that since one rectangle rendering mode is called `bordered`, the other one must be called `filled` (as would surely be logical),
+    -- it fucks up rendering so severely that the entire room disappears and loenn crashes if you touch anything!
     if entity.warpHorizontal or false then
         table.insert(sprites, drawableRectangle.fromRectangle("fill", x - warpLineThickness / 2, y, warpLineThickness, height, warpLineColor))
         table.insert(sprites, drawableRectangle.fromRectangle("fill", x + width - warpLineThickness / 2, y, warpLineThickness, height, warpLineColor))
