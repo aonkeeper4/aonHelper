@@ -373,7 +373,7 @@ public class DarkerMatter : Entity
 
     #region Utils
 
-    private static bool IsInDarkerMatter(Player player)
+    private static bool IsInDarkerMatterState(Player player)
         => player.StateMachine.State == StDarkerMatter;
     
     #endregion
@@ -420,8 +420,8 @@ public class DarkerMatter : Entity
     private static bool On_Player_UnderwaterMusicCheck(On.Celeste.Player.orig_UnderwaterMusicCheck orig, Player self)
         => orig(self) || self.StateMachine.State == StDarkerMatter;
 
-    private static void IL_Player_orig_Update(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, IsInDarkerMatter);
-    private static void IL_Player_orig_UpdateSprite(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, IsInDarkerMatter);
+    private static void IL_Player_orig_Update(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, IsInDarkerMatterState);
+    private static void IL_Player_orig_UpdateSprite(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, IsInDarkerMatterState);
 
     #endregion
 
