@@ -42,9 +42,12 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
     }
 
     #region Utils
+
+    private static bool ShouldAffectStateCheck(Player player)
+        => TryGetActiveController(player?.SceneAs<Level>(), out _);
     
     private static bool IsAffectedAndDreamDashing(Player player)
-        => (player?.StateMachine.State ?? -1) == Player.StDreamDash && TryGetActiveController(player?.SceneAs<Level>(), out _);
+        => (player?.StateMachine.State ?? -1) == Player.StDreamDash && ShouldAffectStateCheck(player);
     
     private static void DreamDashDie(Player player, Vector2 previousPos, bool evenIfInvincible = false)
     {
@@ -148,14 +151,38 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
     private static void IL_Player_orig_Update(ILContext il)
     {
         ILCursor cursor = new(il);
-            
+        
+        /*
+         * IL_11c6: ldarg.0
+         * IL_11c7: ldfld class Monocle.StateMachine Celeste.Player::StateMachine
+         * IL_11cc: callvirt instance int32 Monocle.StateMachine::get_State()
+         * IL_11d1: ldc.i4.s 9
+         * IL_11d3: beq.s IL_11e9
+         * IL_11d5: ldarg.0
+         * IL_11d6: ldfld bool Celeste.Player::EnforceLevelBounds
+         * IL_11db: brfalse.s IL_11e9
+         */
         if (!cursor.TryGotoNextBestFit(MoveType.Before,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Player>("StateMachine"),
+            instr => instr.MatchCallvirt<StateMachine>("get_State"),
+            instr => instr.MatchLdcI4(Player.StDreamDash),
+            instr => instr.MatchBeq(out _),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Player>("EnforceLevelBounds"),
             instr => instr.MatchBrfalse(out _)))
-            throw new HookHelper.HookException(il, "Unable to find check for `Player.EnforceLevelBounds`.");
+            throw new HookHelper.HookException(il, "Unable to find state check for `Player.StDreamDash`.");
         
-        HookHelper.ModifyStateCheck(cursor, Player.StDreamDash, false, false, IsAffectedAndDreamDashing, true);
+        ILLabel nextCondition = cursor.DefineLabel();
+
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(ShouldAffectStateCheck);
+        cursor.EmitBrtrue(nextCondition);
+        
+        if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchBeq(out _)))
+            throw new HookHelper.HookException("Unable to find check for `Player.EnforceLevelBounds`.");
+
+        cursor.MarkLabel(nextCondition);
     }
     
     #endregion
