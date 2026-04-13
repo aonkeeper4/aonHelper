@@ -32,7 +32,7 @@ public class FlingBirdNoSkipController(Vector2 position, string condition)
          * IL_0081: callvirt instance void Celeste.FlingBird::Skip()
          * IL_0086: ret
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchCallvirt<FlingBird>("Skip"),
             instr => instr.MatchRet()))
@@ -40,9 +40,9 @@ public class FlingBirdNoSkipController(Vector2 position, string condition)
         
         ILLabel ret = cursor.DefineLabel();
         
-        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitLdarg0();
         cursor.EmitDelegate(ShouldNotSkipNode);
-        cursor.Emit(OpCodes.Brtrue, ret);
+        cursor.EmitBrtrue(ret);
         
         cursor.GotoNext(MoveType.Before, instr => instr.MatchRet());
         cursor.MarkLabel(ret);

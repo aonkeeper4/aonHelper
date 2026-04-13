@@ -41,11 +41,41 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         IL.Celeste.Level.EnforceBounds -= IL_Level_EnforceBounds;
     }
 
-    private static bool ShouldAffectStateCheck(Player player)
-        => TryGetActiveController(player?.SceneAs<Level>(), out _);
+    #region Utils
     
     private static bool IsAffectedAndDreamDashing(Player player)
-        => ShouldAffectStateCheck(player) && player.StateMachine.State == Player.StDreamDash;
+        => (player?.StateMachine.State ?? -1) == Player.StDreamDash && TryGetActiveController(player?.SceneAs<Level>(), out _);
+    
+    private static void DreamDashDie(Player player, Vector2 previousPos, bool evenIfInvincible = false)
+    {
+        if (!evenIfInvincible && SaveData.Instance.Assists.Invincible)
+        {
+            player.Position = previousPos;
+            player.Speed *= -1f;
+            player.Play(SFX.game_assist_dreamblockbounce);
+        }
+
+        player.Die(Vector2.Zero, evenIfInvincible);
+    }
+    
+    private static void UseInsteadIfDreamDashing<T>(ILCursor cursor, T cb) where T : Delegate
+    {
+        ILLabel normalCall = cursor.DefineLabel();
+        ILLabel afterNormalCall = cursor.DefineLabel();
+
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(IsAffectedAndDreamDashing);
+        cursor.EmitBrfalse(normalCall);
+        cursor.EmitDelegate(cb);
+        cursor.EmitBr(afterNormalCall);
+        cursor.MarkLabel(normalCall);
+        cursor.Index++; // normal method call would be here
+        cursor.MarkLabel(afterNormalCall);
+    }
+    
+    #endregion
+    
+    #region Player
     
     private static void On_Player_OnBoundsH(On.Celeste.Player.orig_OnBoundsH orig, Player self)
     {
@@ -69,31 +99,19 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         orig(self);
     }
     
-    private static void DreamDashDie(Player player, Vector2 previousPos, bool evenIfInvincible = false)
-    {
-        if (!evenIfInvincible && SaveData.Instance.Assists.Invincible)
-        {
-            player.Position = previousPos;
-            player.Speed *= -1f;
-            player.Play(SFX.game_assist_dreamblockbounce);
-        }
-
-        player.Die(Vector2.Zero, evenIfInvincible);
-    }
-    
     private static void IL_Player_BeforeUpTransition(ILContext il)
     {
         ILCursor cursor = new(il);
 
-        HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, Player.StDreamDash, ShouldAffectStateCheck);
-        HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, Player.StDreamDash, ShouldAffectStateCheck);
+        HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, IsAffectedAndDreamDashing);
+        HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, IsAffectedAndDreamDashing);
     }
 
     private static void IL_Player_BeforeDownTransition(ILContext il)
     {
         ILCursor cursor = new(il);
 
-        HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, Player.StDreamDash, ShouldAffectStateCheck);
+        HookHelper.ModifyStateCheck(cursor, Player.StRedDash, false, false, IsAffectedAndDreamDashing);
     }
 
     private static void IL_Player_TransitionTo(ILContext il)
@@ -101,85 +119,49 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         ILCursor cursor = new(il);
 
         // IL_0013: call instance void Celeste.Actor::MoveTowardsX(float32, float32, class Celeste.Collision)
-        if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCall<Actor>("MoveTowardsX")))
+        if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchCall<Actor>("MoveTowardsX")))
             throw new HookHelper.HookException(il, "Unable to find call to `Actor.MoveTowardsX`.");
         UseInsteadIfDreamDashing(cursor, NaiveMoveTowardsX);
         
         // IL_002b: call instance void Celeste.Actor::MoveTowardsY(float32, float32, class Celeste.Collision)
-        if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCall<Actor>("MoveTowardsY")))
+        if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchCall<Actor>("MoveTowardsY")))
             throw new HookHelper.HookException(il, "Unable to find call to `Actor.MoveTowardsY`.");
         UseInsteadIfDreamDashing(cursor, NaiveMoveTowardsY);
         
         return;
-
-        static void UseInsteadIfDreamDashing<T>(ILCursor cursor, T cb) where T : Delegate
+        
+        static void NaiveMoveTowardsX(Player player, float targetX, float maxAmount, Collision _)
         {
-            ILLabel normalCall = cursor.DefineLabel();
-            ILLabel afterNormalCall = cursor.DefineLabel();
-
-            cursor.EmitLdarg0();
-            cursor.EmitDelegate(IsAffectedAndDreamDashing);
-            cursor.EmitBrfalse(normalCall);
-            cursor.EmitDelegate(cb);
-            cursor.EmitBr(afterNormalCall);
-            cursor.MarkLabel(normalCall);
-            cursor.Index++; // normal method call would be here
-            cursor.MarkLabel(afterNormalCall);
+            float toX = Calc.Approach(player.ExactPosition.X, targetX, maxAmount);
+            float moveX = (float) ((double) toX - player.Position.X - player.movementCounter.X);
+            player.NaiveMove(Vector2.UnitX * moveX);
         }
-    }
 
-    private static void NaiveMoveTowardsX(Player player, float targetX, float maxAmount, Collision _)
-    {
-        float toX = Calc.Approach(player.ExactPosition.X, targetX, maxAmount);
-        float moveX = (float) ((double) toX - player.Position.X - player.movementCounter.X);
-        player.NaiveMove(Vector2.UnitX * moveX);
-    }
-
-    private static void NaiveMoveTowardsY(Player player, float targetY, float maxAmount, Collision _)
-    {
-        float toY = Calc.Approach(player.ExactPosition.Y, targetY, maxAmount);
-        float moveY = (float) ((double) toY - player.Position.Y - player.movementCounter.Y);
-        player.NaiveMove(Vector2.UnitY * moveY);
+        static void NaiveMoveTowardsY(Player player, float targetY, float maxAmount, Collision _)
+        {
+            float toY = Calc.Approach(player.ExactPosition.Y, targetY, maxAmount);
+            float moveY = (float) ((double) toY - player.Position.Y - player.movementCounter.Y);
+            player.NaiveMove(Vector2.UnitY * moveY);
+        }
     }
 
     private static void IL_Player_orig_Update(ILContext il)
     {
         ILCursor cursor = new(il);
-        
-        // could probably also do this with a HookHelper.ModifyStateCheck
-        /*
-         * IL_11c6: ldarg.0
-         * IL_11c7: ldfld class Monocle.StateMachine Celeste.Player::StateMachine
-         * IL_11cc: callvirt instance int32 Monocle.StateMachine::get_State()
-         * IL_11d1: ldc.i4.s 9
-         * IL_11d3: beq.s IL_11e9
-         * IL_11d5: ldarg.0
-         * IL_11d6: ldfld bool Celeste.Player::EnforceLevelBounds
-         * IL_11db: brfalse.s IL_11e9
-         */
+            
         if (!cursor.TryGotoNextBestFit(MoveType.Before,
-            instr => instr.MatchLdarg0(),
-            instr => instr.MatchLdfld<Player>("StateMachine"),
-            instr => instr.MatchCallvirt<StateMachine>("get_State"),
-            instr => instr.MatchLdcI4(Player.StDreamDash),
-            instr => instr.MatchBeq(out _),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Player>("EnforceLevelBounds"),
             instr => instr.MatchBrfalse(out _)))
-            throw new HookHelper.HookException(il, "Unable to find state check for `Player.StDreamDash`.");
+            throw new HookHelper.HookException(il, "Unable to find check for `Player.EnforceLevelBounds`.");
         
-        ILLabel nextCondition = cursor.DefineLabel();
-
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate(ShouldAffectStateCheck);
-        cursor.EmitBrtrue(nextCondition);
-
-        if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchBeq(out _)))
-            throw new HookHelper.HookException("Unable to find check for `Player.EnforceLevelBounds`.");
-
-        cursor.MarkLabel(nextCondition);
+        HookHelper.ModifyStateCheck(cursor, Player.StDreamDash, false, false, IsAffectedAndDreamDashing, true);
     }
+    
+    #endregion
 
+    #region Other
+    
     private static void IL_Level_EnforceBounds(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -211,6 +193,8 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
         cursor.EmitNot();
         cursor.EmitAnd();
     }
+    
+    #endregion
 
     #endregion
 }

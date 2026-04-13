@@ -66,7 +66,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
          * IL_00af: ldarg.0
          * IL_00b0: callvirt instance void Celeste.BloomRenderer::Apply(class Monocle.VirtualRenderTarget, class Monocle.Scene)
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("Bloom"),
             instr => instr.MatchLdsfld(typeof(GameplayBuffers), "Level"),
@@ -82,7 +82,6 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
 
         cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<BloomRenderer>("Apply"));
         cursor.MarkLabel(skipBloomRendering);
-        cursor.EmitNop(); // to ensure our label is inserted before other people's additions
         
         /*
          * IL_00b5: ldarg.0
@@ -90,7 +89,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
          * IL_00bb: ldarg.0
          * IL_00bc: callvirt instance void Monocle.Renderer::Render(class Monocle.Scene)
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("Foreground"),
             instr => instr.MatchLdarg0(),
@@ -105,14 +104,13 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
 
         cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<Renderer>("Render"));
         cursor.MarkLabel(skipForegroundRendering);
-        cursor.EmitNop(); // to ensure our label is inserted before other people's additions
 
         /*
          * IL_00c1: ldsfld class Monocle.VirtualRenderTarget Celeste.GameplayBuffers::Level
          * IL_00c6: ldarg.0
          * IL_00c7: ldfld float32 Celeste.Level::glitchTimer
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdsfld(typeof(GameplayBuffers), "Level"),
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdfld<Level>("glitchTimer")))

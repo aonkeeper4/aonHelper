@@ -64,7 +64,7 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string conditio
          * IL_005e: call instance bool valuetype [mscorlib]System.Collections.Generic.List`1/Enumerator<class Monocle.Entity>::MoveNext()
          * IL_0063: brtrue.s IL_0020
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdloca(0),
             instr => instr.MatchCall<List<Entity>.Enumerator>("MoveNext"),
             instr => instr.MatchBrtrue(out _)))

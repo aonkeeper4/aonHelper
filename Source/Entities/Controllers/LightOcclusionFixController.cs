@@ -60,7 +60,7 @@ public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTil
          * IL_074d: callvirt instance valuetype [mscorlib]System.Collections.Generic.List`1/Enumerator<!0> class [mscorlib]System.Collections.Generic.List`1<class Monocle.Component>::GetEnumerator()
          * IL_0752: stloc.3
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdloc2(),
             instr => instr.MatchCallvirt<List<Component>>("GetEnumerator"),
             instr => instr.MatchStloc3()))

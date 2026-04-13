@@ -39,7 +39,7 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
          * IL_0032: ldc.i4.s 18
          * IL_0034: beq.s IL_0062
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg(0),
             instr => instr.MatchLdfld<Player>("StateMachine"),
             instr => instr.MatchCallvirt<StateMachine>("get_State"),
@@ -77,7 +77,7 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
          * IL_006d: ldc.i4.s 19
          * IL_006f: bne.un.s IL_00ae
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg(0),
             instr => instr.MatchLdfld<Player>("StateMachine"),
             instr => instr.MatchCallvirt<StateMachine>("get_State"),

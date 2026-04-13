@@ -25,28 +25,33 @@ public static class HookHelper
     }
 
     // see CommunalHelper DreamTunnelDash source for a properly explained version of this
-    public static void ModifyStateCheck(ILCursor cursor, int originalCheckedState, bool equal, bool canShortCircuit, int newCheckedState, Func<Player, bool> extraCheck = null)
+    public delegate bool NewStateCheck(Player player);
+    public static void ModifyStateCheck(ILCursor cursor, int originalCheckedState, bool equal, bool canShortCircuit, NewStateCheck newStateCheck, bool moveBackwards = false)
     {
-        if (!cursor.TryGotoNextFirstFitReversed(MoveType.AfterLabel, 0x10,
-            instr => instr.MatchLdfld<Player>("StateMachine"),
+        if (newStateCheck.GetInvocationList().Length != 1 || newStateCheck.Target is not null)
+            throw new ArgumentException("New state check must be of the form `static bool NewStateCheck(Player player)`.", nameof(newStateCheck));
+
+        Func<Instruction, bool>[] predicates =
+            [instr => instr.MatchLdfld<Player>("StateMachine"),
             instr => instr.MatchCallvirt<StateMachine>("get_State"),
-            instr => instr.MatchLdcI4(originalCheckedState)))
-            return;
+            instr => instr.MatchLdcI4(originalCheckedState)];
+        if (!(moveBackwards 
+            ? cursor.TryGotoPrevFirstFitReversed(MoveType.AfterLabel, 0x10, predicates)
+            : cursor.TryGotoNextFirstFitReversed(MoveType.AfterLabel, 0x10, predicates)))
+            throw new HookException(cursor.Context, $"Unable to find state check for player state {originalCheckedState} to modify.");
 
         ILLabel failedCheck = null;
 
         // todo: add support for `ceq`-based checks
         ILCursor cloned = cursor.Clone();
         if (!cloned.TryGotoNext(MoveType.After, instr => equal ^ canShortCircuit ? instr.MatchBneUn(out failedCheck) : instr.MatchBeq(out failedCheck)))
-            return;
+            throw new HookException(cursor.Context, $"Unable to find check failure label in check for player state {originalCheckedState}.");
         Instruction afterMatch = cloned.Next!;
 
         ILLabel cleanUpPlayer = cursor.DefineLabel(), pastCleanUpPlayer = cursor.DefineLabel();
-
+        
         cursor.EmitDup();
-        cursor.EmitLdcI4(newCheckedState);
-        cursor.EmitNewReference(extraCheck, out _); // we coulddd cache this?
-        cursor.EmitDelegate(StateCheck);
+        cursor.EmitCall(newStateCheck.Method);
         cursor.EmitBrtrue(cleanUpPlayer);
 
         cursor.Goto(equal ^ canShortCircuit ? afterMatch : failedCheck.Target);
@@ -57,10 +62,6 @@ public static class HookHelper
         cursor.MarkLabel(cleanUpPlayer);
         
         cursor.Goto(afterMatch, MoveType.After);
-        return;
-        
-        static bool StateCheck(Player player, int newCheckedState, Func<Player, bool> extraCheck)
-            => player.StateMachine.State == newCheckedState && (extraCheck?.Invoke(player) ?? true);
     }
     
     public static class Bind

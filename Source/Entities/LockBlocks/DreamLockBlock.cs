@@ -145,7 +145,7 @@ public class DreamLockBlock : BaseLockBlock
             ILCursor cursor = new(il);
 
             // IL_001d: stfld bool Celeste.DreamBlock::playerHasDreamDash
-            if (!cursor.TryGotoNext(MoveType.Before, instr => instr.MatchStfld(typeof(DreamBlock), "playerHasDreamDash")))
+            if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchStfld(typeof(DreamBlock), "playerHasDreamDash")))
                 throw new HookHelper.HookException(il, "Unable to find assignment to `DreamBlock.playerHasDreamDash` to modify.");
                 
             cursor.Emit(OpCodes.Ldarg_0);

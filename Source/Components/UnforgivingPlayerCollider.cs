@@ -46,10 +46,10 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         IL.Celeste.Actor.MoveVExact -= IL_Actor_MoveVExact;
     }
 
-    private static void IL_Actor_MoveHExact(ILContext il) => UnforgivingSpikesCheck(il, true);
-    private static void IL_Actor_MoveVExact(ILContext il) => UnforgivingSpikesCheck(il, false);
+    private static void IL_Actor_MoveHExact(ILContext il) => UnforgivingPlayerColliderCheck(il, true);
+    private static void IL_Actor_MoveVExact(ILContext il) => UnforgivingPlayerColliderCheck(il, false);
 
-    private static void UnforgivingSpikesCheck(ILContext il, bool horizontal)
+    private static void UnforgivingPlayerColliderCheck(ILContext il, bool horizontal)
     {
         ILCursor cursor = new(il);
         
@@ -57,7 +57,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         VariableDefinition checkPosition = new(il.Import(typeof(Vector2)));
         il.Body.Variables.Add(checkPosition);
 
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchCall<Entity>("CollideFirst"),
             instr => instr.MatchStloc3()))
             throw new HookHelper.HookException(il, "Unable to find call to `Entity.CollideFirst` to insert local variable assignment before.");
@@ -65,7 +65,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         cursor.EmitStloc(checkPosition);
         cursor.EmitLdloc(checkPosition);
 
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdloc3(),
             instr => instr.MatchBrfalse(out _)))
             throw new HookHelper.HookException(il, "Unable to find null check for `solid` to insert check for Unforgiving Spikes before.");
@@ -76,7 +76,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         cursor.EmitLdloc(checkPosition);
         cursor.EmitLdarg1();
         cursor.EmitLdcI4(horizontal ? 1 : 0);
-        cursor.EmitDelegate(CheckForUnforgivingSpikes);
+        cursor.EmitDelegate(CheckForUnforgivingPLayerColliders);
         cursor.EmitBrfalse(afterRet);
         
         cursor.EmitLdcI4(0); // return false since we didn't collide with a solid
@@ -85,7 +85,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         
         return;
 
-        static bool CheckForUnforgivingSpikes(Actor actor, Vector2 checkPosition, int moveAmount, bool horizontal)
+        static bool CheckForUnforgivingPLayerColliders(Actor actor, Vector2 checkPosition, int moveAmount, bool horizontal)
         {
             if (actor is not Player player)
                 return false;
