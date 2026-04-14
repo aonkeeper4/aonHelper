@@ -8,8 +8,6 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     private class LightningSolidComponent(LightningCornerboostController controller) : TypeRestrictedComponent<Lightning>(true, false)
     {
         protected override string Name => nameof(LightningSolidComponent);
-
-        private readonly LightningCornerboostController controller = controller;
         
         private Solid solid;
         private static readonly Vector2 SolidOffset = new(3f, 4f);
