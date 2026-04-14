@@ -14,6 +14,8 @@ public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data
     private readonly string tagToAffect = data.Attr("tagToAffect") is var t && !string.IsNullOrEmpty(t) ? t : null;
     private List<Parallax> allParallaxes;
 
+    private readonly ConditionHelper.Condition condition = ConditionHelper.Create(data.Attr("flag"));
+
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
@@ -29,6 +31,9 @@ public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data
     {
 	    Parallax[] affected = allParallaxes.Where(parallax => parallax is not null).ToArray();
 
+	    if (!condition.Check(SceneAs<Level>()))
+		    return;
+	    
 	    if (colorFrom is { } cFrom && colorTo is { } cTo)
 		    foreach (Parallax parallax in affected)
 				parallax.Color = Color.Lerp(cFrom, cTo, GetPositionLerp(player, positionMode));

@@ -4,6 +4,26 @@ local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 local parallaxFade = {}
 
 parallaxFade.name = "aonHelper/ParallaxFadeTrigger"
+parallaxFade.placements = {
+    name = "parallax_fade",
+    data = {
+        colorFrom = "000000",
+        colorTo = "ffffff",
+        alphaFrom = "0.0",
+        alphaTo = "1.0",
+        positionMode = "LeftToRight",
+        tagToAffect = "",
+        flag = ""
+    }
+}
+
+parallaxFade.fieldOrder = {
+    "x", "y", "width", "height",
+    "colorFrom", "colorTo",
+    "alphaFrom", "alphaTo",
+    "positionMode",
+    "tagToAffect", "flag"
+}
 parallaxFade.fieldInformation = {
     colorFrom = {
         fieldType = "color",
@@ -22,17 +42,6 @@ parallaxFade.fieldInformation = {
     positionMode = {
         options = enums.trigger_position_modes,
         editable = false
-    }
-}
-parallaxFade.placements = {
-    name = "parallax_fade",
-    data = {
-        colorFrom = "000000",
-        colorTo = "ffffff",
-        alphaFrom = "0.0",
-        alphaTo = "1.0",
-        positionMode = "LeftToRight",
-        tagToAffect = ""
     }
 }
 

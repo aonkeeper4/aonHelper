@@ -1,5 +1,3 @@
-local fakeTilesHelper = require("helpers.fake_tiles")
-
 local lightOcclusionFixController = {}
 
 lightOcclusionFixController.name = "aonHelper/LightOcclusionFixController"
@@ -18,15 +16,7 @@ lightOcclusionFixController.fieldOrder = {
 -- woo yay i love stealing from sorbet helper
 lightOcclusionFixController.fieldInformation = {
     noOcclusionTileTypes = {
-        fieldType = "aonHelper.unicode_char_list",
-        minimumElements = 0,
-        elementDefault = "3",
-        elementOptions = {
-            options = function()
-                return fakeTilesHelper.getTilesOptions("tilesFg")
-            end,
-            editable = false
-        }
+        fieldType = "aon_helper.tiletype_list"
     }
 }
 
