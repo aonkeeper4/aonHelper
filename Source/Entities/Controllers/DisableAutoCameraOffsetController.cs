@@ -4,27 +4,35 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/DisableAutoCameraOffsetController")]
 [Tracked]
-public class DisableAutoCameraOffsetController(Vector2 position, string condition)
+public class DisableAutoCameraOffsetController(
+    Vector2 position, string condition,
+    bool disableAutoCameraOffset, bool disableCameraUpdate)
     : ConditionalController<DisableAutoCameraOffsetController>(position, condition)
 {
+    private readonly bool disableAutoCameraOffset = disableAutoCameraOffset, disableCameraUpdate = disableCameraUpdate;
+    
     public DisableAutoCameraOffsetController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Attr("flag"))
+        : this(data.Position + offset, data.Attr("flag"),
+            data.Bool("disableAutoCameraOffset", true), data.Bool("disableCameraUpdate"))
     { }
 
     #region Hooks
     
     private static ILHook il_Player_get_CameraTarget;
+    private static ILHook il_Player_orig_Update;
 
     [OnLoad]
     internal static void Load()
     {
         il_Player_get_CameraTarget = new ILHook(typeof(Player).GetMethod("get_CameraTarget", BindingFlags.Public | BindingFlags.Instance)!, IL_Player_get_CameraTarget);
+        il_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", BindingFlags.Public | BindingFlags.Instance)!, IL_Player_orig_Update);
     }
 
     [OnUnload]
     internal static void Unload()
     {
         HookHelper.DisposeAndSetNull(ref il_Player_get_CameraTarget);
+        HookHelper.DisposeAndSetNull(ref il_Player_orig_Update);
     }
 
     private static void IL_Player_get_CameraTarget(ILContext il)
@@ -66,7 +74,7 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
         setCameraOffsetLabelCursor.MarkLabel(setCameraOffset);
 
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(IsControllerActive);
+        cursor.EmitDelegate(ShouldDisableAutoCameraOffset);
         cursor.Emit(OpCodes.Brtrue, setCameraOffset);
         
         // skip all the state-specific camera offsets if the controller is active
@@ -106,12 +114,48 @@ public class DisableAutoCameraOffsetController(Vector2 position, string conditio
         skipStateOffsetLabelCursor.MarkLabel(skipStateOffset);
         
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate(IsControllerActive);
+        cursor.EmitDelegate(ShouldDisableAutoCameraOffset);
         cursor.Emit(OpCodes.Brtrue, skipStateOffset);
+
+        return;
+        
+        static bool ShouldDisableAutoCameraOffset(Player player)
+            => TryGetActiveController(player.SceneAs<Level>(), out DisableAutoCameraOffsetController controller)
+                && controller.disableAutoCameraOffset;
     }
 
-    private static bool IsControllerActive(Player player)
-        => TryGetActiveController(player.SceneAs<Level>(), out _);
+    private static void IL_Player_orig_Update(ILContext il)
+    {
+        ILCursor cursor = new(il);
+        
+        /*
+         * IL_105f: ldarg.0
+         * IL_1060: callvirt instance bool Celeste.Player::get_InControl()
+         * IL_1065: brtrue.s IL_1072
+         * IL_1067: ldarg.0
+         * IL_1068: ldfld bool Celeste.Player::ForceCameraUpdate
+         * IL_106d: brfalse IL_1110
+         */
+        ILLabel failedCheck = null;
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchCallvirt<Player>("get_InControl"),
+            instr => instr.MatchBrtrue(out ILLabel _),
+            instr => instr.MatchLdarg0(),
+            instr => instr.MatchLdfld<Player>("ForceCameraUpdate"),
+            instr => instr.MatchBrfalse(out failedCheck)))
+            throw new HookHelper.HookException(il, "Unable to find check for `Player.ForceCameraUpdate` to modify.");
+
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(ShouldSkipCameraUpdate);
+        cursor.EmitBrtrue(failedCheck);
+
+        return;
+
+        static bool ShouldSkipCameraUpdate(Player player)
+            => TryGetActiveController(player.SceneAs<Level>(), out DisableAutoCameraOffsetController controller)
+                && controller.disableCameraUpdate;
+    }
 
     #endregion
 }

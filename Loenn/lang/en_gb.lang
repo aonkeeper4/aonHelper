@@ -226,10 +226,12 @@ entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_f
 entities.aonHelper/LightOcclusionFixController.placements.description.light_occlusion_fix_controller=A controller that fixes visual bugs seen when using lights with non-standard sizes around foreground tiles.
 entities.aonHelper/LightOcclusionFixController.attributes.description.noOcclusionTileTypes=A list of foreground tile types to remove light occlusion from.
 
-# Disable Auto Camera Offset Controller
-entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Disable Auto Camera Offset Controller
-entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller that disables the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster.
-entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Disable Auto Camera Offset Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+# Camera Tweaks Controller
+entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Camera Tweaks Controller
+entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller can disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster, or disable the camera updating entirely.
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.disableAutoCameraOffset=Whether to disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster.
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.disableCameraUpdate=Whether to disable the camera updating entirely, locking the camera in place unless the camera is moved externally, for example by a cutscene.
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Camera Tweaks Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
 # Formation Backdrop Color Controller
 entities.aonHelper/FormationBackdropColorController.placements.name.formation_backdrop_color_controller=Formation Backdrop Color Controller

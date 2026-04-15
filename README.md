@@ -42,8 +42,8 @@ current features:
   - a controller for the colors and visuals of glass lock blocks
 - Foreground Tile Light Occlusion Controller
   - fixes lights with nonstandard radii clipping through foreground tiles and allows some fg tile types to not block light sources
-- Disable Auto Camera Offset Controller
-  - disables the automatic camera offset applied in some player states such as red bubbles and feathers
+- Camera Tweaks Controller
+  - can disable the automatic camera offset applied in some player states such as red bubbles and feathers, as well as disable the camera updating entirely
 - Formation Backdrop Color Controller
   - lets you change the colour of the screen darkening effect that gets applied when you collect a crystal heart or cassette
 - JumpThrus Apply LiftSpeed Controller
