@@ -175,8 +175,8 @@ entities.aonHelper/IntroFacingController.placements.description.intro_facing_con
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation. Also affects the temple fall animation.
 entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro Facing Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 
-# Quantize Colorgrade Controller
-entities.aonHelper/QuantizeColorgradeController.placements.name.quantize_colorgrade_controller=More Colorgrade Options Controller
+# Colorgrade Tweaks Controller
+entities.aonHelper/QuantizeColorgradeController.placements.name.quantize_colorgrade_controller=Colorgrade Tweaks Controller
 entities.aonHelper/QuantizeColorgradeController.placements.description.quantize_colorgrade_controller=A controller that provides additional options for colorgrades.
 entities.aonHelper/QuantizeColorgradeController.attributes.description.affectedColorgrades=The colorgrades to affect. Use "*" to affect all colorgrades.
 entities.aonHelper/QuantizeColorgradeController.attributes.description.quantize=Whether affected colorgrades should always choose the nearest color to the color being graded.

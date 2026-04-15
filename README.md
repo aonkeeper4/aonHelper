@@ -30,7 +30,7 @@ current features:
   - makes lightning visually connect to the edges of rooms
 - Intro Facing Controller
   - makes the map intro animation face whatever way u want
-- More Colorgrade Options Controller
+- Colorgrade Tweaks Controller
   - lets you modify/fix some bugs with the vanilla colorgrading system, such as colorgrades interpolating between the closest colors and the colorgrading for the green channel being a little off what it should be
 - Dream Dash Through Transition Controller
   - lets u use dream blocks across screen transitions properly. note: while this controller is active, dream dashing into the side of a screen where there is no available transition will kill you
