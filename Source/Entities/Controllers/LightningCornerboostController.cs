@@ -91,11 +91,8 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     {
         orig(self, scene);
 
-        if (self is not Lightning lightning 
-            || lightning.Scene.Tracker.GetEntity<LightningCornerboostController>() is not { } controller)
-            return;
-
-        lightning.Add(new LightningSolidComponent(controller));
+        if (self is Lightning lightning && TryGetController(lightning.SceneAs<Level>(), out LightningCornerboostController controller))
+            lightning.Add(new LightningSolidComponent(controller));
     }
 
     #endregion

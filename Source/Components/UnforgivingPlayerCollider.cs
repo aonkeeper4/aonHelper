@@ -54,8 +54,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         ILCursor cursor = new(il);
         
         // i don't believe this can work with just a `dup` :disappointed_relieved:
-        VariableDefinition checkPosition = new(il.Import(typeof(Vector2)));
-        il.Body.Variables.Add(checkPosition);
+        VariableDefinition checkPosition = cursor.AddVariable<Vector2>();
 
         if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchCall<Entity>("CollideFirst"),

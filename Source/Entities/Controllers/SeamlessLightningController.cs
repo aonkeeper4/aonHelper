@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/SeamlessLightningController")]
 [Tracked]
-public class SeamlessLightningController(EntityData data, Vector2 offset) : Controller(data.Position + offset)
+public class SeamlessLightningController(EntityData data, Vector2 offset) : Controller<SeamlessLightningController>(data.Position + offset)
 {
     #region Hooks
 
@@ -21,7 +21,7 @@ public class SeamlessLightningController(EntityData data, Vector2 offset) : Cont
     private static void On_LightningRenderer_Edge_ctor(On.Celeste.LightningRenderer.Edge.orig_ctor orig, object self, Lightning parent, Vector2 a, Vector2 b)
     {
         Level level = parent.SceneAs<Level>();
-        if (level.Tracker.GetEntity<SeamlessLightningController>() is null)
+        if (!TryGetActiveController(level, out _))
         {
             orig(self, parent, a, b);
             return;

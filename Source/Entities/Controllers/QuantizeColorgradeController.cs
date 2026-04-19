@@ -7,12 +7,16 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 public class QuantizeColorgradeController(
     Vector2 position,
     string affectedColorgrades,
-    bool quantize, bool normalize) : Controller(position)
+    bool quantize, bool normalize) : Controller<QuantizeColorgradeController>(position)
 {
     private readonly string[] affectedColorgrades = affectedColorgrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     private readonly bool affectAll = affectedColorgrades.Contains('*');
 
     private readonly bool quantize = quantize, normalize = normalize;
+
+    protected override bool Active => base.Active
+        && (affectedColorgrades.Length > 0 || affectAll)
+        && (quantize || normalize);
     
     public QuantizeColorgradeController(EntityData data, Vector2 offset)
         : this(
@@ -22,15 +26,11 @@ public class QuantizeColorgradeController(
     { }
 
     private static (bool, bool)? OptionsFor(MTexture colorgrade)
-    {
-        if ((Engine.Scene as Level)?.Tracker.GetEntities<QuantizeColorgradeController>()
-                                            .Cast<QuantizeColorgradeController>()
-                                            .FirstOrDefault(c => c.affectAll || c.affectedColorgrades.Contains(colorgrade.AtlasPath))
-            is { } controller)
-            return (controller.quantize, controller.normalize);
-        
-        return null;
-    }
+        => GetActiveControllers(Engine.Scene as Level)
+            .FirstOrDefault(c => c.affectAll || c.affectedColorgrades.Contains(colorgrade.AtlasPath))
+            is { } controller
+            ? (controller.quantize, controller.normalize)
+            : null;
     
     #region Hooks
 
@@ -99,7 +99,7 @@ public class QuantizeColorgradeController(
     private static Effect On_ColorGrade_get_Effect(orig_ColorGrade_get_Effect orig)
     {
         if (Engine.Scene is not Level level
-            || level.Tracker.GetEntity<QuantizeColorgradeController>() is null
+            || !TryGetActiveController(level, out _)
             || aonHelperGFX.FxQuantizedColorgrade is not { IsDisposed: false })
             return orig();
 

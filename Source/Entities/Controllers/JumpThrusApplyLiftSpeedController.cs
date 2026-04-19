@@ -28,8 +28,7 @@ public class JumpThrusApplyLiftSpeedController(Vector2 position, string conditio
         ILCursor cursor = new(il);
 
         // local to store whether we should apply liftspeed to this actor
-        VariableDefinition shouldApplyLiftSpeed = new(il.Import(typeof(bool)));
-        il.Body.Variables.Add(shouldApplyLiftSpeed);
+        VariableDefinition shouldApplyLiftSpeed = cursor.AddVariable<bool>();
         
         // label to mark the end of liftspeed application so we can modify the labels in the method to do what we need
         // annoyingly there are 2 different labels that point to the same place, and we want to insert instructions after one but not the other

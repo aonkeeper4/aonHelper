@@ -31,6 +31,7 @@
         <PackageReference Include="MonoMod.RuntimeDetour" Version="25.3.1" PrivateAssets="all" ExcludeAssets="runtime" />
         <PackageReference Include="MonoMod.Patcher" Version="25.0.0-prerelease.2" />
         <PackageReference Include="CelesteMod.Publicizer" Version="1.1.2" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
+        <PackageReference Include="CelesteMod.Roslyn.ModLifecycleAttributes" Version="1.0.0" />
         <PackageReference Include="CelesteAnalyzer" Version="1.0.3.1" />
         <PackageReference Include="ModInteropImportGenerator" Version="1.1.3" />
     </ItemGroup>
@@ -44,14 +45,6 @@
         <Reference Include="$(ModCachePrefix)\DzhakeHelper.DzhakeHelper.dll" Private="false" />
     </ItemGroup>
     
-    <!-- references from disk -->
-    <PropertyGroup>
-        <DependenciesPrefix>lib</DependenciesPrefix>
-    </PropertyGroup>
-    <ItemGroup>
-        <Analyzer Include="$(DependenciesPrefix)\ModLifecycleAttributes.dll" />
-    </ItemGroup>
-
     <!-- compile all shaders before building -->
     <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
         <EffectFiles Include="..\Effects\**\*.fx" />

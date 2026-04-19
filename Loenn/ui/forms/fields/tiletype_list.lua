@@ -22,9 +22,7 @@ tiletypeListField.fieldType = "aon_helper.tiletype_list"
 local defaultTiletype = "1"
 local tiletypeOptions = {
     fieldType = "string",
-    options = function()
-        return fakeTilesHelper.getTilesOptions("tilesFg")
-    end,
+    options = function() return fakeTilesHelper.getTilesOptions("tilesFg") end,
     editable = false
 }
 

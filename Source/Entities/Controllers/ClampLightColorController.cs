@@ -2,7 +2,8 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/ClampLightColorController")]
 [Tracked]
-public class ClampLightColorController(Vector2 position, Color clampColor, ClampLightColorController.ClampMethod clampMethod) : Controller(position)
+public class ClampLightColorController(Vector2 position, Color clampColor, ClampLightColorController.ClampMethod clampMethod)
+    : Controller<ClampLightColorController>(position)
 {
     private readonly Color clampColor = clampColor;
 
@@ -52,7 +53,7 @@ public class ClampLightColorController(Vector2 position, Color clampColor, Clamp
     {
         orig(self, scene);
 
-        if (scene.Tracker.GetEntity<ClampLightColorController>() is not { } controller)
+        if (!TryGetActiveController(scene as Level, out ClampLightColorController controller))
             return;
         
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, controller.clampMethod switch {

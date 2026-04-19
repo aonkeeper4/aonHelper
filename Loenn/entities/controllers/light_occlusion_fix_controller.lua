@@ -5,17 +5,17 @@ lightOcclusionFixController.texture = "objects/aonHelper/lightOcclusionFixContro
 lightOcclusionFixController.placements = {
     name = "light_occlusion_fix_controller",
     data = {
-        noOcclusionTileTypes = ""
+        noOcclusionTiletypes = ""
     }
 }
 
 lightOcclusionFixController.fieldOrder = {
     "x", "y",
-    "noOcclusionTileTypes"
+    "noOcclusionTiletypes"
 }
 -- woo yay i love stealing from sorbet helper
 lightOcclusionFixController.fieldInformation = {
-    noOcclusionTileTypes = {
+    noOcclusionTiletypes = {
         fieldType = "aon_helper.tiletype_list"
     }
 }

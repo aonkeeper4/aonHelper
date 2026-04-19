@@ -2,9 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/FgStylegroundBloomController")]
 [Tracked]
-public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Controller(position)
+public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Controller<FgStylegroundBloomController>(position)
 {
     private readonly string bloomTag = bloomTag;
+
+    protected override bool Active => base.Active && !string.IsNullOrEmpty(bloomTag);
     
     public FgStylegroundBloomController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("bloomTag"))
@@ -126,7 +128,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
         
         static bool CustomForegroundRendering(Level level)
         {
-            if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller || string.IsNullOrEmpty(controller.bloomTag))
+            if (!TryGetActiveController(level, out FgStylegroundBloomController controller))
                 return false;
 
             List<Backdrop> all = level.Foreground.Backdrops;
@@ -147,7 +149,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
 
         static void DelayedBloomRendering(Level level)
         {
-            if (level.Tracker.GetEntity<FgStylegroundBloomController>() is not { } controller || !string.IsNullOrEmpty(controller.bloomTag))
+            if (!TryGetActiveController(level, out _))
                 return;
 
             level.Bloom.Apply(GameplayBuffers.Level, level);
