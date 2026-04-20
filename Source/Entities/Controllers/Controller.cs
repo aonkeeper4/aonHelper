@@ -3,13 +3,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 // yess generics jank
 public class Controller<T> : Entity where T : Controller<T>
 {
-    protected string HomeLevelName
-    {
-        get => field
-            ?? SourceData?.Level.Name
-            ?? throw new InvalidOperationException($"Encountered a {nameof(Controller<>)} with no {nameof(HomeLevelName)} set!");
-        set;
-    } = null;
+    private string homeLevelName;
 
     protected virtual new bool Active => true;
     
@@ -25,9 +19,11 @@ public class Controller<T> : Entity where T : Controller<T>
     {
         // no way to automatically track all instantiations of a generic type and no way to get trackedness information ahead of time
         if (!Tracker.StoredEntityTypes.Contains(typeof(T)))
-            throw new InvalidOperationException($"{nameof(Controller<>)} added while {nameof(T)} is untracked!");
+            throw new InvalidOperationException($"{nameof(T)} is untracked, cannot add it as a {nameof(Controller<>)}!");
         
         base.Added(scene);
+        
+        homeLevelName = SceneAs<Level>().Session.Level;
     }
     
     public override sealed void Update() { }
@@ -41,7 +37,7 @@ public class Controller<T> : Entity where T : Controller<T>
         => level?.Tracker.GetEntities<T>()
                          .Concat(checkNewlyAdded ? level.Entities.ToAdd : [])
                          .OfType<T>()
-                         .Where(c => c.HomeLevelName == level.Session.Level)
+                         .Where(c => c.homeLevelName == level.Session.Level)
                          .ToArray() ?? [];
     
     protected static T[] GetActiveControllers(Level level, bool checkNewlyAdded = false)

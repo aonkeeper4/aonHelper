@@ -5,8 +5,6 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Controller<FgStylegroundBloomController>(position)
 {
     private readonly string bloomTag = bloomTag;
-
-    protected override bool Active => base.Active && !string.IsNullOrEmpty(bloomTag);
     
     public FgStylegroundBloomController(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Attr("bloomTag"))
@@ -122,13 +120,14 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
         cursor.EmitDelegate(DelayedBloomRendering);
 
         return;
-        
+
         static bool SkipBloomRendering(Level level)
-            => level.Tracker.GetEntity<FgStylegroundBloomController>() is not null;
+            => TryGetActiveController(level, out _);
         
         static bool CustomForegroundRendering(Level level)
         {
-            if (!TryGetActiveController(level, out FgStylegroundBloomController controller))
+            if (!TryGetActiveController(level, out FgStylegroundBloomController controller)
+                || string.IsNullOrEmpty(controller.bloomTag))
                 return false;
 
             List<Backdrop> all = level.Foreground.Backdrops;
@@ -149,10 +148,9 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
 
         static void DelayedBloomRendering(Level level)
         {
-            if (!TryGetActiveController(level, out _))
-                return;
-
-            level.Bloom.Apply(GameplayBuffers.Level, level);
+            if (TryGetActiveController(level, out FgStylegroundBloomController controller)
+                && string.IsNullOrEmpty(controller.bloomTag))
+                level.Bloom.Apply(GameplayBuffers.Level, level);
         }
     }
     
