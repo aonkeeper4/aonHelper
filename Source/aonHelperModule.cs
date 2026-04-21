@@ -22,11 +22,12 @@ public class aonHelperModule : EverestModule
     }
 
     // we don't use any lifecycle attributes for the stuff in this namespace (and the lazy loading manager) so we can ensure everything happens in the right order
+    // todo: add some sort of preload method w/ attribute so we can stop hardcoding dependencies/type processors?
     
     public override void Load()
     {
+        aonHelperTypeProcessor.Load();
         aonHelperExports.Load();
-        
         HookHelper.HookLazyLoadingManager.Load();
         
         LifecycleMethods.OnLoad();
@@ -52,7 +53,7 @@ public class aonHelperModule : EverestModule
         LifecycleMethods.OnUnload();
         
         aonHelperGFX.UnloadContent();
-        HookHelper.HookLazyLoadingManager.Unload();
         aonHelperDependencies.Uninitialize();
+        HookHelper.HookLazyLoadingManager.Unload();
     }
 }

@@ -14,5 +14,5 @@ public class aonHelperSession : EverestModuleSession
     public GlassLockBlockState GlassLockBlockCurrentSettings { get; set; }
 
     public Dictionary<EntityID, bool> DreamBlockDummyStates { get; set; } = new();
-    public List<EntityID> UnlockedDreamLockBlocks { get; set; } = [];
+    public HashSet<EntityID> UnlockedDreamLockBlocks { get; set; } = [];
 }

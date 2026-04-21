@@ -4,7 +4,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 public class Controller<T> : Entity where T : Controller<T>
 {
     private string homeLevelName;
-
+    
     protected virtual new bool Active => true;
     
     protected Controller(Vector2 position) : base(position)
@@ -17,13 +17,12 @@ public class Controller<T> : Entity where T : Controller<T>
     
     public override void Added(Scene scene)
     {
-        // no way to automatically track all instantiations of a generic type and no way to get trackedness information ahead of time
-        if (!Tracker.StoredEntityTypes.Contains(typeof(T)))
-            throw new InvalidOperationException($"{nameof(T)} is untracked, cannot add it as a {nameof(Controller<>)}!");
+        Tracker.AddTypeToTracker(typeof(T));
         
         base.Added(scene);
         
         homeLevelName = SceneAs<Level>().Session.Level;
+        Tracker.Refresh(); // hmm
     }
     
     public override sealed void Update() { }

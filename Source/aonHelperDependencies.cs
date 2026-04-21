@@ -87,6 +87,7 @@ public static class aonHelperDependencies
     {
         { DzhakeHelper, new DependencyHandler(state => DzhakeHelperLoaded = state, () => DzhakeHelperLoaded, null, null, null) },
         { ReverseHelper, new DependencyHandler(state => ReverseHelperLoaded = state, () => ReverseHelperLoaded, null, null, null) }
+        // add more here
     };
     
     #endregion

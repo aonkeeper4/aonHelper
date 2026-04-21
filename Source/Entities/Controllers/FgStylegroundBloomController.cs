@@ -13,18 +13,19 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
     #region Hooks
     
     #region ModInterop
+
+    internal delegate void RenderAction(Level level, bool applyBloom);
+    private static event RenderAction BeforeForegroundRenderActions, AfterForegroundRenderActions;
     
-    private static readonly List<Action<Level, bool>> BeforeForegroundRenderActions = [], AfterForegroundRenderActions = [];
+    internal static void AddBeforeForegroundRenderAction(RenderAction action)
+        => BeforeForegroundRenderActions += action;
+    internal static void RemoveBeforeForegroundRenderAction(RenderAction action)
+        => BeforeForegroundRenderActions -= action;
     
-    internal static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
-        => BeforeForegroundRenderActions.Add(action);
-    internal static void RemoveBeforeForegroundRenderAction(Action<Level, bool> action)
-        => BeforeForegroundRenderActions.Remove(action);
-    
-    internal static void AddAfterForegroundRenderAction(Action<Level, bool> action)
-        => AfterForegroundRenderActions.Add(action);
-    internal static void RemoveAfterForegroundRenderAction(Action<Level, bool> action)
-        => AfterForegroundRenderActions.Remove(action);
+    internal static void AddAfterForegroundRenderAction(RenderAction action)
+        => AfterForegroundRenderActions += action;
+    internal static void RemoveAfterForegroundRenderAction(RenderAction action)
+        => AfterForegroundRenderActions -= action;
 
     internal static string GetCurrentBloomTag(Level level)
         => level.Tracker.GetEntity<FgStylegroundBloomController>() is { } controller
@@ -34,9 +35,9 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
 
     private static void RenderForeground(Level level, bool applyBloom)
     {
-        BeforeForegroundRenderActions.ForEach(action => action(level, applyBloom));
+        BeforeForegroundRenderActions?.Invoke(level, applyBloom);
         level.Foreground.Render(level);
-        AfterForegroundRenderActions.ForEach(action => action(level, applyBloom));
+        AfterForegroundRenderActions?.Invoke(level, applyBloom);
     }
     
     #endregion

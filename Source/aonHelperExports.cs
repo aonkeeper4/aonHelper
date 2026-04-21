@@ -21,26 +21,26 @@ public static class aonHelperExports
         /// </summary>
         /// <param name="action">The callback to add.</param>
         public static void AddBeforeForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.AddBeforeForegroundRenderAction(action);
+            => FgStylegroundBloomController.AddBeforeForegroundRenderAction(new FgStylegroundBloomController.RenderAction(action));
         /// <summary>
         /// Removes a callback from being invoked before the `Foregound.Render` call in `Level.Render`.
         /// </summary>
         /// <param name="action">The callback to remove.</param>
         public static void RemoveBeforeForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.RemoveBeforeForegroundRenderAction(action);
+            => FgStylegroundBloomController.RemoveBeforeForegroundRenderAction(new FgStylegroundBloomController.RenderAction(action));
 
         /// <summary>
         /// Adds a callback to be invoked after the `Foregound.Render` call in `Level.Render`.
         /// </summary>
         /// <param name="action">The callback to add.</param>
         public static void AddAfterForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.AddAfterForegroundRenderAction(action);
+            => FgStylegroundBloomController.AddAfterForegroundRenderAction(new FgStylegroundBloomController.RenderAction(action));
         /// <summary>
         /// Removes a callback from being invoked after the `Foregound.Render` call in `Level.Render`.
         /// </summary>
         /// <param name="action">The callback to remove.</param>
         public static void RemoveAfterForegroundRenderAction(Action<Level, bool> action)
-            => FgStylegroundBloomController.RemoveAfterForegroundRenderAction(action);
+            => FgStylegroundBloomController.RemoveAfterForegroundRenderAction(new FgStylegroundBloomController.RenderAction(action));
 
         /// <summary>
         /// Retrieves the bloom tag of the current Fg Styleground Bloom Controller.
