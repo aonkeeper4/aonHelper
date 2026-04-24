@@ -19,7 +19,7 @@ public static class aonHelperDependencies
     private delegate void LoadDependencyHandler();
     private delegate void UnloadDependencyHandler();
     
-    private class DependencyHandler(
+    private readonly struct DependencyHandler(
         Action<DependencyState> setLoaded, Func<DependencyState> getLoaded,
         ShouldLoadDependencyHandler shouldLoadDependency, LoadDependencyHandler loadDependency, UnloadDependencyHandler unloadDependency)
     {
@@ -43,7 +43,7 @@ public static class aonHelperDependencies
             EverestModule module = null;
             bool shouldLoad = load
                 && Everest.Loader.TryGetDependency(metadata, out module)
-                && (handler.ShouldLoadDependency?.Invoke(module!) ?? true);
+                && (handler.ShouldLoadDependency?.Invoke(module) ?? true);
             if (handler.Loaded switch 
                 {
                     DependencyState.Loaded when shouldLoad => true,
@@ -78,10 +78,10 @@ public static class aonHelperDependencies
     #region Dependencies
     
     private static readonly EverestModuleMetadata DzhakeHelper = new() { Name = "DzhakeHelper", Version = new Version(1, 4, 20) };
-    internal static DependencyState DzhakeHelperLoaded { get; private set; } = DependencyState.Unknown;
+    public static DependencyState DzhakeHelperLoaded { get; private set; } = DependencyState.Unknown;
 
     private static readonly EverestModuleMetadata ReverseHelper = new() { Name = "ReverseHelper", Version = new Version(1, 15, 20) };
-    internal static DependencyState ReverseHelperLoaded { get; private set; } = DependencyState.Unknown;
+    public static DependencyState ReverseHelperLoaded { get; private set; } = DependencyState.Unknown;
     
     private static readonly Dictionary<EverestModuleMetadata, DependencyHandler> Dependencies = new()
     {

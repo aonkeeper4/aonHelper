@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/QuantizeColorgradeController")]

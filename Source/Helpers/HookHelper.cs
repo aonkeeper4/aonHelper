@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Celeste.Mod.aonHelper.Helpers;
 
 public static class HookHelper
