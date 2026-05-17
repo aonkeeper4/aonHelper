@@ -10,6 +10,8 @@ public static class Extensions
         public Vector2 TopRight() => new(rect.Right, rect.Top);
         public Vector2 BottomLeft() => new(rect.Left, rect.Bottom);
         public Vector2 BottomRight() => new(rect.Right, rect.Bottom);
+
+        public Rectangle Pad(int x, int y) => new(rect.X - x, rect.Y - y, rect.Width + x * 2, rect.Height + y * 2);
     }
 
     extension<TSource>(IEnumerable<TSource> source)
@@ -41,15 +43,38 @@ public static class Extensions
             return string.IsNullOrEmpty(value) ? null : T.Parse(value, CultureInfo.InvariantCulture);
         }
 
-        public Color[] HexColorArray(string key)
+        public Color[] HexColorArray(string key, Color[] defaultValue = null)
         {
             string value = data.Attr(key);
             if (string.IsNullOrEmpty(value))
-                return [];
+                return defaultValue ?? [];
 
             return value.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                         .Select(Calc.HexToColor)
                         .ToArray();
+        }
+    }
+    
+    extension(Calc)
+    {
+        // `%`, but it behaves nicely with negative numbers (why does only python do this correctly?)
+        public static float Mod(float x, float m)
+            => (x % m + m) % m;
+        
+        public static int Mod(int x, int m)
+            => (x % m + m) % m;
+    }
+    
+    extension(Camera camera)
+    {
+        public Rectangle GetBounds()
+        {
+            int top = (int) camera.Top;
+            int bottom = (int) camera.Bottom;
+            int left = (int) camera.Left;
+            int right = (int) camera.Right;
+
+            return new Rectangle(left, top, right - left, bottom - top);
         }
     }
 

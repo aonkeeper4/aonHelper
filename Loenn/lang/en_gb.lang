@@ -208,7 +208,6 @@ entities.aonHelper/GlassLockBlockController.attributes.description.lineColor=The
 entities.aonHelper/GlassLockBlockController.attributes.description.rayColor=The color of the rays on Glass Lock Blocks affected by this Glass Lock Block Controller.
 entities.aonHelper/GlassLockBlockController.attributes.description.wavy=Whether to render the wavy effect on Glass Lock Blocks affected by this Glass Lock Block Controller.
 entities.aonHelper/GlassLockBlockController.attributes.description.vanillaEdgeBehavior=Whether to have the edges of Glass Lock Blocks affected by this Glass Lock Block Controller display like vanilla glass block edges.
-entities.aonHelper/GlassLockBlockController.attributes.description.persistent=Whether this Glass Lock Block Controller's effects should persist after leaving the room it is in.
 
 # Dream Lock Block
 entities.aonHelper/DreamLockBlock.placements.name.dream_lock_block=Dream Lock Block

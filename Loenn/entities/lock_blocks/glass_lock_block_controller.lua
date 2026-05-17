@@ -14,8 +14,7 @@ glassLockBlockController.placements = {
             rayColor = "ffffff",
             starColors = "ff7777,77ff77,7777ff,ff77ff,77ffff,ffff77",
             wavy = false,
-            vanillaEdgeBehavior = false,
-            persistent = false
+            vanillaEdgeBehavior = false
         }
     },
     {
@@ -26,8 +25,7 @@ glassLockBlockController.placements = {
             rayColor = "ffffff",
             starColors = "7f9fba,9bd1cd,bacae3",
             wavy = true,
-            vanillaEdgeBehavior = true,
-            persistent = false
+            vanillaEdgeBehavior = true
         }
     },
 }

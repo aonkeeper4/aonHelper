@@ -2,8 +2,8 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/LightningCornerboostController")]
 [Tracked]
-public class LightningCornerboostController(Vector2 position, bool always, string condition)
-    : ConditionalController<LightningCornerboostController>(position, condition)
+public class LightningCornerboostController(bool always, string condition)
+    : ConditionalController<LightningCornerboostController>(condition)
 {
     private class LightningSolidComponent(LightningCornerboostController controller) : TypeRestrictedComponent<Lightning>(true, false)
     {
@@ -41,7 +41,7 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
 
             bool inView = Entity.InView();
             bool playerHasDashAttack = Scene.Tracker.GetEntity<Player>()?.DashAttacking ?? false;
-            solid.Collidable = inView && controller.Active && (controller.always || playerHasDashAttack);
+            solid.Collidable = inView && controller.ControllerActive && (controller.always || playerHasDashAttack);
         }
 
         private void RemoveSolid()
@@ -70,7 +70,7 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     private readonly bool always = always;
 
     public LightningCornerboostController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Bool("always", true), data.Attr("flag"))
+        : this(data.Bool("always", true), data.Attr("flag"))
     { }
 
     #region Hooks
@@ -91,7 +91,8 @@ public class LightningCornerboostController(Vector2 position, bool always, strin
     {
         orig(self, scene);
 
-        if (self is Lightning lightning && TryGetController(lightning.SceneAs<Level>(), out LightningCornerboostController controller))
+        if (self is Lightning lightning
+            && TryGetController(lightning.SceneAs<Level>(), out LightningCornerboostController controller, onlyActive: false))
             lightning.Add(new LightningSolidComponent(controller));
     }
 

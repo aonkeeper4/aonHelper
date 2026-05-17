@@ -57,7 +57,7 @@
             <Output TaskParameter="ExitCode" PropertyName="WineStatus" />
         </Exec>
     </Target>
-    <Target Name="CompileShaders" AfterTargets="GetWineStatus" BeforeTargets="Build" Inputs="@(EffectFiles)" Outputs="@(EffectFiles -> '%(RelativeDir)%(Filename).cso')">
+    <Target Name="CompileShaders" Condition="Exists('$(EffectCompilerPath)')" AfterTargets="GetWineStatus" BeforeTargets="Build" Inputs="@(EffectFiles)" Outputs="@(EffectFiles -> '%(RelativeDir)%(Filename).cso')">
         <Exec Condition="$([MSBuild]::IsOSPlatform('Windows'))" Command="@(EffectFiles -> 'echo &quot;Compiling effect: %(RelativeDir)%(Filename).fx&quot; &amp;&amp; &quot;$(EffectCompilerPath)&quot; &quot;%(RelativeDir)%(Filename).fx&quot; /T fx_2_0 /Fo &quot;%(RelativeDir)%(Filename).cso&quot;')" />
         <Exec Condition="$([MSBuild]::IsOSUnixLike()) And $(WineStatus) == 0" Command="@(EffectFiles -> 'echo &quot;Compiling effect: %(RelativeDir)%(Filename).fx&quot; &amp;&amp; wine &quot;$(EffectCompilerPath)&quot; &quot;%(RelativeDir)%(Filename).fx&quot; /T fx_2_0 /Fo &quot;%(RelativeDir)%(Filename).cso&quot;')" />
     </Target>

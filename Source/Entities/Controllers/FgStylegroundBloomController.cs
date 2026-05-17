@@ -2,12 +2,12 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/FgStylegroundBloomController")]
 [Tracked]
-public class FgStylegroundBloomController(Vector2 position, string bloomTag) : Controller<FgStylegroundBloomController>(position)
+public class FgStylegroundBloomController(string bloomTag) : Controller<FgStylegroundBloomController>
 {
     private readonly string bloomTag = bloomTag;
     
     public FgStylegroundBloomController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Attr("bloomTag"))
+        : this(data.Attr("bloomTag"))
     { }
 
     #region Hooks
@@ -28,7 +28,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
         => AfterForegroundRender -= action;
 
     public static string GetCurrentBloomTag(Level level)
-        => TryGetActiveController(level, out FgStylegroundBloomController controller)
+        => TryGetController(level, out FgStylegroundBloomController controller)
             && !string.IsNullOrEmpty(controller.bloomTag)
                 ? controller.bloomTag
                 : null;
@@ -123,11 +123,11 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
         return;
 
         static bool SkipBloomRendering(Level level)
-            => TryGetActiveController(level, out _);
+            => TryGetController(level, out _);
         
         static bool CustomForegroundRendering(Level level)
         {
-            if (!TryGetActiveController(level, out FgStylegroundBloomController controller)
+            if (!TryGetController(level, out FgStylegroundBloomController controller)
                 || string.IsNullOrEmpty(controller.bloomTag))
                 return false;
 
@@ -149,7 +149,7 @@ public class FgStylegroundBloomController(Vector2 position, string bloomTag) : C
 
         static void DelayedBloomRendering(Level level)
         {
-            if (TryGetActiveController(level, out FgStylegroundBloomController controller)
+            if (TryGetController(level, out FgStylegroundBloomController controller)
                 && string.IsNullOrEmpty(controller.bloomTag))
                 level.Bloom.Apply(GameplayBuffers.Level, level);
         }

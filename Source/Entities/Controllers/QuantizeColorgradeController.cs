@@ -1,30 +1,30 @@
+using AsmResolver.Shims;
+
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/QuantizeColorgradeController")]
 [Tracked]
 public class QuantizeColorgradeController(
-    Vector2 position,
     string affectedColorgrades,
-    bool quantize, bool normalize) : Controller<QuantizeColorgradeController>(position)
+    bool quantize, bool normalize) : Controller<QuantizeColorgradeController>
 {
     private readonly string[] affectedColorgrades = affectedColorgrades.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     private readonly bool affectAll = affectedColorgrades.Contains('*');
 
     private readonly bool quantize = quantize, normalize = normalize;
 
-    protected override bool Active => base.Active
+    public override bool ControllerActive => base.ControllerActive
         && (affectedColorgrades.Length > 0 || affectAll)
         && (quantize || normalize);
     
     public QuantizeColorgradeController(EntityData data, Vector2 offset)
         : this(
-            data.Position + offset,
             data.Attr("affectedColorgrades", "*"),
             data.Bool("quantize", data.Int("mode") is 0 or 2), data.Bool("normalize", data.Int("mode") is 1 or 2))
     { }
 
     private static (bool, bool)? OptionsFor(MTexture colorgrade)
-        => GetActiveControllers(Engine.Scene as Level)
+        => GetControllers(Engine.Scene as Level)
             .FirstOrDefault(c => c.affectAll || c.affectedColorgrades.Contains(colorgrade.AtlasPath))
             is { } controller
             ? (controller.quantize, controller.normalize)
@@ -97,7 +97,7 @@ public class QuantizeColorgradeController(
     private static Effect On_ColorGrade_get_Effect(orig_ColorGrade_get_Effect orig)
     {
         if (Engine.Scene is not Level level
-            || !TryGetActiveController(level, out _)
+            || !TryGetController(level, out _)
             || aonHelperGFX.FxQuantizedColorgrade is not { IsDisposed: false })
             return orig();
 

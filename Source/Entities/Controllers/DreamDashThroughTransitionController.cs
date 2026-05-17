@@ -2,11 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/DreamDashThroughTransitionController")]
 [Tracked]
-public class DreamDashThroughTransitionController(Vector2 position, string condition)
-    : ConditionalController<DreamDashThroughTransitionController>(position, condition)
+public class DreamDashThroughTransitionController(string condition)
+    : ConditionalController<DreamDashThroughTransitionController>(condition)
 {
     public DreamDashThroughTransitionController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Attr("flag"))
+        : this(data.Attr("flag"))
     { }
     
     #region Hooks
@@ -44,7 +44,7 @@ public class DreamDashThroughTransitionController(Vector2 position, string condi
     #region Utils
 
     private static bool ShouldAffectStateCheck(Player player)
-        => TryGetActiveController(player?.SceneAs<Level>(), out _);
+        => TryGetController(player?.SceneAs<Level>(), out _);
     
     private static bool IsAffectedAndDreamDashing(Player player)
         => (player?.StateMachine.State ?? -1) == Player.StDreamDash && ShouldAffectStateCheck(player);

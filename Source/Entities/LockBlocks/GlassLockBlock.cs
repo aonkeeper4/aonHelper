@@ -31,6 +31,8 @@ public class GlassLockBlock : BaseLockBlock
         }
     }
 
+    private readonly GlassLockBlockRenderer.Rendered rendererComponent;
+
     public GlassLockBlock(
         EntityID id, Vector2 position,
         string spritePath,
@@ -44,6 +46,8 @@ public class GlassLockBlock : BaseLockBlock
         
         Add(new LightOcclude());
         Add(new MirrorSurface());
+        
+        Add(rendererComponent = new GlassLockBlockRenderer.Rendered(-9990, camera => Collider.Bounds.Intersects(camera.GetBounds().Pad(8, 8))));
 
         BuildFrameMetadata();
     }
@@ -82,7 +86,7 @@ public class GlassLockBlock : BaseLockBlock
 
     public override void Render()
     {
-        if (RenderBounds is { } rb && Scene.Tracker.GetEntity<GlassLockBlockController>() is { } controller)
+        if (RenderBounds is { } rb && rendererComponent.Renderer.TryGetController(out GlassLockBlockController controller))
         {
             Rectangle outline = new((int) (Center.X + rb.Left), (int) (Center.Y + rb.Top), rb.Width, rb.Height);
             Color lineColor = controller.LineColor;

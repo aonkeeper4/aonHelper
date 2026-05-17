@@ -4,12 +4,12 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/LightOcclusionFixController")]
 [Tracked]
-public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTileTypes) : Controller<LightOcclusionFixController>(position)
+public class LightOcclusionFixController(char[] noOcclusionTileTypes) : Controller<LightOcclusionFixController>
 {
 	private readonly char[] noOcclusionTileTypes = noOcclusionTileTypes; 
 	
     public LightOcclusionFixController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Attr("noOcclusionTiletypes").ToCharArray())
+        : this(data.Attr("noOcclusionTiletypes").ToCharArray())
     { }
     
     #region Hooks
@@ -76,7 +76,7 @@ public class LightOcclusionFixController(Vector2 position, char[] noOcclusionTil
             Vector2 lightPos, Rectangle lightBounds,
             Vector3 drawnLightCenter, Color maskColor)
         {
-	        if (!TryGetActiveController(level, out LightOcclusionFixController controller))
+	        if (!TryGetController(level, out LightOcclusionFixController controller))
 		        return false;
             
             int leftTileOffset = (int) MathF.Floor(lightBounds.Left / 8f) - tileBounds.Left, topTileOffset = (int) MathF.Floor(lightBounds.Top / 8f) - tileBounds.Top;

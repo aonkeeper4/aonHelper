@@ -2,13 +2,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/FormationBackdropColorController")]
 [Tracked]
-public class FormationBackdropColorController(Vector2 position, Color color, float alpha) : Controller<FormationBackdropColorController>(position)
+public class FormationBackdropColorController(Color color, float alpha) : Controller<FormationBackdropColorController>
 {
     private readonly Color color = color;
     private readonly float alpha = alpha;
     
     public FormationBackdropColorController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.HexColor("color", Color.Black), data.Float("alpha", 0.85f))
+        : this(data.HexColor("color", Color.Black), data.Float("alpha", 0.85f))
     { }
     
     #region Hooks
@@ -46,10 +46,10 @@ public class FormationBackdropColorController(Vector2 position, Color color, flo
         return;
 
         static Color ChangeFormationBackdropColor(Color orig, FormationBackdrop backdrop)
-            => TryGetActiveController(backdrop.SceneAs<Level>(), out FormationBackdropColorController controller) ? controller.color : orig;
+            => TryGetController(backdrop.SceneAs<Level>(), out FormationBackdropColorController controller) ? controller.color : orig;
         
         static float ChangeFormationBackdropAlpha(float orig, FormationBackdrop backdrop)
-            => TryGetActiveController(backdrop.SceneAs<Level>(), out FormationBackdropColorController controller) ? controller.alpha : orig;
+            => TryGetController(backdrop.SceneAs<Level>(), out FormationBackdropColorController controller) ? controller.alpha : orig;
     }
     
     #endregion

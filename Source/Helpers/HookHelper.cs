@@ -155,10 +155,8 @@ public static class HookHelper
             orig(self, startmode, snow);
 
             // i assume this is for collabutils2 support?
-            if (startmode is (Overworld.StartMode) (-1))
-                return;
-            
-            UpdateHooks(null);
+            if (startmode is not (Overworld.StartMode) (-1))
+                UpdateHooks(null);
         }
         
         #endregion

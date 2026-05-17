@@ -3,13 +3,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 // threshold by sungazer reference
 [CustomEntity("aonHelper/SpringSpeedThresholdController")]
 [Tracked]
-public class SpringSpeedThresholdController(Vector2 position, float thresholdX, float thresholdY, string condition)
-    : ConditionalController<SpringSpeedThresholdController>(position, condition)
+public class SpringSpeedThresholdController(float thresholdX, float thresholdY, string condition)
+    : ConditionalController<SpringSpeedThresholdController>(condition)
 {
     private readonly Vector2 threshold = new(thresholdX, thresholdY);
     
     public SpringSpeedThresholdController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Float("thresholdX", data.Float("threshold", 240f)), data.Float("thresholdY"), data.Attr("flag"))
+        : this(data.Float("thresholdX", data.Float("threshold", 240f)), data.Float("thresholdY"), data.Attr("flag"))
     { }
     
     #region Hooks
@@ -43,7 +43,7 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
             instr => instr.MatchLdarg0(),
             instr => instr.MatchLdflda<Player>("Speed"),
             instr => instr.MatchLdfld<Vector2>("X"),
-            instr => instr.MatchCall(typeof(System.Math), "Abs"),
+            instr => instr.MatchCall(typeof(Math), "Abs"),
             instr => instr.MatchLdcR4(240f)))
             throw new HookHelper.HookException(il, "Unable to find check for `Player.Speed` to modify.");
 
@@ -53,7 +53,7 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
         return;
 
         static float DetermineXSpeedThreshold(float orig, Player player)
-            => TryGetActiveController(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
+            => TryGetController(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
                 ? controller.threshold.X
                 : orig;
     }
@@ -81,7 +81,7 @@ public class SpringSpeedThresholdController(Vector2 position, float thresholdX, 
         return;
 
         static float DetermineYSpeedThreshold(float orig, Player player)
-            => TryGetActiveController(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
+            => TryGetController(player.SceneAs<Level>(), out SpringSpeedThresholdController controller)
                 ? controller.threshold.Y
                 : orig;
     }

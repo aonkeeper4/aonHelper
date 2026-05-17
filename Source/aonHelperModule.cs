@@ -18,7 +18,7 @@ public class aonHelperModule : EverestModule
         Instance = this;
         
         // if i accidentally leave a debug log in a released build i'll explode into a million pieces and die
-        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Debug);
+        Logger.SetLogLevel(nameof(aonHelper), LogLevel.Info);
     }
 
     // we don't use any lifecycle attributes for the stuff in this namespace (and the lazy loading manager) so we can ensure everything happens in the right order
@@ -27,10 +27,13 @@ public class aonHelperModule : EverestModule
     public override void Load()
     {
         aonHelperTypeProcessor.Load();
-        aonHelperExports.Load();
+        
+        aonHelperMetadata.Load();
         HookHelper.HookLazyLoadingManager.Load();
         
         LifecycleMethods.OnLoad();
+        
+        aonHelperExports.Load();
     }
     
     public override void LoadContent(bool firstLoad)
@@ -38,6 +41,8 @@ public class aonHelperModule : EverestModule
         base.LoadContent(firstLoad);
         
         aonHelperGFX.LoadContent();
+        
+        LifecycleMethods.OnLoadContent(firstLoad);
     }
 
     public override void Initialize()
@@ -53,7 +58,10 @@ public class aonHelperModule : EverestModule
         LifecycleMethods.OnUnload();
         
         aonHelperGFX.UnloadContent();
+        
         aonHelperDependencies.Uninitialize();
+        
+        aonHelperMetadata.Unload();
         HookHelper.HookLazyLoadingManager.Unload();
     }
 }

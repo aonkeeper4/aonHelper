@@ -6,15 +6,17 @@ public static class GlobalHelper
 {
     private const string LogID = $"{nameof(aonHelper)}/{nameof(GlobalHelper)}";
     
+    // dear future aon before u think about refactoring this yes this does have to be an attribute. gone over it so many times
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class GlobalEntityAttribute(string entitySIDs, string globalAttributeName = null) : Attribute
+    public class GlobalEntityAttribute(string entitySIDs, string globalAttributeName = null, bool globalAttributeDefault = false, bool onlyOne = false) : Attribute
     {
         public readonly string EntitySIDs = entitySIDs;
         
         public readonly string GlobalAttributeName = globalAttributeName;
+        public readonly bool GlobalAttributeDefault = globalAttributeDefault;
+        
+        public readonly bool OnlyOne = onlyOne;
     }
-    
-    #region Loader Processing
     
     private struct GlobalEntityLoader
     {
@@ -22,8 +24,13 @@ public static class GlobalHelper
         public GlobalEntityLoadingHandler Handler;
         
         public string Attribute;
+        public bool AttributeDefault;
+
+        public bool OnlyOne;
     }
     private static readonly Dictionary<string, GlobalEntityLoader> GlobalEntityLoaders = new();
+    
+    #region Attribute Processing
     
     private static readonly Type[] globalEntityLoaderSignature = [typeof(Level), typeof(LevelData), typeof(Vector2), typeof(EntityData)];
     private static readonly Type[] globalEntityConstructorSignature1 = [typeof(EntityData), typeof(Vector2), typeof(EntityID)];
@@ -37,6 +44,8 @@ public static class GlobalHelper
         {
             string[] ids = attribute.EntitySIDs.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             string globalAttributeName = string.IsNullOrEmpty(attribute.GlobalAttributeName) ? null : attribute.GlobalAttributeName;
+            bool globalAttributeDefault = attribute.GlobalAttributeDefault;
+            bool onlyOne = attribute.OnlyOne;
             
             foreach (string id in ids)
             {
@@ -55,7 +64,12 @@ public static class GlobalHelper
                 
                 entitySID = entitySID.Trim();
                 loaderMethodName = loaderMethodName.Trim();
-                GlobalEntityLoader entityLoader = new() { Attribute = globalAttributeName };
+                GlobalEntityLoader entityLoader = new()
+                {
+                    Attribute = globalAttributeName,
+                    AttributeDefault = globalAttributeDefault,
+                    OnlyOne = onlyOne
+                };
                 bool fromConstructor = false;
                 
                 if (type.GetMethod(loaderMethodName, globalEntityLoaderSignature) is { IsStatic: true} loaderMethod
@@ -116,7 +130,7 @@ public static class GlobalHelper
                     }
                     else if (type.GetConstructor(globalEntityConstructorSignature4) is { } constructor4)
                     {
-                        entityLoader.Handler = (_, levelData, offset, entityData) =>
+                        entityLoader.Handler = (_, levelData, _, entityData) =>
                         {
                             Entity entity = (Entity) constructor4.Invoke(null);
 
@@ -173,18 +187,30 @@ public static class GlobalHelper
     
     private static void Event_LevelLoader_OnLoadingThread(Level level)
     {
+        Dictionary<string, int> globalEntityCounts = new();
+        
         foreach (LevelData levelData in level.Session.MapData.Levels)
         foreach (EntityData entityData in levelData.Entities)
         {
             if (!GlobalEntityLoaders.TryGetValue(entityData.Name, out GlobalEntityLoader entityLoader)
-                || entityLoader.Attribute is { } attribute && !entityData.Bool(attribute))
+                || entityLoader.Attribute is { } attribute && !entityData.Bool(attribute, entityLoader.AttributeDefault))
                 continue;
+
+            if (globalEntityCounts.TryGetValue(entityData.Name, out int count))
+            {
+                if (entityLoader.OnlyOne && count >= 1)
+                    continue;
+
+                globalEntityCounts[entityData.Name] = count + 1;
+            }
+            else
+                globalEntityCounts.Add(entityData.Name, 1);
 
             Entity entity = entityLoader.Handler(level, levelData, new Vector2(levelData.Bounds.Left, levelData.Bounds.Top), entityData);
             entity.AddTag(Tags.Global);
             level.Add(entity);
             
-            Logger.Info(LogID, $"Eagerly added global entity with SID '{entityData.Name}' and position {entityData.Position} in room '{levelData.Name}'.");
+            Logger.Info(LogID, $"Added global entity with SID '{entityData.Name}' and position {entityData.Position} in room '{levelData.Name}'.");
         }
     }
     
@@ -194,7 +220,7 @@ public static class GlobalHelper
             return false;
 
         // return true even if we didn't add anything to make everest shut up
-        if (entityLoader.Attribute is not { } attribute || entityData.Bool(attribute))
+        if (entityLoader.Attribute is not { } attribute || entityData.Bool(attribute, entityLoader.AttributeDefault))
             return true;
         
         level.Add(entityLoader.Handler(level, levelData, offset, entityData));

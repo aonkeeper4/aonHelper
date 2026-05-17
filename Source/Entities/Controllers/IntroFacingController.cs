@@ -2,13 +2,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/IntroFacingController")]
 [Tracked]
-public class IntroFacingController(Vector2 position, Facings facing, string condition)
-    : ConditionalController<IntroFacingController>(position, condition)
+public class IntroFacingController(Facings facing, string condition)
+    : ConditionalController<IntroFacingController>(condition)
 {
     private readonly Facings facing = facing;
     
     public IntroFacingController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Enum("facing", Facings.Right), data.Attr("flag"))
+        : this(data.Enum("facing", Facings.Right), data.Attr("flag"))
     { }
     
     #region Hooks
@@ -35,7 +35,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string cond
     {
         int result = orig(self);
 
-        if (TryGetActiveController(self.SceneAs<Level>(), out IntroFacingController controller))
+        if (TryGetController(self.SceneAs<Level>(), out IntroFacingController controller))
             self.Facing = controller.facing;
 
         return result;
@@ -63,7 +63,7 @@ public class IntroFacingController(Vector2 position, Facings facing, string cond
 
         static void SetPlayerFacing(Player player)
         {
-            if (TryGetActiveController(player.SceneAs<Level>(), out IntroFacingController controller, true)
+            if (TryGetController(player.SceneAs<Level>(), out IntroFacingController controller, true)
                 && player.IntroType is not (Player.IntroTypes.Transition or Player.IntroTypes.Respawn or Player.IntroTypes.None)) // not sure if these are the only ones used in gameplay?
                 player.Facing = controller.facing;
         }

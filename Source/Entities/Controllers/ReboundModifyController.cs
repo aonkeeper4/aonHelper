@@ -2,10 +2,10 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/ReboundModifyController")]
 [Tracked]
-public class ReboundModifyController(Vector2 position,
+public class ReboundModifyController(
     ReboundModifyController.ReboundData leftRightData, ReboundModifyController.ReboundData topBottomData, bool refillDash,
     string condition)
-    : ConditionalController<ReboundModifyController>(position, condition)
+    : ConditionalController<ReboundModifyController>(condition)
 {
     public struct ReboundData
     {
@@ -24,7 +24,7 @@ public class ReboundModifyController(Vector2 position,
     private readonly bool refillDash = refillDash;
 
     public ReboundModifyController(EntityData data, Vector2 offset)
-        : this(data.Position + offset,
+        : this(
             new ReboundData
             {
                 XMode = (ReboundData.Mode)data.Int("leftRightXMode", 0),
@@ -88,7 +88,7 @@ public class ReboundModifyController(Vector2 position,
         static bool CustomRebound(Player player, int direction)
         {
             Level level = player.SceneAs<Level>();
-            if (!TryGetActiveController(level, out ReboundModifyController controller))
+            if (!TryGetController(level, out ReboundModifyController controller))
                 return false;
             
             player.Speed = direction switch

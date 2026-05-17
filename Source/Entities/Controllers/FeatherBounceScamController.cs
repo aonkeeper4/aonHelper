@@ -2,13 +2,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [CustomEntity("aonHelper/FeatherBounceScamController")]
 [Tracked]
-public class FeatherBounceScamController(Vector2 position, float featherBounceScamThreshold, string condition)
-    : ConditionalController<FeatherBounceScamController>(position, condition)
+public class FeatherBounceScamController(float featherBounceScamThreshold, string condition)
+    : ConditionalController<FeatherBounceScamController>(condition)
 {
     private readonly float featherBounceScamThreshold = featherBounceScamThreshold;
 
     public FeatherBounceScamController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Float("featherBounceScamThreshold"), data.Attr("flag"))
+        : this(data.Float("featherBounceScamThreshold"), data.Attr("flag"))
     { }
 
     #region Hooks
@@ -43,7 +43,7 @@ public class FeatherBounceScamController(Vector2 position, float featherBounceSc
         return;
         
         static float FeatherBounceScamThreshold(float orig, Player player)
-            => TryGetActiveController(player.SceneAs<Level>(), out FeatherBounceScamController controller)
+            => TryGetController(player.SceneAs<Level>(), out FeatherBounceScamController controller)
                 ? controller.featherBounceScamThreshold
                 : orig;
     }

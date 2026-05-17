@@ -33,31 +33,33 @@ public class aonHelperMetadata
 
     public static bool TryGetMetadata(AreaKey areaKey, out aonHelperMetadata metadata)
     {
-        if (CachedMetadata.TryGetValue(areaKey.SID, out metadata)) return true;
+        metadata = null;
+        
+        if (CachedMetadata.TryGetValue(areaKey.SID, out metadata)) return metadata is not null;
 
         string filename = AreaData.Get(areaKey).Mode[(int) areaKey.Mode].Path;
-        if (!Everest.Content.TryGet<AssetTypeYaml>($"Maps/{filename}.meta", out ModAsset asset)) return false;
+        if (!Everest.Content.TryGet<AssetTypeYaml>($"Maps/{filename}.meta", out ModAsset asset)) goto fail;
 
-        if (asset is null) return false;
-        if (!asset.PathVirtual.StartsWith("Maps")) return false;
-        if (!asset.TryValidatingDeserialize(out aonHelperYaml meta)) return false;
-
-        metadata = meta?.aonHelperMetadata;
-        CachedMetadata[areaKey.SID] = metadata;
+        if (asset is null) goto fail;
+        if (!asset.PathVirtual.StartsWith("Maps")) goto fail;
+        if (!asset.TryValidatingDeserialize(out aonHelperYaml meta)) goto fail;
+        if (meta?.aonHelperMetadata is not { } deserialized) goto fail;
+        
+        metadata = CachedMetadata[areaKey.SID] = deserialized;
         return true;
+        
+    fail:
+        CachedMetadata[areaKey.SID] = null;
+        return false;
     }
-
-    #region Hooks
     
-    [OnLoad]
+    #region Hooks
+
     internal static void Load()
     {
-        CachedMetadata.Clear();
-        
         Everest.Content.OnUpdate += OnUpdate;
     }
     
-    [OnUnload]
     internal static void Unload()
     {
         Everest.Content.OnUpdate -= OnUpdate;
@@ -66,7 +68,9 @@ public class aonHelperMetadata
     private static void OnUpdate(ModAsset old, ModAsset _)
     {
         // maybe a bit overkill
-        if (old.Type == typeof(AssetTypeYaml))
+        if (old.Type == typeof(AssetTypeYaml)
+            && old.PathVirtual.StartsWith("Maps")
+            && old.PathVirtual.EndsWith(".meta"))
             CachedMetadata.Clear();
     }
     

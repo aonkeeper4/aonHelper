@@ -3,14 +3,14 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 [CustomEntity("aonHelper/DisableAutoCameraOffsetController")]
 [Tracked]
 public class DisableAutoCameraOffsetController(
-    Vector2 position, string condition,
+    string condition,
     bool disableAutoCameraOffset, bool disableCameraUpdate)
-    : ConditionalController<DisableAutoCameraOffsetController>(position, condition)
+    : ConditionalController<DisableAutoCameraOffsetController>(condition)
 {
     private readonly bool disableAutoCameraOffset = disableAutoCameraOffset, disableCameraUpdate = disableCameraUpdate;
     
     public DisableAutoCameraOffsetController(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Attr("flag"),
+        : this(data.Attr("flag"),
             data.Bool("disableAutoCameraOffset", true), data.Bool("disableCameraUpdate"))
     { }
 
@@ -118,7 +118,7 @@ public class DisableAutoCameraOffsetController(
         return;
         
         static bool ShouldDisableAutoCameraOffset(Player player)
-            => TryGetActiveController(player.SceneAs<Level>(), out DisableAutoCameraOffsetController controller)
+            => TryGetController(player.SceneAs<Level>(), out DisableAutoCameraOffsetController controller)
                 && controller.disableAutoCameraOffset;
     }
 
@@ -151,7 +151,7 @@ public class DisableAutoCameraOffsetController(
         return;
 
         static bool ShouldSkipCameraUpdate(Player player)
-            => TryGetActiveController(player.SceneAs<Level>(), out DisableAutoCameraOffsetController controller)
+            => TryGetController(player.SceneAs<Level>(), out DisableAutoCameraOffsetController controller)
                 && controller.disableCameraUpdate;
     }
 

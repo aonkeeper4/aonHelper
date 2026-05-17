@@ -16,30 +16,9 @@ public static class aonHelperGFX
     #endregion
     
     #region Buffers
-    
-    private static VirtualRenderTarget glassLockBlockBeamsBuffer, glassLockBlockStarsBuffer, glassLockBlockStencilBuffer;
-    
-    public static void QueryGlassLockBlockBuffers(out VirtualRenderTarget beamsBuffer, out VirtualRenderTarget starsBuffer, out VirtualRenderTarget stencilBuffer)
-    {
-        if (glassLockBlockBeamsBuffer is not { IsDisposed: false }
-            || glassLockBlockStarsBuffer is not { IsDisposed: false }
-            || glassLockBlockStencilBuffer is not { IsDisposed: false })
-        {
-            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockBeamsBuffer);
-            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStarsBuffer);
-            RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
 
-            glassLockBlockBeamsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_beams", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
-            glassLockBlockStarsBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stars", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
-            glassLockBlockStencilBuffer = VirtualContent.CreateRenderTarget($"{nameof(aonHelper)}/{nameof(GlassLockBlock)}_stencil", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight);
-
-            Logger.Info(LogID, "Created new Glass Lock Block buffer triplet.");
-        }
-
-        beamsBuffer = glassLockBlockBeamsBuffer;
-        starsBuffer = glassLockBlockStarsBuffer;
-        stencilBuffer = glassLockBlockStencilBuffer;
-    }
+    public delegate void DisposeBuffersHandler(ref int buffersDisposed);
+    public static event DisposeBuffersHandler OnDisposeBuffers;
     
     #endregion
 
@@ -50,6 +29,12 @@ public static class aonHelperGFX
         #region Effects
         
         quantizedColorgradeEffect = EffectHelper.LoadEffect("quantized_colorgrade");
+        
+        #endregion
+        
+        #region Buffers
+
+        OnDisposeBuffers = null;
         
         #endregion
     }
@@ -63,11 +48,11 @@ public static class aonHelperGFX
         #endregion
         
         #region Buffers
-        
-        RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockBeamsBuffer);
-        RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStarsBuffer);
-        RenderTargetHelper.DisposeAndSetNull(ref glassLockBlockStencilBuffer);
-        
+
+        int buffersDisposed = 0;
+        OnDisposeBuffers?.Invoke(ref buffersDisposed);
+        Logger.Info(LogID, $"Disposed all buffers ({buffersDisposed} buffers disposed).");
+
         #endregion
     }
 }
