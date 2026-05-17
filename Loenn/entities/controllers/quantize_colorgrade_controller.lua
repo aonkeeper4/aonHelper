@@ -1,17 +1,18 @@
 local celesteEnums = require("consts.celeste_enums")
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 
 local quantizeColorgradeController = {}
 
 quantizeColorgradeController.name = "aonHelper/QuantizeColorgradeController"
 quantizeColorgradeController.texture = "objects/aonHelper/quantizeColorgradeController"
-quantizeColorgradeController.depth = 0
 quantizeColorgradeController.placements = {
     {
         name = "quantize_colorgrade_controller",
         data = {
             affectedColorgrades = "*",
             quantize = true,
-            normalize = true
+            normalize = true,
+            global = true
         }
     }
 }
@@ -19,7 +20,8 @@ quantizeColorgradeController.placements = {
 quantizeColorgradeController.fieldOrder = {
     "x", "y",
     "affectedColorgrades",
-    "quantize", "normalize"
+    "quantize", "normalize",
+    "global"
 }
 quantizeColorgradeController.fieldInformation = {
     affectedColorgrades = {
@@ -31,4 +33,9 @@ quantizeColorgradeController.fieldInformation = {
     }
 }
 
-return quantizeColorgradeController
+return aonHelper.controllerify(quantizeColorgradeController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = true
+    }
+})

@@ -1,6 +1,7 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/SeamlessLightningController")]
+// doesn't rly make sense for this to not be global always
+[GlobalHelper.GlobalEntity("aonHelper/SeamlessLightningController", onlyOne: true)]
 [Tracked]
 public class SeamlessLightningController : Controller<SeamlessLightningController>
 {

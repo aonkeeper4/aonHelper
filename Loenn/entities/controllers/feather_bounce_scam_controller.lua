@@ -1,21 +1,29 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local featherBounceScamController = {}
 
 featherBounceScamController.name = "aonHelper/FeatherBounceScamController"
 featherBounceScamController.texture = "objects/aonHelper/featherBounceScamController"
-featherBounceScamController.depth = 0
 featherBounceScamController.placements = {
     {
         name = "feather_bounce_scam_controller",
         data = {
             featherBounceScamThreshold = 0.2,
             flag = "",
+            global = false
         }
     }
 }
 
 featherBounceScamController.fieldOrder = {
     "x", "y",
-    "featherBounceScamThreshold", "flag"
+    "featherBounceScamThreshold",
+    "flag", "global"
 }
 
-return featherBounceScamController
+return aonHelper.controllerify(featherBounceScamController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

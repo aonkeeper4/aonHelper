@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 // todo: make this actually fix all cases
 
-[CustomEntity("aonHelper/LightOcclusionFixController")]
+[GlobalHelper.GlobalEntity("aonHelper/LightOcclusionFixController", "global", true)]
 [Tracked]
 public class LightOcclusionFixController(char[] noOcclusionTileTypes) : Controller<LightOcclusionFixController>
 {

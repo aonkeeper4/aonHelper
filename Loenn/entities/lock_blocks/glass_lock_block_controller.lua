@@ -1,10 +1,10 @@
 local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 
 local glassLockBlockController = {}
 
 glassLockBlockController.name = "aonHelper/GlassLockBlockController"
-glassLockBlockController.depth = 0
 glassLockBlockController.placements = {
     {
         name = "controller",
@@ -14,7 +14,8 @@ glassLockBlockController.placements = {
             rayColor = "ffffff",
             starColors = "ff7777,77ff77,7777ff,ff77ff,77ffff,ffff77",
             wavy = false,
-            vanillaEdgeBehavior = false
+            vanillaEdgeBehavior = false,
+            global = false
         }
     },
     {
@@ -25,7 +26,8 @@ glassLockBlockController.placements = {
             rayColor = "ffffff",
             starColors = "7f9fba,9bd1cd,bacae3",
             wavy = true,
-            vanillaEdgeBehavior = true
+            vanillaEdgeBehavior = true,
+            global = false
         }
     },
 }
@@ -33,7 +35,8 @@ glassLockBlockController.placements = {
 glassLockBlockController.fieldOrder = {
     "x", "y",
     "bgColor", "lineColor", "rayColor", "starColors",
-    "wavy", "vanillaEdgeBehavior", "persistent"
+    "wavy", "vanillaEdgeBehavior",
+    "global"
 }
 glassLockBlockController.fieldInformation = {
     bgColor = {
@@ -118,4 +121,9 @@ function glassLockBlockController.selection(room, entity)
     return utils.rectangle(x - 12, y - 12, 24, 24)
 end
 
-return glassLockBlockController
+return aonHelper.controllerify(glassLockBlockController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

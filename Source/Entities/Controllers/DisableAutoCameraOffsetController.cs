@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/DisableAutoCameraOffsetController")]
+[GlobalHelper.GlobalEntity("aonHelper/DisableAutoCameraOffsetController", "global")]
 [Tracked]
 public class DisableAutoCameraOffsetController(
     string condition,

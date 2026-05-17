@@ -1,20 +1,27 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local jumpThrusApplyLiftSpeedController = {}
 
 jumpThrusApplyLiftSpeedController.name = "aonHelper/JumpThrusApplyLiftSpeedController"
 jumpThrusApplyLiftSpeedController.texture = "objects/aonHelper/jumpThrusApplyLiftSpeedController"
-jumpThrusApplyLiftSpeedController.depth = 0
 jumpThrusApplyLiftSpeedController.placements = {
     {
         name = "jumpthrus_apply_liftspeed_controller",
         data = {
-            flag = ""
+            flag = "",
+            global = false
         }
     }
 }
 
 jumpThrusApplyLiftSpeedController.fieldOrder = {
     "x", "y",
-    "flag"
+    "flag", "global"
 }
 
-return jumpThrusApplyLiftSpeedController
+return aonHelper.controllerify(jumpThrusApplyLiftSpeedController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

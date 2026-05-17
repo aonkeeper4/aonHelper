@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
 
-[CustomEntity("aonHelper/GlassLockBlockController", "MoreLockBlocks/GlassLockBlockController")]
+[GlobalHelper.GlobalEntity("aonHelper/GlassLockBlockController, MoreLockBlocks/GlassLockBlockController", "global")]
 [Tracked]
 public class GlassLockBlockController : RendererController<GlassLockBlockController>
 {

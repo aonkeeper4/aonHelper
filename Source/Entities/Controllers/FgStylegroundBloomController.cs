@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/FgStylegroundBloomController")]
+[GlobalHelper.GlobalEntity("aonHelper/FgStylegroundBloomController", "global", true)]
 [Tracked]
 public class FgStylegroundBloomController(string bloomTag) : Controller<FgStylegroundBloomController>
 {

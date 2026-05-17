@@ -1,21 +1,29 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local lightningCornerboostController = {}
 
 lightningCornerboostController.name = "aonHelper/LightningCornerboostController"
 lightningCornerboostController.texture = "objects/aonHelper/lightningCornerboostController"
-lightningCornerboostController.depth = 0
 lightningCornerboostController.placements = {
     {
         name = "lightning_cornerboost_controller",
         data = {
             always = false,
-            flag = ""
+            flag = "",
+            global = false
         }
     }
 }
 
 lightningCornerboostController.fieldOrder = {
     "x", "y",
-    "always", "flag"
+    "always",
+    "flag", "global"
 }
 
-return lightningCornerboostController
+return aonHelper.controllerify(lightningCornerboostController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

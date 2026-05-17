@@ -1,5 +1,6 @@
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 
 local clampLightColorController = {}
 
@@ -13,20 +14,21 @@ local clampMethodsOptions = {
 }
 
 clampLightColorController.name = "aonHelper/ClampLightColorController"
-clampLightColorController.depth = 0
 clampLightColorController.placements = {
     {
         name = "clamp_light_color_controller",
         data = {
             color = "ffffff",
-            clampMethod = clampMethods.clamp
+            clampMethod = clampMethods.clamp,
+            global = true
         }
     }
 }
 
 clampLightColorController.fieldOrder = {
     "x", "y",
-    "color", "clampMethod"
+    "color", "clampMethod",
+    "global"
 }
 clampLightColorController.fieldInformation = {
     color = {
@@ -71,4 +73,9 @@ function clampLightColorController.selection(room, entity)
     return utils.rectangle(x - 12, y - 12, 24, 24)
 end
 
-return clampLightColorController
+return aonHelper.controllerify(clampLightColorController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = true
+    }
+})

@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/FormationBackdropColorController")]
+[GlobalHelper.GlobalEntity("aonHelper/FormationBackdropColorController", "global", true)]
 [Tracked]
 public class FormationBackdropColorController(Color color, float alpha) : Controller<FormationBackdropColorController>
 {

@@ -1,24 +1,33 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local reboundModifyController = {}
 
-local modes = { ["Multiplier"] = 0, ["Constant"] = 1 }
+local modes = {
+    multiplier = 0,
+    constant = 1
+}
+local modesOptions = {
+    ["Multiplier"] = modes.multiplier,
+    ["Constant"] = modes.constant
+}
 
 reboundModifyController.name = "aonHelper/ReboundModifyController"
 reboundModifyController.texture = "objects/aonHelper/reboundModifyController"
-reboundModifyController.depth = 0
 reboundModifyController.placements = {
     {
         name = "rebound_modify_controller",
         data = {
-            leftRightXMode = 0,
-            leftRightYMode = 1,
+            leftRightXMode = modes.multiplier,
+            leftRightYMode = modes.constant,
             leftRightXModifier = -0.5,
             leftRightYModifier = -120,
-            topXMode = 1,
-            topYMode = 0,
+            topXMode = modes.constant,
+            topYMode = modes.multiplier,
             topXModifier = 0,
             topYModifier = 1,
             refillDash = false,
             flag = "",
+            global = false
         }
     }
 }
@@ -27,29 +36,35 @@ reboundModifyController.fieldOrder = {
     "x", "y",
     "leftRightXMode", "leftRightYMode", "leftRightXModifier", "leftRightYModifier",
     "topXMode", "topYMode", "topXModifier", "topYModifier",
-    "refillDash", "flag"
+    "refillDash",
+    "flag", "global"
 }
 reboundModifyController.fieldInformation = {
     leftRightXMode = {
         fieldType = "integer",
-        options = modes,
+        options = modesOptions,
         editable = false,
     },
     leftRightYMode = {
         fieldType = "integer",
-        options = modes,
+        options = modesOptions,
         editable = false,
     },
     topXMode = {
         fieldType = "integer",
-        options = modes,
+        options = modesOptions,
         editable = false,
     },
     topYMode = {
         fieldType = "integer",
-        options = modes,
+        options = modesOptions,
         editable = false,
     }
 }
 
-return reboundModifyController
+return aonHelper.controllerify(reboundModifyController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

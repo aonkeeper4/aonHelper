@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/IntroFacingController")]
+[GlobalHelper.GlobalEntity("aonHelper/IntroFacingController", "global")]
 [Tracked]
 public class IntroFacingController(Facings facing, string condition)
     : ConditionalController<IntroFacingController>(condition)

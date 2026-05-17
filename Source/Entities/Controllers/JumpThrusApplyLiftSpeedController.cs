@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/JumpThrusApplyLiftSpeedController")]
+[GlobalHelper.GlobalEntity("aonHelper/JumpThrusApplyLiftSpeedController", "global")]
 [Tracked]
 public class JumpThrusApplyLiftSpeedController(string condition)
     : ConditionalController<JumpThrusApplyLiftSpeedController>(condition)

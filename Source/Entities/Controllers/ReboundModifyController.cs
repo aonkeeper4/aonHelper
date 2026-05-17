@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/ReboundModifyController")]
+[GlobalHelper.GlobalEntity("aonHelper/ReboundModifyController", "global")]
 [Tracked]
 public class ReboundModifyController(
     ReboundModifyController.ReboundData leftRightData, ReboundModifyController.ReboundData topBottomData, bool refillDash,

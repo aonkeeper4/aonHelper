@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/FeatherBounceScamController")]
+[GlobalHelper.GlobalEntity("aonHelper/FeatherBounceScamController", "global")]
 [Tracked]
 public class FeatherBounceScamController(float featherBounceScamThreshold, string condition)
     : ConditionalController<FeatherBounceScamController>(condition)

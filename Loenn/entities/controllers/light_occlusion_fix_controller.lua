@@ -1,3 +1,5 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local lightOcclusionFixController = {}
 
 lightOcclusionFixController.name = "aonHelper/LightOcclusionFixController"
@@ -5,13 +7,15 @@ lightOcclusionFixController.texture = "objects/aonHelper/lightOcclusionFixContro
 lightOcclusionFixController.placements = {
     name = "light_occlusion_fix_controller",
     data = {
-        noOcclusionTiletypes = ""
+        noOcclusionTiletypes = "",
+        global = true
     }
 }
 
 lightOcclusionFixController.fieldOrder = {
     "x", "y",
-    "noOcclusionTiletypes"
+    "noOcclusionTiletypes",
+    "global"
 }
 -- woo yay i love stealing from sorbet helper
 lightOcclusionFixController.fieldInformation = {
@@ -20,4 +24,9 @@ lightOcclusionFixController.fieldInformation = {
     }
 }
 
-return lightOcclusionFixController
+return aonHelper.controllerify(lightOcclusionFixController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = true
+    }
+})

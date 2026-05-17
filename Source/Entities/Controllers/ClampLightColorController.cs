@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/ClampLightColorController")]
+[GlobalHelper.GlobalEntity("aonHelper/ClampLightColorController", "global", true)]
 [Tracked]
 public class ClampLightColorController(Color clampColor, ClampLightColorController.ClampMethod clampMethod)
     : Controller<ClampLightColorController>

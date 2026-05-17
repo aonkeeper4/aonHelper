@@ -45,6 +45,7 @@ end
 local featherDashSwitch = {}
 
 featherDashSwitch.name = "aonHelper/FeatherDashSwitchV2"
+featherDashSwitch.depth = -9000
 featherDashSwitch.placements = {}
 
 for dir, side in pairs(directionsOptions) do

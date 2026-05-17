@@ -1,3 +1,5 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local disableAutoCameraOffsetController = {}
 
 disableAutoCameraOffsetController.name = "aonHelper/DisableAutoCameraOffsetController"
@@ -8,13 +10,19 @@ disableAutoCameraOffsetController.placements = {
         disableAutoCameraOffset = true,
         disableCameraUpdate = false,
         flag = "",
+        global = false
     }
 }
 
 disableAutoCameraOffsetController.fieldOrder = {
     "x", "y",
     "disableAutoCameraOffset", "disableCameraUpdate",
-    "flag"
+    "flag", "global"
 }
 
-return disableAutoCameraOffsetController
+return aonHelper.controllerify(disableAutoCameraOffsetController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/LightningCornerboostController")]
+[GlobalHelper.GlobalEntity("aonHelper/LightningCornerboostController", "global")]
 [Tracked]
 public class LightningCornerboostController(bool always, string condition)
     : ConditionalController<LightningCornerboostController>(condition)

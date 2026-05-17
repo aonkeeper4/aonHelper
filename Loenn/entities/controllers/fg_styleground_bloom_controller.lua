@@ -1,20 +1,28 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local fgStylegroundBloomController = {}
 
 fgStylegroundBloomController.name = "aonHelper/FgStylegroundBloomController"
 fgStylegroundBloomController.texture = "objects/aonHelper/fgStylegroundBloomController"
-fgStylegroundBloomController.depth = 0
 fgStylegroundBloomController.placements = {
     {
         name = "fg_styleground_bloom_controller",
         data = {
-            bloomTag = ""
+            bloomTag = "",
+            global = true
         }
     }
 }
 
 fgStylegroundBloomController.fieldOrder = {
     "x", "y",
-    "bloomTag"
+    "bloomTag",
+    "global"
 }
 
-return fgStylegroundBloomController
+return aonHelper.controllerify(fgStylegroundBloomController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = true
+    }
+})

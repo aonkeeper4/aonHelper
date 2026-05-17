@@ -1,3 +1,5 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local introFacingController = {}
 
 local facings = {
@@ -12,20 +14,21 @@ local facingsOptions = {
 introFacingController.name = "aonHelper/IntroFacingController"
 introFacingController.texture = "objects/aonHelper/introFacingController"
 introFacingController.scale = function(room, entity) return { entity.facing or facings.right, 1 } end
-introFacingController.depth = 0
 introFacingController.placements = {
     {
         name = "intro_facing_controller",
         data = {
             facing = facings.right,
-            flag = ""
+            flag = "",
+            global = false
         }
     }
 }
 
 introFacingController.fieldOrder = {
     "x", "y",
-    "facing", "flag"
+    "facing",
+    "flag", "global"
 }
 introFacingController.fieldInformation = {
     facing = {
@@ -35,4 +38,9 @@ introFacingController.fieldInformation = {
     }
 }
 
-return introFacingController
+return aonHelper.controllerify(introFacingController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

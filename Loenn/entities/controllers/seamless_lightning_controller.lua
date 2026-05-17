@@ -1,8 +1,9 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local seamlessLightningController = {}
 
 seamlessLightningController.name = "aonHelper/SeamlessLightningController"
 seamlessLightningController.texture = "objects/aonHelper/seamlessLightningController"
-seamlessLightningController.depth = 0
 seamlessLightningController.placements = {
     {
         name = "seamless_lightning_controller",
@@ -10,4 +11,6 @@ seamlessLightningController.placements = {
     }
 }
 
-return seamlessLightningController
+return aonHelper.controllerify(seamlessLightningController, {
+    global = true
+})

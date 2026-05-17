@@ -1,7 +1,7 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 // threshold by sungazer reference
-[CustomEntity("aonHelper/SpringSpeedThresholdController")]
+[GlobalHelper.GlobalEntity("aonHelper/SpringSpeedThresholdController", "global")]
 [Tracked]
 public class SpringSpeedThresholdController(float thresholdX, float thresholdY, string condition)
     : ConditionalController<SpringSpeedThresholdController>(condition)

@@ -1,5 +1,6 @@
 local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
 
 local formationBackdropColorController = {}
 
@@ -8,13 +9,15 @@ formationBackdropColorController.placements = {
     name = "formation_backdrop_color_controller",
     data = {
         color = "000000",
-        alpha = 0.85
+        alpha = 0.85,
+        global = true
     }
 }
 
 formationBackdropColorController.fieldOrder = {
     "x", "y",
-    "color", "alpha"
+    "color", "alpha",
+    "global"
 }
 formationBackdropColorController.fieldInformation = {
     color = {
@@ -46,4 +49,9 @@ function formationBackdropColorController.selection(room, entity)
     return utils.rectangle(x - 12, y - 12, 24, 24)
 end
 
-return formationBackdropColorController
+return aonHelper.controllerify(formationBackdropColorController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = true
+    }
+})

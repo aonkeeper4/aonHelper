@@ -1,8 +1,6 @@
-using AsmResolver.Shims;
-
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/QuantizeColorgradeController")]
+[GlobalHelper.GlobalEntity("aonHelper/QuantizeColorgradeController", "global", true)]
 [Tracked]
 public class QuantizeColorgradeController(
     string affectedColorgrades,

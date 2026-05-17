@@ -5,6 +5,7 @@ local utils = require("utils")
 local resizableHeart = {}
 
 resizableHeart.name = "aonHelper/ResizableHeart"
+resizableHeart.depth = 0
 resizableHeart.placements = {
     {
         name = "custom",

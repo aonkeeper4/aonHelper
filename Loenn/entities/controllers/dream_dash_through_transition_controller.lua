@@ -1,20 +1,27 @@
+local aonHelper = require("mods").requireFromPlugin("libraries.aon_helper")
+
 local dreamDashThroughTransitionController = {}
 
 dreamDashThroughTransitionController.name = "aonHelper/DreamDashThroughTransitionController"
 dreamDashThroughTransitionController.texture = "objects/aonHelper/dreamDashThroughTransitionController"
-dreamDashThroughTransitionController.depth = 0
 dreamDashThroughTransitionController.placements = {
     {
         name = "dream_dash_through_transition_controller",
         data = {
-            flag = ""
+            flag = "",
+            global = false
         }
     }
 }
 
 dreamDashThroughTransitionController.fieldOrder = {
     "x", "y",
-    "flag"
+    "flag", "global"
 }
 
-return dreamDashThroughTransitionController
+return aonHelper.controllerify(dreamDashThroughTransitionController, {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+})

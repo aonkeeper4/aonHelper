@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/DreamDashThroughTransitionController")]
+[GlobalHelper.GlobalEntity("aonHelper/DreamDashThroughTransitionController", "global")]
 [Tracked]
 public class DreamDashThroughTransitionController(string condition)
     : ConditionalController<DreamDashThroughTransitionController>(condition)

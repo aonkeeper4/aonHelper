@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[CustomEntity("aonHelper/FlingBirdNoSkipController")]
+[GlobalHelper.GlobalEntity("aonHelper/FlingBirdNoSkipController", "global")]
 [Tracked]
 public class FlingBirdNoSkipController(string condition)
     : ConditionalController<FlingBirdNoSkipController>(condition)
