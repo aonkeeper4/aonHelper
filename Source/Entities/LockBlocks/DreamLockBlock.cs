@@ -23,8 +23,6 @@ public class DreamLockBlock : BaseLockBlock
                     return value;
                 
                 aonHelperModule.Session.DreamBlockDummyStates[parent.ID] = false;
-                if (ignoreInventory)
-                    SetReverseHelperDummyState(false);
                 
                 return false;
             }
@@ -32,18 +30,7 @@ public class DreamLockBlock : BaseLockBlock
             set
             {
                 aonHelperModule.Session.DreamBlockDummyStates[parent.ID] = value;
-                if (ignoreInventory)
-                    SetReverseHelperDummyState(value);
             }
-        }
-
-        private void SetReverseHelperDummyState(bool value)
-        {
-            if (!ReverseHelper.IsImported)
-                return;
-            
-            ReverseHelper.ConfigureSetFromEnum(this, 1 << 1, value); // set `alwaysEnable`
-            ReverseHelper.ConfigureSetFromEnum(this, 1 << 2, !value); // set `alwaysDisable`
         }
 
         private bool Unlocked => aonHelperModule.Session.UnlockedDreamLockBlocks.Contains(parent.ID); // whether we can change state
@@ -112,9 +99,6 @@ public class DreamLockBlock : BaseLockBlock
         [OnInitialize]
         public static void Initialize()
         {
-            if (aonHelperDependencies.ReverseHelperLoaded is not aonHelperDependencies.DependencyState.Unloaded)
-                return;
-            
             IL.Celeste.Player.DreamDashCheck += IL_Player_DreamDashCheck;
 
             il_Player_DashCoroutine = new ILHook(typeof(Player).GetMethod("DashCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, IL_Player_DashCoroutine);
@@ -132,12 +116,9 @@ public class DreamLockBlock : BaseLockBlock
             
             IL.Celeste.DreamBlock.Added -= IL_DreamBlock_Added;
 
-            if (aonHelperDependencies.ReverseHelperLoaded is aonHelperDependencies.DependencyState.Unloaded)
-            {
-                IL.Celeste.Player.DreamDashCheck -= IL_Player_DreamDashCheck;
+            IL.Celeste.Player.DreamDashCheck -= IL_Player_DreamDashCheck;
 
-                HookHelper.DisposeAndSetNull(ref il_Player_DashCoroutine);
-            }
+            HookHelper.DisposeAndSetNull(ref il_Player_DashCoroutine);
         }
 
         private static void IL_DreamBlock_Added(ILContext il)
@@ -159,9 +140,6 @@ public class DreamLockBlock : BaseLockBlock
                     return orig;
             
                 bool canDashThrough = dummy.CanDashThrough;
-                if (dummy.ignoreInventory)
-                    dummy.SetReverseHelperDummyState(canDashThrough);
-                
                 return canDashThrough;
             }
         }

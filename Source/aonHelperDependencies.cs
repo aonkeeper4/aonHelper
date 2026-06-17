@@ -79,14 +79,10 @@ public static class aonHelperDependencies
     
     private static readonly EverestModuleMetadata DzhakeHelper = new() { Name = "DzhakeHelper", Version = new Version(1, 4, 20) };
     public static DependencyState DzhakeHelperLoaded { get; private set; } = DependencyState.Unknown;
-
-    private static readonly EverestModuleMetadata ReverseHelper = new() { Name = "ReverseHelper", Version = new Version(1, 15, 20) };
-    public static DependencyState ReverseHelperLoaded { get; private set; } = DependencyState.Unknown;
     
     private static readonly Dictionary<EverestModuleMetadata, DependencyHandler> Dependencies = new()
     {
         { DzhakeHelper, new DependencyHandler(state => DzhakeHelperLoaded = state, () => DzhakeHelperLoaded, null, null, null) },
-        { ReverseHelper, new DependencyHandler(state => ReverseHelperLoaded = state, () => ReverseHelperLoaded, null, null, null) }
         // add more here
     };
     
