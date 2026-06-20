@@ -365,6 +365,9 @@ MigrationBackup/
 Audio/
 
 # Referenced DLLs / tools
-# should these be in here?
-lib/
+Source/lib/
+Source/lib-stripped/
 Effects/aonHelper/lib/
+
+# EditorConfig files
+.editorconfig
