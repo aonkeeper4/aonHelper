@@ -11,6 +11,4 @@ seamlessLightningController.placements = {
     }
 }
 
-return aonHelper.controllerify(seamlessLightningController, {
-    global = true
-})
+return aonHelper.controllerify(seamlessLightningController, aonHelper.globalAlways)

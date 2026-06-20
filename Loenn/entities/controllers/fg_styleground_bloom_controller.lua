@@ -20,9 +20,4 @@ fgStylegroundBloomController.fieldOrder = {
     "global"
 }
 
-return aonHelper.controllerify(fgStylegroundBloomController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = true
-    }
-})
+return aonHelper.controllerify(fgStylegroundBloomController, aonHelper.globalByDefault)

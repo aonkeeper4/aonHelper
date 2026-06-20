@@ -19,9 +19,4 @@ dreamDashThroughTransitionController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(dreamDashThroughTransitionController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(dreamDashThroughTransitionController)

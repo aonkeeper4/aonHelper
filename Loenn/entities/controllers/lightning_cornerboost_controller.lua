@@ -21,9 +21,4 @@ lightningCornerboostController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(lightningCornerboostController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(lightningCornerboostController)

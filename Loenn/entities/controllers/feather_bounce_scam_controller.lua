@@ -21,9 +21,4 @@ featherBounceScamController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(featherBounceScamController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(featherBounceScamController)

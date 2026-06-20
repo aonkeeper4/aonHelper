@@ -20,9 +20,4 @@ disableAutoCameraOffsetController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(disableAutoCameraOffsetController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(disableAutoCameraOffsetController)

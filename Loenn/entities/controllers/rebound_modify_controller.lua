@@ -62,9 +62,4 @@ reboundModifyController.fieldInformation = {
     }
 }
 
-return aonHelper.controllerify(reboundModifyController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(reboundModifyController)

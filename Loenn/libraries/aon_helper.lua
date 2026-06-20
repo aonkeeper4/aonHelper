@@ -45,8 +45,26 @@ local function isEntityGlobal(entity, options)
     return false
 end
 
+aonHelper.globalNever = { global = false }
+aonHelper.globalAlways = { global = true }
+
+aonHelper.nonGlobalByDefault = {
+    global = {
+        attributeName = "global",
+        attributeDefault = false
+    }
+}
+aonHelper.globalByDefault = {
+    global = {
+        attributeName = "global",
+        attributeDefault = true
+    }
+}
+
 -- todo: more?
 function aonHelper.controllerify(handler, options)
+    options = options or aonHelper.nonGlobalByDefault
+
     handler.depth = -math.huge
 
     if not handler.selection then

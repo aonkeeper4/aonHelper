@@ -19,9 +19,4 @@ jumpThrusApplyLiftSpeedController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(jumpThrusApplyLiftSpeedController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(jumpThrusApplyLiftSpeedController)

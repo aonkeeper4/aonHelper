@@ -24,9 +24,4 @@ lightOcclusionFixController.fieldInformation = {
     }
 }
 
-return aonHelper.controllerify(lightOcclusionFixController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = true
-    }
-})
+return aonHelper.controllerify(lightOcclusionFixController, aonHelper.globalByDefault)

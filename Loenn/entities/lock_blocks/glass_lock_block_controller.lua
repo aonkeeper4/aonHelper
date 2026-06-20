@@ -121,9 +121,4 @@ function glassLockBlockController.selection(room, entity)
     return utils.rectangle(x - 12, y - 12, 24, 24)
 end
 
-return aonHelper.controllerify(glassLockBlockController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(glassLockBlockController)

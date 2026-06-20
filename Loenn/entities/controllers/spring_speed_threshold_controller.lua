@@ -22,9 +22,4 @@ springSpeedThresholdController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(springSpeedThresholdController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(springSpeedThresholdController)

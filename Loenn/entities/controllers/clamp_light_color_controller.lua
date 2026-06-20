@@ -73,9 +73,4 @@ function clampLightColorController.selection(room, entity)
     return utils.rectangle(x - 12, y - 12, 24, 24)
 end
 
-return aonHelper.controllerify(clampLightColorController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = true
-    }
-})
+return aonHelper.controllerify(clampLightColorController, aonHelper.globalByDefault)

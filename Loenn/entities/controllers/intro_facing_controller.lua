@@ -38,9 +38,4 @@ introFacingController.fieldInformation = {
     }
 }
 
-return aonHelper.controllerify(introFacingController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(introFacingController)

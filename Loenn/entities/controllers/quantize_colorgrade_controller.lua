@@ -33,9 +33,4 @@ quantizeColorgradeController.fieldInformation = {
     }
 }
 
-return aonHelper.controllerify(quantizeColorgradeController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = true
-    }
-})
+return aonHelper.controllerify(quantizeColorgradeController, aonHelper.globalByDefault)

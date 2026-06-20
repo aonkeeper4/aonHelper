@@ -19,9 +19,4 @@ flingBirdNoSkipController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(flingBirdNoSkipController, {
-    global = {
-        attributeName = "global",
-        attributeDefault = false
-    }
-})
+return aonHelper.controllerify(flingBirdNoSkipController)
