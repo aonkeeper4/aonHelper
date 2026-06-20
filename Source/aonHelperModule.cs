@@ -50,7 +50,7 @@ public class aonHelperModule : EverestModule
         aonHelperDependencies.Initialize();
         aonHelperImports.Initialize();
         
-        LifecycleMethods.OnInitialize();
+        // LifecycleMethods.OnInitialize(); // we don't have anything using [OnInitialize] at the moment so the method isn't generated
     }
 
     public override void Unload()

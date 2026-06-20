@@ -57,23 +57,21 @@ public class GlassLockBlockRenderer :
         {
             Buffers.Clear();
             aonHelperGFX.OnDisposeBuffers += DisposeBuffers;
-            
-            return;
-            
-            static void DisposeBuffers(ref int buffersDisposed)
-            {
-                foreach (int depth in Buffers.Keys)
-                {
-                    GlassLockBlockBuffers buffers = Buffers[depth];
-                    RenderTargetHelper.DisposeAndSetNull(ref buffers.Beams);
-                    RenderTargetHelper.DisposeAndSetNull(ref buffers.Stars);
-                    RenderTargetHelper.DisposeAndSetNull(ref buffers.Stencil);
+        }
 
-                    buffersDisposed += 3;
-                }
-                
-                Buffers.Clear();
+        private static void DisposeBuffers(ref int buffersDisposed)
+        {
+            foreach (int depth in Buffers.Keys)
+            {
+                GlassLockBlockBuffers buffers = Buffers[depth];
+                RenderTargetHelper.DisposeAndSetNull(ref buffers.Beams);
+                RenderTargetHelper.DisposeAndSetNull(ref buffers.Stars);
+                RenderTargetHelper.DisposeAndSetNull(ref buffers.Stencil);
+
+                buffersDisposed += 3;
             }
+
+            Buffers.Clear();
         }
         
         #endregion

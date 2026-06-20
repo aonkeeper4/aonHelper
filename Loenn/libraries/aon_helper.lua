@@ -1,3 +1,5 @@
+-- big shoutouts μ for being awesomesauce
+
 local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
 
@@ -75,6 +77,8 @@ function aonHelper.controllerify(handler, options)
     end
     
     local origHandlerSprite = handler.sprite
+
+    -- i think there's more to add here but #whatever
     if not origHandlerSprite and handler.texture then
         origHandlerSprite = function(room, entity)
             local x, y = entity.x or 0, entity.y or 0
@@ -91,8 +95,6 @@ function aonHelper.controllerify(handler, options)
     end
 
     handler.sprite = function(room, entity)
-        local x, y = entity.x or 0, entity.y or 0
-        
         local handlerSprites = origHandlerSprite(room, entity)
         local sprites = {}
         if handlerSprites then
