@@ -13,10 +13,10 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
     // this is so stupid
     public interface IStaticMethods
     {
-        public static abstract string Name { get; }
-        public static abstract string LogID { get; }
+        static abstract string Name { get; }
+        static abstract string LogID { get; }
         
-        public static abstract TSelf Create(int rendererDepth);
+        static abstract TSelf Create(int rendererDepth);
     }
     
     public class Rendered(int? overrideDepth = null, Func<Camera, bool> isVisible = null) : TypeRestrictedComponent<TRendered>(false, false)
@@ -80,8 +80,6 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
 
     private void BeforeRender()
     {
-        Level level = SceneAs<Level>();
-        
         QueryBuffers(out TBuffers buffers);
         TController currentController = GetController();
 

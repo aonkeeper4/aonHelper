@@ -51,12 +51,12 @@ current features:
 - Spring Speed Threshold Controller
   - allows you to change the speed threshold for springs to bounce you
 
-for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set.
+for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set, and all of them have the ability to work across the entire map (letting you only place them once) with the "Global" attribute.
 
 ### Triggers
 
 - Parallax Fade Trigger
-  - allows you to fade alpha/color of a parallax. note that you need to reset it after every save and quit
+  - allows you to fade alpha/color of a parallax. note that you need to reset it after every save and quit for now
 
 if you want to report any bugs or suggest any features then ping me in celestecord (@aonkeeper4)
 

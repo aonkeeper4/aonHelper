@@ -1,5 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Misc;
 
+// todo: use a renderer
 [CustomEntity("aonHelper/DarkerMatter")]
 [Tracked]
 public class DarkerMatter : Entity

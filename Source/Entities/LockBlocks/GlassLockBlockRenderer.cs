@@ -2,6 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.LockBlocks;
 
 using GlassLockBlockRendererBase = Renderer<GlassLockBlockRenderer, GlassLockBlock, GlassLockBlockRenderer.GlassLockBlockBuffers, GlassLockBlockController>;
 
+// todo: make this actually use a stencil buffer ?
 [Tracked]
 public class GlassLockBlockRenderer : 
     GlassLockBlockRendererBase,
@@ -26,28 +27,18 @@ public class GlassLockBlockRenderer :
 
         public static void QueryBuffers(int depth, out GlassLockBlockBuffers glassLockBlockBuffers)
         {
-            if (!Buffers.TryGetValue(depth, out GlassLockBlockBuffers buffers)
-                || buffers.Beams is not { IsDisposed: false }
-                || buffers.Stars is not { IsDisposed: false }
-                || buffers.Stencil is not { IsDisposed: false })
+            if (!Buffers.TryGetValue(depth, out GlassLockBlockBuffers buffers))
             {
-                RenderTargetHelper.DisposeAndSetNull(ref buffers.Beams);
-                RenderTargetHelper.DisposeAndSetNull(ref buffers.Stars);
-                RenderTargetHelper.DisposeAndSetNull(ref buffers.Stencil);
-
-                string bufferIDPrefix = $"{nameof(aonHelper)}/{nameof(GlassLockBlockRenderer)}:{depth}";
-                buffers = new GlassLockBlockBuffers
-                {
-                    Beams = VirtualContent.CreateRenderTarget(bufferIDPrefix + "_beams", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight),
-                    Stars = VirtualContent.CreateRenderTarget(bufferIDPrefix + "_stars", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight),
-                    Stencil = VirtualContent.CreateRenderTarget(bufferIDPrefix + "_stencil", RenderTargetHelper.GameplayWidth, RenderTargetHelper.GameplayHeight)
-                };
-                Buffers[depth] = buffers;
-                
+                buffers = new GlassLockBlockBuffers();
                 Logger.Info(LogID, $"Created new Glass Lock Block buffer triplet at depth {depth}.");
             }
 
-            glassLockBlockBuffers = buffers;
+            string bufferIDPrefix = $"{nameof(aonHelper)}/{nameof(GlassLockBlockRenderer)}:{depth}";
+            RenderTargetHelper.CreateOrResizeGameplayTarget(ref buffers.Beams, bufferIDPrefix + "_beams");
+            RenderTargetHelper.CreateOrResizeGameplayTarget(ref buffers.Stars, bufferIDPrefix + "_stars");
+            RenderTargetHelper.CreateOrResizeGameplayTarget(ref buffers.Stencil, bufferIDPrefix + "_stencil");
+
+            glassLockBlockBuffers = Buffers[depth] = buffers;
         }
         
         #region Content Loading
@@ -123,8 +114,8 @@ public class GlassLockBlockRenderer :
         List<MTexture> starTextures = GFX.Game.GetAtlasSubtextures("particles/stars/");
         for (int i = 0; i < stars.Length; i++)
         {
-            stars[i].Position.X = Calc.Random.Next(320);
-            stars[i].Position.Y = Calc.Random.Next(180);
+            stars[i].Position.X = Calc.Random.Next(RenderTargetHelper.GameplayWidth);
+            stars[i].Position.Y = Calc.Random.Next(RenderTargetHelper.GameplayHeight);
             stars[i].Texture = Calc.Random.Choose(starTextures);
             stars[i].ColorIndex = Calc.Random.Next();
             stars[i].Scroll = Vector2.One * Calc.Random.NextFloat(0.05f);
@@ -132,8 +123,8 @@ public class GlassLockBlockRenderer :
 
         for (int i = 0; i < rays.Length; i++)
         {
-            rays[i].Position.X = Calc.Random.Next(320);
-            rays[i].Position.Y = Calc.Random.Next(180);
+            rays[i].Position.X = Calc.Random.Next(RenderTargetHelper.GameplayWidth);
+            rays[i].Position.Y = Calc.Random.Next(RenderTargetHelper.GameplayHeight);
             rays[i].Width = Calc.Random.Range(4f, 16f);
             rays[i].Length = Calc.Random.Choose(48, 96, 128);
             rays[i].Alpha = Calc.Random.Range(0f, 1f);

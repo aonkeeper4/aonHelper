@@ -13,6 +13,10 @@ public static class ConditionHelper
     {
         public override bool Check(Level level) => level is not null;
     }
+    private class False : Condition
+    {
+        public override bool Check(Level level) => false;
+    }
 
     private class Flag : Condition
     {

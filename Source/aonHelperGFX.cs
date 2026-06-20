@@ -1,5 +1,3 @@
-using Celeste.Mod.aonHelper.Entities.LockBlocks;
-
 namespace Celeste.Mod.aonHelper;
 
 public static class aonHelperGFX
