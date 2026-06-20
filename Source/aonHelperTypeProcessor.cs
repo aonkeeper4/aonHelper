@@ -5,7 +5,7 @@ public static class aonHelperTypeProcessor
 	private const string LogID = $"{nameof(aonHelper)}/{nameof(aonHelperTypeProcessor)}";
 
 	public delegate void TypeProcessor(Type type, ref int attributesProcessed);
-	public static readonly TypeProcessor[] TypeProcessors = [
+    public static readonly TypeProcessor[] TypeProcessors = [
 		GlobalHelper.ProcessGlobalEntityAttributes
 		// add more here
 	];
