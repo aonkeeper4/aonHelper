@@ -255,7 +255,7 @@ public class FeatherDashSwitch : DashSwitch
     // ensure only our code can activate feather dash switches
     // not sure if anyone actually calls this? but better to be safe than sorry
     private static DashCollisionResults On_DashSwitch_OnDashed(On.Celeste.DashSwitch.orig_OnDashed orig, DashSwitch self, Player player, Vector2 direction)
-        => self is FeatherDashSwitch ? DashCollisionResults.NormalCollision : orig(self, player, direction);
+        => self is FeatherDashSwitch ? OnDashed(player, direction) : orig(self, player, direction);
     
     private static void On_Glider_OnCollideH(On.Celeste.Glider.orig_OnCollideH orig, Glider self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.holdableActivated);

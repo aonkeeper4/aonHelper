@@ -30,25 +30,29 @@ public class Controller<TSelf> : Entity where TSelf : Controller<TSelf>
         homeLevelName = SceneAs<Level>().Session.Level;
     }
     
-    public override sealed void Update() { }
-    public override sealed void Render() { }
+    public sealed override void Update() { }
+    public sealed override void Render() { }
     
     #region Helpers
     
-    // todo: maybe don't use so much linq
-    
+    // todo: maybe don't use so much linq? but maybe its fine cus we have fast paths if nothing exists
+
     public static TSelf[] GetControllers(Level level, bool checkNewlyAdded = false, bool onlyActive = true)
-        => level?.Tracker.GetEntities<TSelf>()
-                         .Concat(checkNewlyAdded ? level.Entities.ToAdd : [])
-                         .OfType<TSelf>()
-                         .Where(c => 
-                             (!onlyActive || c.ControllerActive)
-                             && (c.TagCheck(Tags.Global) || c.homeLevelName == level.Session.Level))
-                         .OrderByDescending(c => c.Priority)
-                         .ToArray() ?? [];
+        => level?.Tracker.GetEntity<TSelf>() is not null
+            ? level.Tracker.GetEntities<TSelf>()
+                .Concat(checkNewlyAdded ? level.Entities.ToAdd : [])
+                .OfType<TSelf>()
+                .Where(c =>
+                    (!onlyActive || c.ControllerActive)
+                    && (c.TagCheck(Tags.Global) || c.homeLevelName == level.Session.Level))
+                .OrderByDescending(c => c.Priority)
+                .ToArray()
+            : [];
     
     public static TSelf GetController(Level level, bool checkNewlyAdded = false, bool onlyActive = true)
-        => GetControllers(level, checkNewlyAdded, onlyActive).FirstOrDefault();
+        => level?.Tracker.GetEntity<TSelf>() is not null
+            ? GetControllers(level, checkNewlyAdded, onlyActive).FirstOrDefault()
+            : null;
     
     public static bool TryGetController(Level level, out TSelf controller, bool checkNewlyAdded = false, bool onlyActive = true)
     {

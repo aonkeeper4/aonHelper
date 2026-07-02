@@ -75,6 +75,8 @@ public class LightningCornerboostController(bool always, string condition)
 
     #region Hooks
 
+    // todo: should these be lazy loaded? i don't think so
+
     [OnLoad]
     internal static void Load()
     {

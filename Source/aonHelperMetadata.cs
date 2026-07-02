@@ -68,7 +68,8 @@ public class aonHelperMetadata
     private static void OnUpdate(ModAsset old, ModAsset _)
     {
         // maybe a bit overkill
-        if (old.Type == typeof(AssetTypeYaml)
+        if (old is not null
+            && old.Type == typeof(AssetTypeYaml)
             && old.PathVirtual.StartsWith("Maps")
             && old.PathVirtual.EndsWith(".meta"))
             CachedMetadata.Clear();

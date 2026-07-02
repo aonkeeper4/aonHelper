@@ -204,7 +204,7 @@ public class DreamDashThroughTransitionController(string condition)
          * IL_03e3: callvirt instance bool Monocle.Entity::CollideCheck<class Celeste.Solid>(valuetype [FNA]Microsoft.Xna.Framework.Vector2)
          * IL_03e8: brtrue IL_047b
          */
-        if (!cursor.TryGotoNextBestFit(MoveType.After,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdarg1(),
             instr => instr.MatchLdarg1(),
             instr => instr.MatchLdfld<Entity>("Position"),
@@ -212,13 +212,17 @@ public class DreamDashThroughTransitionController(string condition)
             instr => instr.MatchLdcR4(4f),
             instr => instr.MatchCall<Vector2>("op_Multiply"),
             instr => instr.MatchCall<Vector2>("op_Addition"),
-            instr => instr.MatchCallvirt<Entity>("CollideCheck")))
+            instr => instr.MatchCallvirt<Entity>("CollideCheck"),
+            instr => instr.MatchBrtrue(out _)))
             throw new HookHelper.HookException(il, "Unable to find collision check for solids on down transition to modify.");
 
+        ILLabel skipCheck = cursor.DefineLabel();
         cursor.EmitLdarg1();
         cursor.EmitDelegate(IsAffectedAndDreamDashing);
-        cursor.EmitNot();
-        cursor.EmitAnd();
+        cursor.EmitBrtrue(skipCheck);
+
+        cursor.GotoNext(MoveType.After, instr => instr.MatchBrtrue(out _));
+        cursor.MarkLabel(skipCheck);
     }
     
     #endregion

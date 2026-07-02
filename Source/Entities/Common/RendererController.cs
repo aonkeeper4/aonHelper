@@ -5,7 +5,9 @@ public class RendererController<TSelf>(int? affectedDepth) : Controller<TSelf> w
     private readonly int? affectedDepth = affectedDepth;
     
     public static TSelf GetControllerForDepth(Level level, int depth)
-        => GetControllers(level).FirstOrDefault(c => c.affectedDepth is null || c.affectedDepth == depth);
+        => GetControllers(level) is { Length: > 0} controllers
+            ? controllers.FirstOrDefault(c => c.affectedDepth is null || c.affectedDepth == depth)
+            : null;
 
     public static bool TryGetControllerForDepth(Level level, int depth, out TSelf controller)
     {

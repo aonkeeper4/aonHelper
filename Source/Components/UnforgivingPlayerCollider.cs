@@ -54,15 +54,15 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         ILCursor cursor = new(il);
         
         // i don't believe this can work with just a `dup` :disappointed_relieved:
-        VariableDefinition checkPosition = cursor.AddVariable<Vector2>();
+        VariableDefinition l_checkPosition = cursor.AddVariable<Vector2>();
 
         if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchCall<Entity>("CollideFirst"),
             instr => instr.MatchStloc3()))
             throw new HookHelper.HookException(il, "Unable to find call to `Entity.CollideFirst` to insert local variable assignment before.");
         
-        cursor.EmitStloc(checkPosition);
-        cursor.EmitLdloc(checkPosition);
+        cursor.EmitStloc(l_checkPosition);
+        cursor.EmitLdloc(l_checkPosition);
 
         if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
             instr => instr.MatchLdloc3(),
@@ -72,7 +72,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         ILLabel afterRet = cursor.DefineLabel();
         
         cursor.EmitLdarg0();
-        cursor.EmitLdloc(checkPosition);
+        cursor.EmitLdloc(l_checkPosition);
         cursor.EmitLdarg1();
         cursor.EmitLdcI4(horizontal ? 1 : 0);
         cursor.EmitDelegate(CheckForUnforgivingPLayerColliders);

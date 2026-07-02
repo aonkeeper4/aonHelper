@@ -22,13 +22,15 @@ public class QuantizeColorgradeController(
     { }
 
     private static (bool, bool)? OptionsFor(MTexture colorgrade)
-        => GetControllers(Engine.Scene as Level)
-            .FirstOrDefault(c => c.affectAll || c.affectedColorgrades.Contains(colorgrade.AtlasPath))
-            is { } controller
-            ? (controller.quantize, controller.normalize)
+        => GetControllers(Engine.Scene as Level) is { Length: > 0 } controllers
+            ? controllers.FirstOrDefault(c => c.affectAll || c.affectedColorgrades.Contains(colorgrade.AtlasPath)) is { } controller
+                ? (controller.quantize, controller.normalize)
+                : null
             : null;
     
     #region Hooks
+
+    // its so funny that this just fucking works
 
     private static Hook on_ColorGrade_get_Effect;
     

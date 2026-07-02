@@ -28,7 +28,7 @@ public class JumpThrusApplyLiftSpeedController(string condition)
         ILCursor cursor = new(il);
 
         // local to store whether we should apply liftspeed to this actor
-        VariableDefinition shouldApplyLiftSpeed = cursor.AddVariable<bool>();
+        VariableDefinition l_shouldApplyLiftSpeed = cursor.AddVariable<bool>();
         
         // label to mark the end of liftspeed application so we can modify the labels in the method to do what we need
         // annoyingly there are 2 different labels that point to the same place, and we want to insert instructions after one but not the other
@@ -50,12 +50,12 @@ public class JumpThrusApplyLiftSpeedController(string condition)
         // initialise local to store whether we should apply liftspeed or not, to ensure there are never any cases where the liftspeed application is half-finished
         cursor.EmitLdarg0();
         cursor.EmitDelegate(ShouldApplyLiftSpeed);
-        cursor.EmitStloc(shouldApplyLiftSpeed);
+        cursor.EmitStloc(l_shouldApplyLiftSpeed);
         
         // set `Collidable` to `false`
         cursor.EmitLdarg0();
         cursor.EmitLdloc1();
-        cursor.EmitLdloc(shouldApplyLiftSpeed);
+        cursor.EmitLdloc(l_shouldApplyLiftSpeed);
         cursor.EmitDelegate(PreApplyLiftSpeed);
         
         /*
@@ -73,7 +73,7 @@ public class JumpThrusApplyLiftSpeedController(string condition)
         cursor.MarkLabel(postApplyLiftSpeed);
         cursor.EmitLdarg0();
         cursor.EmitLdloc1();
-        cursor.EmitLdloc(shouldApplyLiftSpeed);
+        cursor.EmitLdloc(l_shouldApplyLiftSpeed);
         cursor.EmitDelegate(PostApplyLiftSpeed);
         
         /*
@@ -96,7 +96,7 @@ public class JumpThrusApplyLiftSpeedController(string condition)
             throw new HookHelper.HookException(il, "Unable to find `entity.TreatNaive` if-else to modify.");
         
         // make the `br.s` point to our `PostApplyLiftSpeed` call
-        cursor.Next!.OpCode = OpCodes.Br; // just in case a `br.s` can't be used somehow. should still match the same, if it doesn't then fix ur mod
+        cursor.Next!.OpCode = OpCodes.Br; // just in case a `br.s` can't be used somehow. should still match the same, if it doesn't then fix ur mod cus its gonna be broken under mono anyways lmao
         cursor.Next!.Operand = postApplyLiftSpeed.Target!; // this is technically destructive but  ehh if it becomes a problem i'll fix it
 
         return;

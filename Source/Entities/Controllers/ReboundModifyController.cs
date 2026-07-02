@@ -61,12 +61,12 @@ public class ReboundModifyController(
     {
         ILCursor cursor = new(il);
 
-        ILLabel afterSpeedSet = cursor.DefineLabel();
+        ILLabel afterSetSpeed = cursor.DefineLabel();
         
         cursor.EmitLdarg0();
         cursor.EmitLdarg1();
-        cursor.EmitDelegate(CustomRebound);
-        cursor.EmitBrtrue(afterSpeedSet);
+        cursor.EmitDelegate(ShouldSetSpeed);
+        cursor.EmitBrtrue(afterSetSpeed);
         
         /*
          * IL_0013: ldarg.0
@@ -81,11 +81,11 @@ public class ReboundModifyController(
             instr => instr.MatchStfld<Vector2>("Y")))
             throw new HookHelper.HookException(il, "Unable to find assignment to `Player.Speed.Y`.");
 
-        cursor.MarkLabel(afterSpeedSet);
+        cursor.MarkLabel(afterSetSpeed);
 
         return;
 
-        static bool CustomRebound(Player player, int direction)
+        static bool ShouldSetSpeed(Player player, int direction)
         {
             Level level = player.SceneAs<Level>();
             if (!TryGetController(level, out ReboundModifyController controller))
