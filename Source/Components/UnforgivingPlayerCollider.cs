@@ -31,8 +31,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         => HookHelper.HookLazyLoadingManager.Register(nameof(UnforgivingPlayerCollider), ShouldLazyLoad, LazyLoad, LazyUnload);
 
     private static bool ShouldLazyLoad(MapData mapData)
-        => mapData.Levels.SelectMany(levelData => levelData.Entities)
-                         .Any(entityData => EntitySIDPrefixes.Any(prefix => entityData.Name.StartsWith(prefix)));
+        => mapData.ContainsMatchingSID(sid => EntitySIDPrefixes.Any(sid.StartsWith));
     
     private static void LazyLoad()
     {

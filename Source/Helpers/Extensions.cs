@@ -78,6 +78,17 @@ public static class Extensions
         }
     }
 
+    extension(MapData mapData)
+    {
+        public bool ContainsMatchingSID(string sid)
+            => mapData.Levels.SelectMany(levelData => levelData.Entities).Any(entityData => entityData.Name == sid)
+               || mapData.Levels.SelectMany(levelData => levelData.Triggers).Any(entityData => entityData.Name == sid);
+        
+        public bool ContainsMatchingSID(Func<string, bool> predicate)
+            => mapData.Levels.SelectMany(levelData => levelData.Entities).Any(entityData => predicate(entityData.Name))
+               || mapData.Levels.SelectMany(levelData => levelData.Triggers).Any(entityData => predicate(entityData.Name));
+    }
+
     extension(ILCursor cursor)
     {
         public VariableDefinition AddVariable(Type type)
