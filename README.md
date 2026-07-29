@@ -53,7 +53,7 @@ current features:
 - Ice Zip Mover
   - from LUPIN THE NEGATIVES from ssc2026. combination ice crumble block-zip mover entity
 - Taiko Drum
-  - from echoing, the valley sings from ssc2026. a drum that emits sound waves when dashed into, which can interact with other entities.
+  - from echoing, the valley sings from ssc2026. a drum that emits sound waves when dashed into, which can interact with other entities
 - Taiko Drum Controller
   - from echoing, the valley sings from ssc2026. a controller for the visuals of taiko drums
 - Sound Wave Reflector
