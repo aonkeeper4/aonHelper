@@ -1,3 +1,4 @@
+using Celeste.Mod.aonHelper.Components.Colliders;
 using FMOD.Studio;
 
 namespace Celeste.Mod.aonHelper.Entities.EchoingTheValleySings;
@@ -83,18 +84,18 @@ public class SoundWave : Entity
         {
             (bool shouldReflect, bool shouldDestroy, bool shouldDestroyQuietly) = Move(direction.ToVector() * speed * Engine.DeltaTime);
 
-            if (shouldDestroy)
+            if (shouldReflect)
+                Reflect();
+            else if (shouldDestroy)
             {
                 yield return DestroyRoutine(true);
                 yield break;
             }
-            if (shouldDestroyQuietly)
+            else if (shouldDestroyQuietly)
             {
                 yield return DestroyRoutine(false);
                 yield break;
             }
-            if (shouldReflect)
-                Reflect();
             
             yield return null;
         }
@@ -122,10 +123,14 @@ public class SoundWave : Entity
         while (moveVector != Vector2.Zero)
         {
             bool hasBeenReflected = false, hasBeenDestroyed = false, hasBeenDestroyedQuietly = false;
-            foreach (SoundWaveCollider soundWaveCollider in level.Tracker
+
+            // collect the colliding components beforehand so no side effects from `OnCollide` will affect which components activate
+            SoundWaveCollider[] components = level.Tracker
                 .GetComponents<SoundWaveCollider>()
                 .Cast<SoundWaveCollider>()
-                .Where(c => Collidable && c.Entity.Collidable && ColliderCheck(c.Collider, Position + moveDir)))
+                .Where(c => Collidable && c.Entity.Collidable && c.Check(this, Position + moveDir))
+                .ToArray();
+            foreach (SoundWaveCollider soundWaveCollider in components)
             {
                 SoundWaveCollider.SoundWaveCollisionResults result = soundWaveCollider.OnCollide?.Invoke(moveDir)
                     ?? SoundWaveCollider.SoundWaveCollisionResults.None;
@@ -144,17 +149,6 @@ public class SoundWave : Entity
         }
 
         return (false, false, false);
-    }
-
-    private bool ColliderCheck(Collider other, Vector2 at)
-    {
-        Vector2 position = Position;
-        
-        Position = at;
-        bool result = Collider.Collide(other);
-        Position = position;
-
-        return result;
     }
 
     private bool InBounds()
@@ -423,7 +417,7 @@ public class SoundWave : Entity
         On.Celeste.Solid.GetPlayerOnTop += On_Solid_GetPlayerOnTop;
         On.Celeste.Solid.GetPlayerRider += On_Solid_GetPlayerRider;
 
-        IL.Celeste.Spring.BounceAnimate += IL_Spring_BounceAnimate;
+        On.Celeste.StaticMover.TriggerPlatform += On_StaticMover_TriggerPlatform;
     }
 
     [OnUnload]
@@ -434,9 +428,9 @@ public class SoundWave : Entity
         On.Celeste.Solid.GetPlayerOnTop -= On_Solid_GetPlayerOnTop;
         On.Celeste.Solid.GetPlayerRider -= On_Solid_GetPlayerRider;
         
-        IL.Celeste.Spring.BounceAnimate -= IL_Spring_BounceAnimate;
+        On.Celeste.StaticMover.TriggerPlatform -= On_StaticMover_TriggerPlatform;
     }
-    
+
     private static void On_Solid_Awake(On.Celeste.Solid.orig_Awake orig, Solid self, Scene scene)
     {
         orig(self, scene);
@@ -467,29 +461,15 @@ public class SoundWave : Entity
             (true, true) => callOrig()
         };
     }
-    
-    private static void IL_Spring_BounceAnimate(ILContext il)
+
+    private static void On_StaticMover_TriggerPlatform(On.Celeste.StaticMover.orig_TriggerPlatform orig, StaticMover self)
     {
-        ILCursor cursor = new(il);
-        
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
-            instr => instr.MatchLdarg0(),
-            instr => instr.MatchLdfld<Spring>("staticMover"),
-            instr => instr.MatchCallvirt<StaticMover>("TriggerPlatform")))
-            throw new HookHelper.HookException(il, "Unable to find call to `StaticMover.TriggerPlatform`.");
+        // only sound wave reflectors should b able to activate affected entities
+        if (self.Platform?.Get<SoundWaveTriggerable>() is not null
+            && self.Entity is not SoundWaveReflector)
+            return;
 
-        ILLabel afterPlatformActivation = cursor.DefineLabel();
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate(SkipPlatformActivation);
-        cursor.EmitBrtrue(afterPlatformActivation);
-        
-        cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<StaticMover>("TriggerPlatform"));
-        cursor.MarkLabel(afterPlatformActivation);
-
-        return;
-
-        static bool SkipPlatformActivation(Spring spring)
-            => spring.staticMover.Platform?.Get<SoundWaveTriggerable>() is not null;
+        orig(self);
     }
     
     #endregion

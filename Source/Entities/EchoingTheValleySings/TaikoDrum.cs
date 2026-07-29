@@ -1,3 +1,5 @@
+using Celeste.Mod.aonHelper.Components.Colliders;
+
 namespace Celeste.Mod.aonHelper.Entities.EchoingTheValleySings;
 
 [CustomEntity("aonHelper/TaikoDrum")]
@@ -148,6 +150,7 @@ public class TaikoDrum : Solid
         
         OnDashCollide = OnDashCollision;
         Add(new SoundWaveCollider(OnSoundWaveCollision));
+        Add(new ExplosionCollider(OnExplosionCollision));
 
         BuildSprite(string.IsNullOrEmpty(spriteDir) ? "objects/aonHelper/taikoDrum" : spriteDir);
         
@@ -331,6 +334,12 @@ public class TaikoDrum : Solid
         Activate(direction, false);
         return SoundWaveCollider.SoundWaveCollisionResults.Destroy;
     }
+
+    private void OnExplosionCollision(ExplosionCollider.ExplosionTypes _, Vector2 direction)
+    {
+        if (CanActivate)
+            Activate(direction, false);
+    }
     
     private static bool EasterEggCheck()
         => Calc.Random.Chance(aonHelperModule.Settings.TaikoDrumEasterEggChance);
@@ -468,91 +477,27 @@ public class TaikoDrum : Solid
     
     #region Hooks
 
-    private static ILHook il_Seeker_RegenerateCoroutine;
-
     [OnLoad]
     internal static void Load()
     {
         On.Celeste.FallingBlock.LandParticles += On_FallingBlock_LandParticles;
-        
-        IL.Celeste.Puffer.Explode += IL_Puffer_Explode;
-        il_Seeker_RegenerateCoroutine = new ILHook(typeof(Seeker).GetMethod("RegenerateCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, Seeker_RegenerateCoroutine);
     }
 
     [OnUnload]
     internal static void Unload()
     {
         On.Celeste.FallingBlock.LandParticles -= On_FallingBlock_LandParticles;
-        
-        IL.Celeste.Puffer.Explode -= IL_Puffer_Explode;
-        HookHelper.DisposeAndSetNull(ref il_Seeker_RegenerateCoroutine);
     }
 
     private static void On_FallingBlock_LandParticles(On.Celeste.FallingBlock.orig_LandParticles orig, FallingBlock self)
     {
         orig(self);
 
-        foreach (TaikoDrum drum in self.CollideAll<TaikoDrum>(self.Position + Vector2.UnitY)
-                                       .Cast<TaikoDrum>()
-                                       .Where(drum => drum.CanActivate))
+        foreach (TaikoDrum drum in self
+                .CollideAll<TaikoDrum>(self.Position + Vector2.UnitY)
+                .Cast<TaikoDrum>()
+                .Where(drum => drum.CanActivate))
             drum.Activate(Vector2.UnitY, false);
-    }
-
-    private static void IL_Puffer_Explode(ILContext il)
-    {
-        ILCursor cursor = new(il);
-
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
-            instr => instr.MatchLdarg0(),
-            instr => instr.MatchLdloc0(),
-            instr => instr.MatchCall<Entity>("set_Collider")))
-            throw new HookHelper.HookException(il, "Unable to find assignment to `this.Collider`.");
-
-        cursor.EmitLdarg0();
-        cursor.EmitDelegate(ActivateTaikoDrums);
-        
-        return;
-
-        static void ActivateTaikoDrums(Puffer puffer)
-        {
-            foreach (TaikoDrum drum in puffer.CollideAll<TaikoDrum>()
-                                             .Cast<TaikoDrum>()
-                                             .Where(drum => drum.CanActivate))
-            {
-                Vector2 toPuffer = drum.Center - puffer.Position;
-                Vector2 toPufferDrumNormalized = toPuffer / new Vector2(drum.Width, drum.Height);
-                drum.Activate(toPufferDrumNormalized.FourWayNormal(), false);
-            }
-        }
-    }
-
-    private static void Seeker_RegenerateCoroutine(ILContext il)
-    {
-        ILCursor cursor = new(il);
-        
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
-            instr => instr.MatchLdloc1(),
-            instr => instr.MatchLdloc1(),
-            instr => instr.MatchLdfld<Seeker>("physicsHitbox"),
-            instr => instr.MatchCallvirt<Entity>("set_Collider")))
-            throw new HookHelper.HookException(il, "Unable to find assignment to `this.Collider`.");
-        
-        cursor.EmitLdloc1();
-        cursor.EmitDelegate(ActivateTaikoDrums);
-        
-        return;
-
-        static void ActivateTaikoDrums(Seeker seeker)
-        {
-            foreach (TaikoDrum drum in seeker.CollideAll<TaikoDrum>()
-                                             .Cast<TaikoDrum>()
-                                             .Where(drum => drum.CanActivate))
-            {
-                Vector2 toSeeker = drum.Center - seeker.Position;
-                Vector2 toSeekerDrumNormalized = toSeeker / new Vector2(drum.Width, drum.Height);
-                drum.Activate(toSeekerDrumNormalized.FourWayNormal(), false);
-            }
-        }
     }
     
     #endregion

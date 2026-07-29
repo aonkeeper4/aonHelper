@@ -14,6 +14,7 @@ public struct SwirlDisplacementVertex(
     public Vector4 SwirlConfiguration = new(minSwirlRadius, maxSwirlRadius, minSwirlSpeed, maxSwirlSpeed);
     
     // hmm this is 40 bytes . is that too big :disappointed_relieved:
+    // also the vertex element usages and indices must exactly match the declaration in the shader! otherwise the vertex data will b uninitialized :(
     public static readonly VertexDeclaration VertexDeclaration = new(
         new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
         new VertexElement(sizeof(float) * 3, VertexElementFormat.Color, VertexElementUsage.Color, 0),

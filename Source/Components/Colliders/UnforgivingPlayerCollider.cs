@@ -1,6 +1,6 @@
 using Celeste.Mod.aonHelper.Entities.Misc;
 
-namespace Celeste.Mod.aonHelper.Components;
+namespace Celeste.Mod.aonHelper.Components.Colliders;
 
 [Tracked]
 public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandler onCollide, Collider collider = null) : Component(false, false)
@@ -9,7 +9,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
 
     public delegate bool CollisionHandler(Player player, Vector2 moveDir);
 
-    private bool Check(Player player, Vector2 moveDir, Vector2? checkPosition = null)
+    public bool Check(Player player, Vector2 moveDir, Vector2? checkPosition = null)
     {
         Collider entityCollider = Entity.Collider;
         if (collider is not null)

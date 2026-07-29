@@ -1,3 +1,5 @@
+using Celeste.Mod.aonHelper.Components.Colliders;
+
 namespace Celeste.Mod.aonHelper.Entities.EchoingTheValleySings;
 
 [CustomEntity("aonHelper/BlossomBlock")]
