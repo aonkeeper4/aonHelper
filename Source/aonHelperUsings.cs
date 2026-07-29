@@ -37,3 +37,4 @@ global using Celeste.Mod.aonHelper.Imports;
 global using Celeste.Mod.aonHelper.Components;
 global using Celeste.Mod.aonHelper.Entities;
 global using Celeste.Mod.aonHelper.Entities.Common;
+global using Celeste.Mod.aonHelper.Graphics;

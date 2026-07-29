@@ -1,0 +1,4 @@
+# Mod Options 
+aonHelper_modOptions_title= aon helper
+
+aonHelper_modOptions_taikoDrumEasterEggChance= Taiko Drum Easter Egg Chance

@@ -264,6 +264,112 @@ entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresho
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This Spring Speed Threshold Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.global=Whether this Spring Speed Threshold Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
+# Ice Zip Mover
+entities.aonHelper/IceZipMover.placements.name.normal=Ice Zip Mover
+entities.aonHelper/IceZipMover.placements.description.normal=A Zip Mover that starts sinking and eventually breaks once it reaches its destination, similar to an Ice Crumble Block.
+entities.aonHelper/IceZipMover.placements.name.break_early=Ice Zip Mover (Break Early)
+entities.aonHelper/IceZipMover.placements.description.break_early=A Zip Mover that breaks once it reaches its destination, similar to an Ice Crumble Block.
+entities.aonHelper/IceZipMover.attributes.description.breakEarly=Whether this Ice Zip Mover should break before sinking.
+entities.aonHelper/IceZipMover.attributes.description.spriteDir=A path to custom sprites to use for this entity, relative to Graphics/Atlases/Gameplay. The specified folder must contain the following images:\n- block.png: Used for the Ice Zip Mover itself.\n- cog.png: Used for the cogs of the Ice Zip Mover.\n- center00.png through center11.png: Used for the center crystal.\n- debris00.png through debris03.png: Used for the debris when the Ice Zip Mover breaks and reforms.\nIf left empty, the default sprites will be used.
+entities.aonHelper/IceZipMover.attributes.description.ropeLight=The color of the rope of this Ice Zip Mover.
+entities.aonHelper/IceZipMover.attributes.description.ropeLightColor=The highlight color of the rope of this Ice Zip Mover.
+entities.aonHelper/IceZipMover.attributes.description.sparkParticleColor=The color of the spark particles emitted when this Ice Zip Mover moves.
+entities.aonHelper/IceZipMover.attributes.description.breakParticleColor=The color of the breaking particles emitted when this Ice Zip Mover breaks.
+entities.aonHelper/IceZipMover.attributes.description.breakParticleFadeColor=The fade color of the breaking particles emitted when this Ice Zip Mover breaks.
+entities.aonHelper/IceZipMover.attributes.description.surfaceIndex=The surface index of this Ice Zip Mover, which determines the footstep sounds made when walking on it.
+entities.aonHelper/IceZipMover.attributes.description.moveSfx=The event to play when this Ice Zip Mover moves.
+entities.aonHelper/IceZipMover.attributes.description.breakSfx=The event to play when this Ice Zip Mover breaks.
+entities.aonHelper/IceZipMover.attributes.description.respawnSfx=The event to play when this Ice Zip Mover respawns.
+
+# Taiko Drum
+entities.aonHelper/TaikoDrum.placements.name.taiko_drum_horizontal=Taiko Drum (Horizontal)
+entities.aonHelper/TaikoDrum.placements.description.taiko_drum_horizontal=A drum that will send out sound waves when dashed into which can interact with other entities.
+entities.aonHelper/TaikoDrum.placements.name.taiko_drum_vertical=Taiko Drum (Vertical)
+entities.aonHelper/TaikoDrum.placements.description.taiko_drum_vertical=A drum that will send out sound waves when dashed into which can interact with other entities.
+entities.aonHelper/TaikoDrum.placements.name.taiko_drum_both=Taiko Drum (Both)
+entities.aonHelper/TaikoDrum.placements.description.taiko_drum_both=A drum that will send out sound waves when dashed into which can interact with other entities.
+entities.aonHelper/TaikoDrum.attributes.description.axes=The sides this Taiko Drum should be able to be activated from.
+entities.aonHelper/TaikoDrum.attributes.description.fragile=Whether this Taiko Drum should break upon being activated.
+entities.aonHelper/TaikoDrum.attributes.description.doNotLoadFlag=The session flag that will cause this Taiko Drum not to load.
+entities.aonHelper/TaikoDrum.attributes.description.flagOnBreak=The session flag this Taiko Drum should set when it is broken.\nDoes nothing if "Fragile" is not enabled.
+entities.aonHelper/TaikoDrum.attributes.description.spriteDir=A path to custom sprites to use for this Taiko Drum, relative to Graphics/Atlases/Gameplay.\nMust contain images named horizontal.png, horizontal_fragile.png, vertical.png, vertical_fragile.png, both.png, both_fragile.png and debris00.png.
+entities.aonHelper/TaikoDrum.attributes.description.surfaceIndex=The surface index to use for this Taiko Drum.
+entities.aonHelper/TaikoDrum.attributes.description.activateParticleColor=The color of the particles emitted when this Taiko Drum activates.
+
+# Taiko Drum Controller
+entities.aonHelper/TaikoDrumController.placements.name.taiko_drum_controller=Taiko Drum Controller
+entities.aonHelper/TaikoDrumController.placements.description.taiko_drum_controller=A controller for the visuals of Taiko Drums.
+entities.aonHelper/TaikoDrumController.attributes.description.soundWaveSpeed=The speed at which emitted sound waves should travel in this room.
+entities.aonHelper/TaikoDrumController.attributes.description.soundWaveDepth=The depth at which emitted sound waves should render in this room. Lower values mean more in the foreground.
+entities.aonHelper/TaikoDrumController.attributes.description.soundWaveColor=The color of emitted sound waves in this room.
+entities.aonHelper/TaikoDrumController.attributes.description.affectedEntities=A list of entity SIDs for sound waves to affect in this room, or the character * to affect all entities.\nAffected entities such as move blocks ("moveBlock") or zip movers ("zipMover") will activate when a sound wave passes over them, while refusing activation from the player standing/climbing on them or attached springs being activated.
+entities.aonHelper/TaikoDrumController.attributes.description.global=Whether this Taiko Drum Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
+
+# Sound Wave Reflector
+entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_left=Sound Wave Reflector (Left)
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_left=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_right=Sound Wave Reflector (Right)
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_right=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_up=Sound Wave Reflector (Up)
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_up=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_down=Sound Wave Reflector (Down)
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_down=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.attributes.description.orientation=The orientation of this Sound Wave Reflector.
+entities.aonHelper/SoundWaveReflector.attributes.description.spriteDir=A path to custom sprites to use for this Sound Wave Reflector, relative to Graphics/Atlases/Gameplay.\nMust contain images named left.png, right.png, up.png and down.png.
+
+# Sound Wave Barrier
+entities.aonHelper/SoundWaveBarrier.placements.name.sound_wave_barrier=Sound Wave Barrier
+entities.aonHelper/SoundWaveBarrier.placements.description.sound_wave_barrier=An invisible entity that will destroy incoming sound waves.
+entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy sound waves. Leave empty for it to always destroy sound waves.
+entities.aonHelper/SoundWaveBarrier.attributes.description.attachToSolids=Whether this Sound Wave Barrier should attach to solids.
+
+# Blossom Block
+entities.aonHelper/BlossomBlock.placements.name.blossom_block=Blossom Block
+entities.aonHelper/BlossomBlock.placements.description.blossom_block=A block that will be destroyed by incoming sound waves.
+entities.aonHelper/BlossomBlock.attributes.description.depth=The depth of this Blossom Block. Lower values will put this block more in the foreground.
+entities.aonHelper/BlossomBlock.attributes.description.doNotLoadFlag=The session flag that will cause this Blossom Block not to load.
+entities.aonHelper/BlossomBlock.attributes.description.flagOnBreak=The session flag this Blossom Block should set when it is broken.
+
+# Blossom Block Controller
+entities.aonHelper/BlossomBlockController.placements.name.blossom_block_controller=Blossom Block Controller
+entities.aonHelper/BlossomBlockController.placements.description.blossom_block_controller=A controller for the visuals of Blossom Blocks.
+entities.aonHelper/BlossomBlockController.attributes.description.spritePath=A path to a custom sprite to use for all Blossom Blocks in this room, relative to Graphics/Atlases/Gameplay.
+entities.aonHelper/BlossomBlockController.attributes.description.surfaceIndex=The surface index to use for all Blossom Blocks in this room.
+entities.aonHelper/BlossomBlockController.attributes.description.breakParticleColor1=One of two colors to use for the break particles of all Blossom Blocks in this room.
+entities.aonHelper/BlossomBlockController.attributes.description.breakParticleColor2=One of two colors to use for the break particles of all Blossom Blocks in this room.
+entities.aonHelper/BlossomBlockController.attributes.description.minSwirlRadius=The minimum radius of the swirling of the textures of this Blossom block, measured in pixels.
+entities.aonHelper/BlossomBlockController.attributes.description.maxSwirlRadius=The maximum radius of the swirling of the textures of this Blossom block, measured in pixels.
+entities.aonHelper/BlossomBlockController.attributes.description.minSwirlSpeed=The minimum speed of the swirling of the textures of this Blossom block, measured in degrees per second.
+entities.aonHelper/BlossomBlockController.attributes.description.maxSwirlSpeed=The maximum speed of the swirling of the textures of this Blossom block, measured in degrees per second.
+entities.aonHelper/BlossomBlockController.attributes.description.affectedDepth=The depth of Blossom Blocks in this room to affect.
+entities.aonHelper/BlossomBlockController.attributes.description.global=Whether this Blossom Block Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
+
+# Flag Custom Core Message
+entities.aonHelper/FlagCustomCoreMessage.placements.name.core_message=Flag Custom Core Message
+entities.aonHelper/FlagCustomCoreMessage.placements.description.core_message=A customizable Core Message that can be controlled by flags.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.dialogID=The ID of the dialog to display.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.lineNumber=The line of dialog to display, starting from 0.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.startFadeRadius=The radius to the player at which this Flag Custom Core Message will start to fade out.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.endFadeRadius=The radius to the player at which this Flag Custom Core Message will have faded out completely.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.appearFlag=This Flag Custom Core Message can only be visible while this flag is set.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.stayFlag=When this flag is active, this Flag Custom Core Message will not respond to the player's position and will always be visible.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.flagFadeTime=The time it takes for this Flag Custom Core Message to fade in and out in seconds.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.useRawDeltaTime=Whether this Flag Custom Core Message ignores the current time rate when fading in and out.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.textColor=The text color of this Flag Custom Core Message.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.hasOutline=Whether the text of this Flag Custom Core Message has an outline.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.outlineColor=The text outline color of this Flag Custom Core Message.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.outlineThickness=The thickness of the text outline of this Flag Custom Core Message in pixels.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.scale=The text scale of this Flag Custom Core Message.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.parallaxX=The parallax of this Flag Custom Core Message in the X direction.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.parallaxY=The parallax of this Flag Custom Core Message in the Y direction.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.hideOnHeartCollect=Whether to hide this Flag Custom Core Message when the map's heart is collected.
+
+# Don't Lose Seeds Underwater Controller
+entities.aonHelper/DontLoseSeedsUnderwaterController.placements.name.dont_lose_seeds_underwater_controller=Don't Lose Seeds Underwater Controller
+entities.aonHelper/DontLoseSeedsUnderwaterController.placements.description.dont_lose_seeds_underwater_controller=A controller that prevents Strawberry seeds from being lost when the player touches the ground underwater.
+entities.aonHelper/DontLoseSeedsUnderwaterController.attributes.description.flag=This Don't Lose Seeds Underwater Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/DontLoseSeedsUnderwaterController.attributes.description.global=Whether this Don't Lose Seeds Underwater Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
+
 ### Triggers
 
 # Parallax Fade

@@ -28,7 +28,7 @@ uniform float percent = 0.0;
 static const float2 dimensions = float2(256.0, 16.0);
 
 // used when fading between 2 colorgrades
-float4 pixel_shader_fade(float4 position : SV_POSITION, float4 color : COLOR, float2 uv : TEXCOORD) : COLOR
+float4 pixel_shader_fade(float4 position : SV_POSITION0, float4 color : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
     float quantization_percent = lerp(from_quantization, to_quantization, percent);
     float normalization_percent = lerp(from_normalization, to_normalization, percent);
@@ -58,7 +58,7 @@ float4 pixel_shader_fade(float4 position : SV_POSITION, float4 color : COLOR, fl
 }
 
 // used when only a single colorgrade is being used
-float4 pixel_shader_single(float4 position : SV_POSITION, float4 color : COLOR, float2 uv : TEXCOORD) : COLOR
+float4 pixel_shader_single(float4 position : SV_POSITION0, float4 color : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
     float4 tex_color = tex2D(tex_sampler, uv) * color;
 

@@ -50,6 +50,24 @@ current features:
   - makes moving jumpthrough-like entities give you liftboost the same way moving solids do
 - Spring Speed Threshold Controller
   - allows you to change the speed threshold for springs to bounce you
+- Ice Zip Mover
+  - from LUPIN THE NEGATIVES from ssc2026. combination ice crumble block-zip mover entity
+- Taiko Drum
+  - from echoing, the valley sings from ssc2026. a drum that emits sound waves when dashed into, which can interact with other entities.
+- Taiko Drum Controller
+  - from echoing, the valley sings from ssc2026. a controller for the visuals of taiko drums
+- Sound Wave Reflector
+  - from echoing, the valley sings from ssc2026. reflects incoming sound waves
+- Sound Wave Barrier
+  - from echoing, the valley sings from ssc2026. invisible, destroys incoming sound waves
+- Blossom Block
+  - from echoing, the valley sings from ssc2026. a block that gets destroyed when hit by a sound wave
+- Blossom Block Controller
+  - from echoing, the valley sings from ssc2026. a controller for the visuals of blossom blocks
+- Flag Custom Core Message
+  - a custom core message that interacts with flags
+- Don't Lose Seeds Underwater Controller
+  - a controller that stops strawberry seeds from being lost if the player touches the ground underwater
 
 for all the controllers listed here, just place it in the room where you want its effect. all of the gameplay-related ones have flag fields to only be active when a certain flag is set, and all of them have the ability to work across the entire map (letting you only place them once) with the "Global" attribute.
 

@@ -86,12 +86,14 @@ public class GlassLockBlock : BaseLockBlock
 
     public override void Render()
     {
-        if (RenderBounds is { } rb && rendererComponent.Renderer.TryGetController(out GlassLockBlockController controller))
+        if (RenderBounds is { } rb)
         {
-            Rectangle outline = new((int) (Center.X + rb.Left), (int) (Center.Y + rb.Top), rb.Width, rb.Height);
-            Color lineColor = controller.LineColor;
+            GlassLockBlockController controller = rendererComponent.Renderer.GetController();
 
-            if (controller.VanillaEdgeBehavior)
+            Rectangle outline = new((int) (Center.X + rb.Left), (int) (Center.Y + rb.Top), rb.Width, rb.Height);
+            Color lineColor = controller?.LineColor ?? GlassLockBlockController.DefaultLineColor;
+
+            if (controller?.VanillaEdgeBehavior ?? GlassLockBlockController.DefaultVanillaEdgeBehavior)
             {
                 Draw.Line(outline.TopLeft() - Vector2.UnitY, outline.TopRight() - Vector2.UnitY, lineColor);
                 Draw.Line(outline.TopRight() + Vector2.UnitX, outline.BottomRight() + Vector2.UnitX, lineColor);

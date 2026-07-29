@@ -30,12 +30,12 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
             base.EntityAdded(scene);
                 
             Renderer = GetOrCreateRenderer(true);
-            Renderer.tracked.Add(this);
+            Renderer.EntityTracked(this);
         }
         
         public override void EntityRemoved(Scene scene)
         {
-            Renderer.tracked.Remove(this);
+            Renderer.EntityUntracked(this);
             
             base.EntityRemoved(scene);
         }
@@ -78,6 +78,14 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
         base.Added(scene);
     }
 
+    public virtual void EntityTracked(Rendered entity)
+        => tracked.Add(entity);
+    public virtual void EntityUntracked(Rendered entity)
+        => tracked.Remove(entity);
+
+    protected void QueryBuffers(out TBuffers buffers)
+        => TBuffers.QueryBuffers(Depth, out buffers);
+    
     private void BeforeRender()
     {
         QueryBuffers(out TBuffers buffers);
@@ -88,17 +96,20 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
 
     protected virtual void BeforeRender(TBuffers buffers, TController controller) { }
     
-    protected TRendered[] GetEntitiesToRender()
+    #region Helpers
+
+    protected TRendered[] GetEntities()
+        => tracked.Select(r => r.Entity)
+                  .ToArray();
+    protected TRendered[] GetVisibleEntities()
         => tracked.Where(r => r.IsVisible?.Invoke(SceneAs<Level>().Camera) ?? true)
                   .Select(r => r.Entity)
                   .ToArray();
-
-    protected void QueryBuffers(out TBuffers buffers)
-        => TBuffers.QueryBuffers(Depth, out buffers);
     
     public TController GetController()
         => RendererController<TController>.GetControllerForDepth(SceneAs<Level>(), Depth);
-    
     public bool TryGetController(out TController controller)
         => RendererController<TController>.TryGetControllerForDepth(SceneAs<Level>(), Depth, out controller);
+
+    #endregion
 }

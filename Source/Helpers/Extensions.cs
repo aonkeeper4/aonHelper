@@ -89,6 +89,21 @@ public static class Extensions
                || mapData.Levels.SelectMany(levelData => levelData.Triggers).Any(entityData => predicate(entityData.Name));
     }
 
+    extension(Type type)
+    {
+        public bool IsOrIsSubclassOf(Type potentialBase)
+            => type.IsSubclassOf(potentialBase) || type == potentialBase;
+    }
+
+    extension(Entity entity)
+    {
+        public void AddAt(Component component, int index)
+        {
+            entity.Components.components.Insert(index, component);
+            component.Added(entity);
+        }
+    }
+
     extension(ILCursor cursor)
     {
         public VariableDefinition AddVariable(Type type)

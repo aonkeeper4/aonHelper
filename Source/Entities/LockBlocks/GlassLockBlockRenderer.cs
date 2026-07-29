@@ -133,7 +133,7 @@ public class GlassLockBlockRenderer :
 
     protected override void BeforeRender(GlassLockBlockBuffers buffers, GlassLockBlockController controller)
     {
-        toRender = GetEntitiesToRender();
+        toRender = GetVisibleEntities();
         hasBlocks = toRender.Length > 0;
         if (!hasBlocks)
             return;

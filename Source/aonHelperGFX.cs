@@ -10,6 +10,9 @@ public static class aonHelperGFX
 
     private static Effect quantizedColorgradeEffect;
     public static Effect FxQuantizedColorgrade => quantizedColorgradeEffect;
+
+    private static Effect swirlDisplacementEffect;
+    public static Effect FxSwirlDisplacement => swirlDisplacementEffect;
     
     #endregion
     
@@ -23,34 +26,20 @@ public static class aonHelperGFX
     internal static void LoadContent()
     {
         SpriteBank = new SpriteBank(GFX.Game, "Graphics/aonHelper/Sprites.xml");
-
-        #region Effects
         
         quantizedColorgradeEffect = EffectHelper.LoadEffect("quantized_colorgrade");
-        
-        #endregion
-        
-        #region Buffers
+        swirlDisplacementEffect = EffectHelper.LoadEffect("swirl_displacement");
 
         OnDisposeBuffers = null;
-        
-        #endregion
     }
 
     internal static void UnloadContent()
     {
-        #region Effects
-        
         EffectHelper.DisposeAndSetNull(ref quantizedColorgradeEffect);
-        
-        #endregion
-        
-        #region Buffers
+        EffectHelper.DisposeAndSetNull(ref swirlDisplacementEffect);
 
         int buffersDisposed = 0;
         OnDisposeBuffers?.Invoke(ref buffersDisposed);
         Logger.Info(LogID, $"Disposed all buffers ({buffersDisposed} buffers disposed).");
-
-        #endregion
     }
 }

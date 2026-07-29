@@ -85,4 +85,78 @@ public static class EffectHelper
             }
         }
     }
+
+    public class ResetGraphicsDeviceOnDispose : IDisposable
+    {
+        public class SlotRegistrar(ResetGraphicsDeviceOnDispose disposable, int start)
+        {
+            private readonly HashSet<int> registered = [];
+            public int[] Registered => registered.ToArray();
+
+            public int Current { get; private set; } = start;
+
+            public int Add(int slot)
+            {
+                if (!registered.Add(Current = slot))
+                    throw new InvalidOperationException("Cannot register the same slot multiple times!");
+
+                disposable.previousTextures.Add(disposable.graphicsDevice.Textures[Current]);
+                disposable.previousSamplerStates.Add(disposable.graphicsDevice.SamplerStates[Current]);
+
+                return Current;
+            }
+
+            public int Next()
+                => Add(Current + 1);
+        }
+
+        private readonly GraphicsDevice graphicsDevice;
+        private readonly SlotRegistrar slotRegistrar;
+
+        private List<Texture> previousTextures = [];
+        private List<SamplerState> previousSamplerStates = [];
+
+        private BlendState previousBlendState;
+        private DepthStencilState previousDepthStencilState;
+        private RasterizerState previousRasterizerState;
+
+        public ResetGraphicsDeviceOnDispose(GraphicsDevice graphicsDevice, out SlotRegistrar slotRegistrar,
+            int startingSlot = 0)
+        {
+            this.graphicsDevice = graphicsDevice;
+            this.slotRegistrar = slotRegistrar = new SlotRegistrar(this, startingSlot);
+
+            previousBlendState = this.graphicsDevice.BlendState;
+            previousDepthStencilState = this.graphicsDevice.DepthStencilState;
+            previousRasterizerState = this.graphicsDevice.RasterizerState;
+        }
+
+        public void Dispose()
+        {
+            // no idea if this is in any way correct
+            ObjectDisposedException.ThrowIf(previousTextures is null, this);
+            ObjectDisposedException.ThrowIf(previousSamplerStates is null, this);
+            ObjectDisposedException.ThrowIf(previousBlendState is null, this);
+            ObjectDisposedException.ThrowIf(previousDepthStencilState is null, this);
+            ObjectDisposedException.ThrowIf(previousRasterizerState is null, this);
+
+            foreach ((int i, Texture texture, SamplerState samplerState) in slotRegistrar.Registered.Zip(previousTextures, previousSamplerStates))
+            {
+                graphicsDevice.Textures[i] = texture;
+                graphicsDevice.SamplerStates[i] = samplerState;
+            }
+
+            graphicsDevice.BlendState = previousBlendState;
+            graphicsDevice.DepthStencilState = previousDepthStencilState;
+            graphicsDevice.RasterizerState = previousRasterizerState;
+
+            previousTextures = null;
+            previousSamplerStates = null;
+            previousBlendState = null;
+            previousDepthStencilState = null;
+            previousRasterizerState = null;
+
+            GC.SuppressFinalize(this);
+        }
+    }
 }

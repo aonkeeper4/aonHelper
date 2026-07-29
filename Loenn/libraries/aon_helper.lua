@@ -1,6 +1,7 @@
 -- big shoutouts μ for being awesomesauce
 
 local drawableSprite = require("structs.drawable_sprite")
+local entities = require("entities")
 local utils = require("utils")
 
 local aonHelper = {}
@@ -26,6 +27,19 @@ end
 
 function aonHelper.mod(x, m)
     return math.fmod(math.fmod(x, m) + m, m)
+end
+
+function aonHelper.getAllSIDs()
+    local ret = {}
+    local amt = 0
+    for k, _ in pairs(entities.registeredEntities) do
+        table.insert(ret, k)
+        amt = amt + 1
+    end
+
+    table.sort(ret)
+
+    return ret, amt
 end
 
 -- controllers
