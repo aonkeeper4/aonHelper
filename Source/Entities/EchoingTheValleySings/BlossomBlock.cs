@@ -36,7 +36,7 @@ public class BlossomBlock : Solid
     private BlossomBlockGroupData GroupData => groupLeader.Get<BlossomBlockGroupData>();
 
     private readonly BlossomBlockRenderer.Rendered rendererComponent;
-    private SwirlDisplacementVertex[] RendererVertices => rendererComponent.Renderer.Vertices;
+    private VertexPositionColorTexture[] RendererVertices => rendererComponent.Renderer.Vertices;
     public int VerticesStart;
     public int VerticesEnd;
 

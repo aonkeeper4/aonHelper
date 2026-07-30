@@ -62,7 +62,7 @@ public class BlossomBlockRenderer(int depth) :
     }
 
     private const int BaseVertexCount = 1024;
-    public SwirlDisplacementVertex[] Vertices = new SwirlDisplacementVertex[BaseVertexCount];
+    public VertexPositionColorTexture[] Vertices = new VertexPositionColorTexture[BaseVertexCount];
     private int vertexCount;
     
     private bool dirty;
@@ -93,9 +93,9 @@ public class BlossomBlockRenderer(int depth) :
         dirty = false;
 
         BlossomBlockController controller = GetController();
+        BlossomBlock[] blocks = GetEntities();
         
         int vertexIndex = 0;
-        BlossomBlock[] blocks = GetEntities();
         foreach (BlossomBlock block in blocks)
         {
             int w = (int) (block.Width / 8f);
@@ -158,18 +158,13 @@ public class BlossomBlockRenderer(int depth) :
         string spritePath = controller?.SpritePath ?? BlossomBlockController.DefaultSpritePath;
         MTexture source = GFX.Game[spritePath];
 
-        float minSwirlRadius = controller?.MinSwirlRadius ?? BlossomBlockController.DefaultMinSwirlRadius;
-        float maxSwirlRadius = controller?.MaxSwirlRadius ?? BlossomBlockController.DefaultMaxSwirlRadius;
-        float minSwirlSpeed = controller?.MinSwirlSpeed ?? BlossomBlockController.DefaultMinSwirlSpeed;
-        float maxSwirlSpeed = controller?.MaxSwirlSpeed ?? BlossomBlockController.DefaultMaxSwirlSpeed;
-
         MTexture subtexture = source.GetSubtexture(tx * 8, ty * 8, 8, 8);
 
         Vector3 worldPos = new(x, y, 0f);
-        SwirlDisplacementVertex a = new(worldPos + new Vector3(0f, 0f, 0f), Color.White, new Vector2(subtexture.LeftUV, subtexture.TopUV), minSwirlRadius, maxSwirlRadius, minSwirlSpeed, maxSwirlSpeed);
-        SwirlDisplacementVertex b = new(worldPos + new Vector3(8f, 0f, 0f), Color.White, new Vector2(subtexture.RightUV, subtexture.TopUV), minSwirlRadius, maxSwirlRadius, minSwirlSpeed, maxSwirlSpeed);
-        SwirlDisplacementVertex c = new(worldPos + new Vector3(0f, 8f, 0f), Color.White, new Vector2(subtexture.LeftUV, subtexture.BottomUV), minSwirlRadius, maxSwirlRadius, minSwirlSpeed, maxSwirlSpeed);
-        SwirlDisplacementVertex d = new(worldPos + new Vector3(8f, 8f, 0f), Color.White, new Vector2(subtexture.RightUV, subtexture.BottomUV), minSwirlRadius, maxSwirlRadius, minSwirlSpeed, maxSwirlSpeed);
+        VertexPositionColorTexture a = new(worldPos + new Vector3(0f, 0f, 0f), Color.White, new Vector2(subtexture.LeftUV, subtexture.TopUV));
+        VertexPositionColorTexture b = new(worldPos + new Vector3(8f, 0f, 0f), Color.White, new Vector2(subtexture.RightUV, subtexture.TopUV));
+        VertexPositionColorTexture c = new(worldPos + new Vector3(0f, 8f, 0f), Color.White, new Vector2(subtexture.LeftUV, subtexture.BottomUV));
+        VertexPositionColorTexture d = new(worldPos + new Vector3(8f, 8f, 0f), Color.White, new Vector2(subtexture.RightUV, subtexture.BottomUV));
             
         Vertices[vertexIndex++] = a;
         Vertices[vertexIndex++] = b;
@@ -185,7 +180,12 @@ public class BlossomBlockRenderer(int depth) :
             return;
         
         Camera camera = SceneAs<Level>().Camera;
+
         string spritePath = controller?.SpritePath ?? BlossomBlockController.DefaultSpritePath;
+        float minSwirlRadius = controller?.MinSwirlRadius ?? BlossomBlockController.DefaultMinSwirlRadius;
+        float maxSwirlRadius = controller?.MaxSwirlRadius ?? BlossomBlockController.DefaultMaxSwirlRadius;
+        float minSwirlSpeed = controller?.MinSwirlSpeed ?? BlossomBlockController.DefaultMinSwirlSpeed;
+        float maxSwirlSpeed = controller?.MaxSwirlSpeed ?? BlossomBlockController.DefaultMaxSwirlSpeed;
         
         Engine.Graphics.GraphicsDevice.SetRenderTarget(buffers.Blocks);
         Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -201,6 +201,7 @@ public class BlossomBlockRenderer(int depth) :
             Effect swirlDisplacementEffect = aonHelperGFX.FxSwirlDisplacement;
             swirlDisplacementEffect.Parameters["time"].SetValue(timer);
             swirlDisplacementEffect.Parameters["depth"].SetValue(Depth);
+            swirlDisplacementEffect.Parameters["swirl_config"].SetValue(new Vector4(minSwirlRadius, maxSwirlRadius, minSwirlSpeed, maxSwirlSpeed));
 
             GFX.DrawVertices(camera.Matrix, Vertices, vertexCount, swirlDisplacementEffect);
         }

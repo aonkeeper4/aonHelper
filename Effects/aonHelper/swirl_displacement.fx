@@ -3,14 +3,13 @@ sampler entity_sampler : register(s0);
 
 struct vertex_input
 {
-    float3 position : SV_POSITION0;
+    float3 position : POSITION0;
     float4 color : COLOR0;
     float2 uv : TEXCOORD0;
-    float4 swirl_config : TEXCOORD1;
 };
 struct vertex_output
 {
-    float4 position : SV_POSITION0;
+    float4 position : POSITION0;
     float4 color : COLOR0;
     float2 uv : TEXCOORD0;
 };
@@ -19,6 +18,7 @@ static const float pi = 3.141592654;
 
 uniform float time;
 uniform int depth;
+uniform float4 swirl_config;
 
 uniform float4x4 World;
 
@@ -52,8 +52,8 @@ vertex_output vertex_shader(vertex_input input)
     float3 noise_sample_pos = float3(input.position.xy / 8.0, depth);
     float3 noise = lerped_noise(noise_sample_pos);
     
-    float radius = lerp(input.swirl_config.x, input.swirl_config.y, noise.r);
-    float speed = lerp(input.swirl_config.z, input.swirl_config.w, noise.g);
+    float radius = lerp(swirl_config.x, swirl_config.y, noise.r);
+    float speed = lerp(swirl_config.z, swirl_config.w, noise.g);
     float offset = lerp(0.0, 2.0 * pi, noise.b);
     float angle = speed * time + offset;
     
