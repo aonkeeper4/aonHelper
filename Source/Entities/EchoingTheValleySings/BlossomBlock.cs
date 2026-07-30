@@ -9,22 +9,16 @@ public class BlossomBlock : Solid
     private const float AmbientParticleInterval = 1f, AmbientParticleChance = 0.1f;
     
     public class BlossomBlockGroupData(float width, float height, Vector2 center, Vector2 scaleStrength)
-        : Component(false, false)
+        : TypeRestrictedComponent<BlossomBlock>(false, false)
     {
+        protected override string Name => nameof(BlossomBlockGroupData);
+
         public readonly float Width = width, Height = height;
         public readonly Vector2 Center = center;
 
         public Vector2 Scale = Vector2.One;
         public Vector2 TargetScale = Vector2.One;
         public readonly Vector2 ScaleStrength = scaleStrength;
-
-        public override void Added(Entity entity)
-        {
-            if (entity is not BlossomBlock)
-                throw new Exception($"{nameof(BlossomBlockGroupData)} added to non-{nameof(BlossomBlock)} entity!");
-            
-            base.Added(entity);
-        }
     }
     
     private ParticleType P_Ambient;

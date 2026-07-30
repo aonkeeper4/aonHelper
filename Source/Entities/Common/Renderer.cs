@@ -21,6 +21,8 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
     
     public class Rendered(int? overrideDepth = null, Func<Camera, bool> isVisible = null) : TypeRestrictedComponent<TRendered>(false, false)
     {
+        protected override string Name => $"{TSelf.Name}.{nameof(Rendered)}";
+
         public readonly Func<Camera, bool> IsVisible = isVisible;
         
         public TSelf Renderer { get; private set; }

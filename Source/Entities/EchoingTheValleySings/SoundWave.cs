@@ -346,9 +346,9 @@ public class SoundWave : Entity
 
     #region Hooks
 
-    private class SoundWaveTriggerable() : Component(true, false)
+    private class SoundWaveTriggerable() : TypeRestrictedComponent<Solid>(true, false)
     {
-        private Solid Solid => EntityAs<Solid>()!;
+        protected override string Name => nameof(SoundWaveTriggerable);
 
         private enum TriggerState
         {
@@ -362,27 +362,18 @@ public class SoundWave : Entity
         
         private Vector2? triggerPosition;
 
-        public override void Added(Entity entity)
-        {
-            // ewww namespacing
-            if (entity is not global::Celeste.Solid)
-                throw new Exception($"{nameof(SoundWaveTriggerable)} added to non-{nameof(global::Celeste.Solid)} entity!");
-            
-            base.Added(entity);
-        }
-
         public override void Update()
         {
             switch (state)
             {
                 case TriggerState.Waiting:
-                    if (triggerPosition is not null && Solid.Position != triggerPosition)
+                    if (triggerPosition is not null && Entity.Position != triggerPosition)
                         state = TriggerState.Moving;
                     
                     break;
                 
                 case TriggerState.Moving:
-                    if (Solid.Position == triggerPosition)
+                    if (Entity.Position == triggerPosition)
                     {
                         state = TriggerState.Waiting;
                         
@@ -405,7 +396,7 @@ public class SoundWave : Entity
                 return;
             
             Triggered = true;
-            triggerPosition = Solid.Position;
+            triggerPosition = Entity.Position;
         }
     }
     
