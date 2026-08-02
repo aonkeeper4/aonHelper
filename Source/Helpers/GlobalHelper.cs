@@ -199,7 +199,10 @@ public static class GlobalHelper
             if (globalEntityCounts.TryGetValue(entityData.Name, out int count))
             {
                 if (entityLoader.OnlyOne && count >= 1)
+                {
+                    Logger.Warn(LogID, $"Tried to add global entity with SID '{entityData.Name}' and position {entityData.Position} in room '{levelData.Name}' but there was already one present, skipping!");
                     continue;
+                }
 
                 globalEntityCounts[entityData.Name] = count + 1;
             }

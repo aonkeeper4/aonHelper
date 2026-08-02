@@ -286,11 +286,11 @@ entities.aonHelper/IceZipMover.attributes.description.respawnSfx=The event to pl
 
 # Taiko Drum
 entities.aonHelper/TaikoDrum.placements.name.taiko_drum_horizontal=Taiko Drum (Horizontal)
-entities.aonHelper/TaikoDrum.placements.description.taiko_drum_horizontal=A drum that will send out sound waves when dashed into which can interact with other entities.
+entities.aonHelper/TaikoDrum.placements.description.taiko_drum_horizontal=A drum that will send out Sound Waves when dashed into, which can interact with other entities.
 entities.aonHelper/TaikoDrum.placements.name.taiko_drum_vertical=Taiko Drum (Vertical)
-entities.aonHelper/TaikoDrum.placements.description.taiko_drum_vertical=A drum that will send out sound waves when dashed into which can interact with other entities.
+entities.aonHelper/TaikoDrum.placements.description.taiko_drum_vertical=A drum that will send out Sound Waves when dashed into, which can interact with other entities.
 entities.aonHelper/TaikoDrum.placements.name.taiko_drum_both=Taiko Drum (Both)
-entities.aonHelper/TaikoDrum.placements.description.taiko_drum_both=A drum that will send out sound waves when dashed into which can interact with other entities.
+entities.aonHelper/TaikoDrum.placements.description.taiko_drum_both=A drum that will send out Sound Waves when dashed into, which can interact with other entities.
 entities.aonHelper/TaikoDrum.attributes.description.axes=The sides this Taiko Drum should be able to be activated from.
 entities.aonHelper/TaikoDrum.attributes.description.fragile=Whether this Taiko Drum should break upon being activated.
 entities.aonHelper/TaikoDrum.attributes.description.doNotLoadFlag=The session flag that will cause this Taiko Drum not to load.
@@ -302,33 +302,33 @@ entities.aonHelper/TaikoDrum.attributes.description.activateParticleColor=The co
 # Taiko Drum Controller
 entities.aonHelper/TaikoDrumController.placements.name.taiko_drum_controller=Taiko Drum Controller
 entities.aonHelper/TaikoDrumController.placements.description.taiko_drum_controller=A controller for the visuals of Taiko Drums.
-entities.aonHelper/TaikoDrumController.attributes.description.soundWaveSpeed=The speed at which emitted sound waves should travel in this room.
-entities.aonHelper/TaikoDrumController.attributes.description.soundWaveDepth=The depth at which emitted sound waves should render in this room. Lower values mean more in the foreground.
-entities.aonHelper/TaikoDrumController.attributes.description.soundWaveColor=The color of emitted sound waves in this room.
-entities.aonHelper/TaikoDrumController.attributes.description.affectedEntities=A list of entity SIDs for sound waves to affect in this room, or the character * to affect all entities.\nAffected entities such as move blocks ("moveBlock") or zip movers ("zipMover") will activate when a sound wave passes over them, while refusing activation from the player standing/climbing on them or attached springs being activated.
+entities.aonHelper/TaikoDrumController.attributes.description.soundWaveSpeed=The speed at which emitted Sound Waves should travel in this room.
+entities.aonHelper/TaikoDrumController.attributes.description.soundWaveDepth=The depth at which emitted Sound Waves should render in this room. Lower values mean more in the foreground.
+entities.aonHelper/TaikoDrumController.attributes.description.soundWaveColor=The color of emitted Sound Waves in this room.
+entities.aonHelper/TaikoDrumController.attributes.description.affectedEntities=A list of entity SIDs for Sound Waves to affect in this room, or the character * to affect all entities.\nAffected entities such as move blocks ("moveBlock") or zip movers ("zipMover") will activate when a Sound Wave passes over them, while refusing activation from the player standing/climbing on them or attached springs being activated.
 entities.aonHelper/TaikoDrumController.attributes.description.global=Whether this Taiko Drum Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Sound Wave Reflector
 entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_left=Sound Wave Reflector (Left)
-entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_left=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_left=An entity that will reflect incoming Sound Waves.
 entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_right=Sound Wave Reflector (Right)
-entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_right=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_right=An entity that will reflect incoming Sound Waves.
 entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_up=Sound Wave Reflector (Up)
-entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_up=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_up=An entity that will reflect incoming Sound Waves.
 entities.aonHelper/SoundWaveReflector.placements.name.sound_wave_reflector_down=Sound Wave Reflector (Down)
-entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_down=An entity that will reflect incoming sound waves.
+entities.aonHelper/SoundWaveReflector.placements.description.sound_wave_reflector_down=An entity that will reflect incoming Sound Waves.
 entities.aonHelper/SoundWaveReflector.attributes.description.orientation=The orientation of this Sound Wave Reflector.
 entities.aonHelper/SoundWaveReflector.attributes.description.spriteDir=A path to custom sprites to use for this Sound Wave Reflector, relative to Graphics/Atlases/Gameplay.\nMust contain images named left.png, right.png, up.png and down.png.
 
 # Sound Wave Barrier
 entities.aonHelper/SoundWaveBarrier.placements.name.sound_wave_barrier=Sound Wave Barrier
-entities.aonHelper/SoundWaveBarrier.placements.description.sound_wave_barrier=An invisible entity that will destroy incoming sound waves.
-entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy sound waves. Leave empty for it to always destroy sound waves.
+entities.aonHelper/SoundWaveBarrier.placements.description.sound_wave_barrier=An invisible entity that will destroy incoming Sound Waves.
+entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy Sound Waves. Leave empty for it to always destroy Sound Waves.
 entities.aonHelper/SoundWaveBarrier.attributes.description.attachToSolids=Whether this Sound Wave Barrier should attach to solids.
 
 # Blossom Block
 entities.aonHelper/BlossomBlock.placements.name.blossom_block=Blossom Block
-entities.aonHelper/BlossomBlock.placements.description.blossom_block=A block that will be destroyed by incoming sound waves.
+entities.aonHelper/BlossomBlock.placements.description.blossom_block=A block that will be destroyed by incoming Sound Waves.
 entities.aonHelper/BlossomBlock.attributes.description.depth=The depth of this Blossom Block. Lower values will put this block more in the foreground.
 entities.aonHelper/BlossomBlock.attributes.description.doNotLoadFlag=The session flag that will cause this Blossom Block not to load.
 entities.aonHelper/BlossomBlock.attributes.description.flagOnBreak=The session flag this Blossom Block should set when it is broken.

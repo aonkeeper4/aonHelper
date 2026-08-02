@@ -75,18 +75,35 @@ public class DreamLockBlock : BaseLockBlock
         }
 
         #region DreamBlockDummy Hooks
+
+        // some of these don't have noinlining enableddd
+        private static readonly Type t_DreamBlock = typeof(DreamBlock);
+        private static readonly MethodInfo
+            m_DreamBlock_Activate = t_DreamBlock.GetMethod("Activate", HookHelper.Bind.PublicInstance)!,
+            m_DreamBlock_FastActivate = t_DreamBlock.GetMethod("FastActivate", HookHelper.Bind.PublicInstance)!,
+            m_DreamBlock_ActivateNoRoutine = t_DreamBlock.GetMethod("ActivateNoRoutine", HookHelper.Bind.PublicInstance)!,
+            m_DreamBlock_Deactivate = t_DreamBlock.GetMethod("Deactivate", HookHelper.Bind.PublicInstance)!,
+            m_DreamBlock_FastDeactivate = t_DreamBlock.GetMethod("FastDeactivate", HookHelper.Bind.PublicInstance)!,
+            m_DreamBlock_DeactivateNoRoutine = t_DreamBlock.GetMethod("DeactivateNoRoutine", HookHelper.Bind.PublicInstance)!;
+        private static Hook
+            on_DreamBlock_Activate,
+            on_DreamBlock_FastActivate,
+            on_DreamBlock_ActivateNoRoutine,
+            on_DreamBlock_Deactivate,
+            on_DreamBlock_FastDeactivate,
+            on_DreamBlock_DeactivateNoRoutine;
         
         private static ILHook il_Player_DashCoroutine;
 
         [OnLoad]
         public static void Load()
         {
-            On.Celeste.DreamBlock.Activate += On_DreamBlock_Activate;
-            On.Celeste.DreamBlock.FastActivate += On_DreamBlock_FastActivate;
-            On.Celeste.DreamBlock.ActivateNoRoutine += On_DreamBlock_ActivateNoRoutine;
-            On.Celeste.DreamBlock.Deactivate += On_DreamBlock_Deactivate;
-            On.Celeste.DreamBlock.FastDeactivate += On_DreamBlock_FastDeactivate;
-            On.Celeste.DreamBlock.DeactivateNoRoutine += On_DreamBlock_DeactivateNoRoutine;
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_Activate, m_DreamBlock_Activate, On_DreamBlock_Activate);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_FastActivate, m_DreamBlock_FastActivate, On_DreamBlock_FastActivate);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_ActivateNoRoutine, m_DreamBlock_ActivateNoRoutine, On_DreamBlock_ActivateNoRoutine);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_Deactivate, m_DreamBlock_Deactivate, On_DreamBlock_Deactivate);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_FastDeactivate, m_DreamBlock_FastDeactivate, On_DreamBlock_FastDeactivate);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_DeactivateNoRoutine, m_DreamBlock_DeactivateNoRoutine, On_DreamBlock_DeactivateNoRoutine);
             
             IL.Celeste.DreamBlock.Added += IL_DreamBlock_Added;
 
@@ -97,12 +114,12 @@ public class DreamLockBlock : BaseLockBlock
         [OnUnload]
         public static void Unload()
         {
-            On.Celeste.DreamBlock.Activate -= On_DreamBlock_Activate;
-            On.Celeste.DreamBlock.FastActivate -= On_DreamBlock_FastActivate;
-            On.Celeste.DreamBlock.ActivateNoRoutine -= On_DreamBlock_ActivateNoRoutine;
-            On.Celeste.DreamBlock.Deactivate -= On_DreamBlock_Deactivate;
-            On.Celeste.DreamBlock.FastDeactivate -= On_DreamBlock_FastDeactivate;
-            On.Celeste.DreamBlock.DeactivateNoRoutine -= On_DreamBlock_DeactivateNoRoutine;
+            HookHelper.DisposeAndSetNull(ref on_DreamBlock_Activate);
+            HookHelper.DisposeAndSetNull(ref on_DreamBlock_FastActivate);
+            HookHelper.DisposeAndSetNull(ref on_DreamBlock_ActivateNoRoutine);
+            HookHelper.DisposeAndSetNull(ref on_DreamBlock_Deactivate);
+            HookHelper.DisposeAndSetNull(ref on_DreamBlock_FastDeactivate);
+            HookHelper.DisposeAndSetNull(ref on_DreamBlock_DeactivateNoRoutine);
             
             IL.Celeste.DreamBlock.Added -= IL_DreamBlock_Added;
 

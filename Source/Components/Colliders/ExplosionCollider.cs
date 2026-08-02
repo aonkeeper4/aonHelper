@@ -43,7 +43,7 @@ public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2>
     {
         ILCursor cursor = new(il);
 
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
                 instr => instr.MatchLdarg0(),
                 instr => instr.MatchLdloc0(),
                 instr => instr.MatchCall<Entity>("set_Collider")))
@@ -58,7 +58,7 @@ public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2>
     {
         ILCursor cursor = new(il);
 
-        if (!cursor.TryGotoNextBestFit(MoveType.Before,
+        if (!cursor.TryGotoNextBestFit(MoveType.AfterLabel,
                 instr => instr.MatchLdloc1(),
                 instr => instr.MatchLdloc1(),
                 instr => instr.MatchLdfld<Seeker>("physicsHitbox"),

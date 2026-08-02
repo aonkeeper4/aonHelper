@@ -12,14 +12,34 @@ public static class HookHelper
     
     public static void DisposeAndSetNull(ref Hook hook)
     {
-        hook.Dispose();
+        hook?.Dispose();
         hook = null;
     }
 
     public static void DisposeAndSetNull(ref ILHook ilHook)
     {
-        ilHook.Dispose();
+        ilHook?.Dispose();
         ilHook = null;
+    }
+
+    public static void HookEnsuringNoInlining(ref Hook hook, MethodInfo toHook, Delegate hookMethod)
+    {
+        DisposeAndSetNull(ref hook);
+
+        if (HookUtils.TryDisableInlining(toHook))
+            hook = new Hook(toHook, hookMethod);
+        else
+            throw new HookException($"Unable to disable inlining on `{toHook.DeclaringType?.FullName ?? "<unknown>"}.{toHook.Name}`.");
+    }
+
+    public static void HookEnsuringNoInlining(ref ILHook ilHook, MethodInfo toHook, ILContext.Manipulator hookMethod)
+    {
+        DisposeAndSetNull(ref ilHook);
+
+        if (HookUtils.TryDisableInlining(toHook))
+            ilHook = new ILHook(toHook, hookMethod);
+        else
+            throw new HookException($"Unable to disable inlining on `{toHook.DeclaringType?.FullName ?? "<unknown>"}.{toHook.Name}`.");
     }
 
     // see CommunalHelper DreamTunnelDash source for a properly explained version of this
@@ -78,7 +98,7 @@ public static class HookHelper
         { }
     }
 
-    // heavily referenced from gravityhelper
+    // referenced from gravityhelper
     public static class HookLazyLoadingManager
     {
         private const string LogID = $"{nameof(aonHelper)}/{nameof(HookLazyLoadingManager)}";

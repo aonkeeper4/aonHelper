@@ -32,14 +32,15 @@ public class QuantizeColorgradeController(
 
     // its so funny that this just fucking works
 
+    private static MethodInfo m_ColorGrade_get_Effect = typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!;
     private static Hook on_ColorGrade_get_Effect;
     
     [OnLoad]
     internal static void Load()
     {
         IL.Celeste.ColorGrade.Set_MTexture_MTexture_float += IL_ColorGrade_Set;
-        
-        on_ColorGrade_get_Effect = new Hook(typeof(ColorGrade).GetMethod("get_Effect", HookHelper.Bind.PublicStatic)!, On_ColorGrade_get_Effect);
+
+        HookHelper.HookEnsuringNoInlining(ref on_ColorGrade_get_Effect, m_ColorGrade_get_Effect, On_ColorGrade_get_Effect);
     }
 
     [OnUnload]
