@@ -36,7 +36,7 @@ public class BlossomBlock : Solid
 
     private const float BreakTime = 0.2f;
     private bool broken;
-    private readonly string doNotLoadFlag;
+    private readonly ConditionHelper.Condition doNotLoadFlag;
     private readonly string flagOnBreak;
 
     private string homeLevelName;
@@ -44,13 +44,13 @@ public class BlossomBlock : Solid
     private IEnumerable<Spikes> Spikes => staticMovers.Select(s => s.Entity).OfType<Spikes>();
     
     public BlossomBlock(Vector2 position, int width, int height,
-        int depth, string doNotLoadFlag, string flagOnBreak)
+        int depth, ConditionHelper.Condition doNotLoadFlag, string flagOnBreak)
         : base(position, width, height, false)
     {
         Depth = depth;
         
-        this.doNotLoadFlag = string.IsNullOrEmpty(doNotLoadFlag) ? null : doNotLoadFlag;
-        this.flagOnBreak = string.IsNullOrEmpty(flagOnBreak) ? null : flagOnBreak;
+        this.doNotLoadFlag = doNotLoadFlag;
+        this.flagOnBreak = flagOnBreak;
 
         Add(rendererComponent = new BlossomBlockRenderer.Rendered());
         
@@ -60,7 +60,7 @@ public class BlossomBlock : Solid
 
     public BlossomBlock(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height,
-            data.Int("depth", BlossomBlockController.DefaultDepth), data.Attr("doNotLoadFlag"), data.Attr("flagOnBreak"))
+            data.Int("depth", BlossomBlockController.DefaultDepth), data.Condition("doNotLoadFlag"), data.String("flagOnBreak"))
     { }
 
     public override void Added(Scene scene)
@@ -70,7 +70,7 @@ public class BlossomBlock : Solid
         Level level = SceneAs<Level>();
         homeLevelName = level.Session.Level;
 
-        if (doNotLoadFlag is not null && level.Session.GetFlag(doNotLoadFlag))
+        if (doNotLoadFlag.Check(level))
         {
             RemoveSelf();
             return;

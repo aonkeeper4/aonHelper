@@ -2,11 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/JumpThrusApplyLiftSpeedController", "global")]
 [Tracked]
-public class JumpThrusApplyLiftSpeedController(string condition)
+public class JumpThrusApplyLiftSpeedController(ConditionHelper.Condition condition)
     : ConditionalController<JumpThrusApplyLiftSpeedController>(condition)
 {
     public JumpThrusApplyLiftSpeedController(EntityData data, Vector2 offset)
-        : this(data.Attr("flag"))
+        : this(data.Condition("flag"))
     { }
     
     #region Hooks

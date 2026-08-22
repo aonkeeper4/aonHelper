@@ -53,6 +53,9 @@ public static class Extensions
                         .Select(Calc.HexToColor)
                         .ToArray();
         }
+
+        public ConditionHelper.Condition Condition(string key, bool defaultValueIfEmpty = true)
+            => ConditionHelper.Create(data.Attr(key), defaultValueIfEmpty);
     }
     
     extension(Calc)

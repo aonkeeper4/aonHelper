@@ -21,13 +21,14 @@ public class TaikoDrumController(Vector2 position,
     public readonly bool AffectAll = affectedEntities == "*";
 
     private static Type[] GetTypes(string entitySIDs)
-        => entitySIDs.Split(",", StringSplitOptions.RemoveEmptyEntries)
-                     .SelectMany(sid => EntityRegistry.GetKnownTypesFromSid(sid).Where(t => t.IsOrIsSubclassOf(typeof(Solid))))
-                     .ToArray();
+        => entitySIDs?
+            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+            .SelectMany(sid => EntityRegistry.GetKnownTypesFromSid(sid).Where(t => t.IsOrIsSubclassOf(typeof(Solid))))
+            .ToArray() ?? [];
 
     public TaikoDrumController(EntityData data, Vector2 offset)
         : this(data.Position + offset,
             data.Float("soundWaveSpeed", DefaultSoundWaveSpeed), data.Int("soundWaveDepth", DefaultSoundWaveDepth), data.HexColor("soundWaveColor", DefaultSoundWaveColor),
-            data.Attr("affectedEntities"))
+            data.String("affectedEntities"))
     { }
 }

@@ -9,9 +9,9 @@ public class SoundWaveBarrier : Entity
     {
         Collider = new Hitbox(data.Width, data.Height);
 
-        string flag = data.Attr("flag");
+        ConditionHelper.Condition condition = data.Condition("flag");
         Add(new SoundWaveCollider(_ =>
-            string.IsNullOrEmpty(flag) || SceneAs<Level>().Session.GetFlag(flag)
+            condition.Check(SceneAs<Level>())
                 ? SoundWaveCollider.SoundWaveCollisionResults.DestroyQuietly
                 : SoundWaveCollider.SoundWaveCollisionResults.None));
         

@@ -4,7 +4,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 [Tracked]
 public class ReboundModifyController(
     ReboundModifyController.ReboundData leftRightData, ReboundModifyController.ReboundData topBottomData, bool refillDash,
-    string condition)
+    ConditionHelper.Condition condition)
     : ConditionalController<ReboundModifyController>(condition)
 {
     public struct ReboundData
@@ -40,7 +40,7 @@ public class ReboundModifyController(
                 YModifier = data.Float("topYModifier", 1f)
             },
             data.Bool("refillDash"),
-            data.Attr("flag"))
+            data.Condition("flag"))
     { }
     
     #region Hooks

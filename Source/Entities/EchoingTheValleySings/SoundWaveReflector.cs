@@ -32,7 +32,7 @@ public class SoundWaveReflector : Entity
             _ => throw new ArgumentOutOfRangeException()
         };
         
-        BuildSprite(string.IsNullOrEmpty(spriteDir) ? "objects/aonHelper/soundWaveReflector" : spriteDir);
+        BuildSprite(spriteDir ?? "objects/aonHelper/soundWaveReflector");
 
         Add(staticMover = new StaticMover
         {
@@ -47,7 +47,7 @@ public class SoundWaveReflector : Entity
     }
     
     public SoundWaveReflector(EntityData data, Vector2 offset)
-        : this(data.Position + offset, data.Width, data.Height, data.Enum<Orientations>("orientation"), data.Attr("spriteDir"))
+        : this(data.Position + offset, data.Width, data.Height, data.Enum<Orientations>("orientation"), data.String("spriteDir"))
     { }
 
     private void BuildSprite(string spriteDir)

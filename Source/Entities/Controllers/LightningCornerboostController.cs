@@ -2,7 +2,7 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/LightningCornerboostController", "global")]
 [Tracked]
-public class LightningCornerboostController(bool always, string condition)
+public class LightningCornerboostController(bool always, ConditionHelper.Condition condition)
     : ConditionalController<LightningCornerboostController>(condition)
 {
     private class LightningSolidComponent(LightningCornerboostController controller) : TypeRestrictedComponent<Lightning>(true, false)
@@ -70,7 +70,7 @@ public class LightningCornerboostController(bool always, string condition)
     private readonly bool always = always;
 
     public LightningCornerboostController(EntityData data, Vector2 offset)
-        : this(data.Bool("always", true), data.Attr("flag"))
+        : this(data.Bool("always", true), data.Condition("flag"))
     { }
 
     #region Hooks

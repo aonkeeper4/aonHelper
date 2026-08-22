@@ -2,13 +2,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/IntroFacingController", "global")]
 [Tracked]
-public class IntroFacingController(Facings facing, string condition)
+public class IntroFacingController(Facings facing, ConditionHelper.Condition condition)
     : ConditionalController<IntroFacingController>(condition)
 {
     private readonly Facings facing = facing;
     
     public IntroFacingController(EntityData data, Vector2 offset)
-        : this(data.Enum("facing", Facings.Right), data.Attr("flag"))
+        : this(data.Enum("facing", Facings.Right), data.Condition("flag"))
     { }
     
     #region Hooks

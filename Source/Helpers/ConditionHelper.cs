@@ -74,9 +74,11 @@ public static class ConditionHelper
             => level is not null && (expression is null || FrostHelper.GetBoolSessionExpressionValue(expression, level.Session));
     }
     
-    public static Condition Create(string condition)
-        => string.IsNullOrEmpty(condition)
-            ? new True()
+    public static Condition Create(string condition, bool defaultValueIfEmpty = true)
+        => string.IsNullOrWhiteSpace(condition)
+            ? defaultValueIfEmpty
+                ? new True()
+                : new False()
             : FrostHelper.IsImported
                 ? new SessionExpression(condition)
                 : new Flag(condition);

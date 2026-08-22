@@ -6,8 +6,8 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
 {
     private readonly int width = data.Width, height = data.Height;
     
-    private readonly string spriteID = data.Attr("path");
-    private readonly string spritePath = data.Attr("spritePath");
+    private readonly string spriteID = data.String("path");
+    private readonly string spritePath = data.String("spritePath");
     private Sprite spriteOutline;
     
     private Color color = data.HexColor("color", Calc.HexToColor("00a81f"));
@@ -31,7 +31,7 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
         
         Remove(sprite);
         
-        if (!string.IsNullOrEmpty(spriteID))
+        if (spriteID is not null)
         {
             switch (spriteID)
             {
@@ -68,7 +68,7 @@ public class ResizableHeart(EntityData data, Vector2 offset) : HeartGem(data, of
             else 
                 sprite = GFX.SpriteBank.Create(spriteID);
         }
-        else if (!string.IsNullOrEmpty(spritePath))
+        else if (spritePath is not null)
         {
             switch (spritePath)
             {

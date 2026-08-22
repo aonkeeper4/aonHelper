@@ -2,11 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/DontLoseSeedsUnderwaterController", "global")]
 [Tracked]
-public class DontLoseSeedsUnderwaterController(string condition)
+public class DontLoseSeedsUnderwaterController(ConditionHelper.Condition condition)
     : ConditionalController<DontLoseSeedsUnderwaterController>(condition)
 {
     public DontLoseSeedsUnderwaterController(EntityData data, Vector2 offset)
-        : this(data.Attr("flag"))
+        : this(data.Condition("flag"))
     { }
 
     #region Hooks

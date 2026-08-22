@@ -42,14 +42,14 @@ public abstract class BaseLockBlock : Solid
         
         Add(new PlayerCollider(OnPlayer, new Circle(60f, 16f, 16f)));
 
-        Add(Sprite = string.IsNullOrWhiteSpace(spritePath)
+        Add(Sprite = spritePath is null
             ? aonHelperGFX.SpriteBank.Create(defaultSpriteId)
             : BuildCustomSprite(spritePath));
         Sprite.Play("idle");
         Sprite.Position = new Vector2(Width / 2f, Height / 2f);
 
         StepMusicProgress = stepMusicProgress;
-        UnlockSfx = string.IsNullOrWhiteSpace(unlockSfx)
+        UnlockSfx = unlockSfx is null
             ? defaultUnlockSfx
             : SFX.EventnameByHandle(unlockSfx);
     }
@@ -75,7 +75,7 @@ public abstract class BaseLockBlock : Solid
         return new OpeningSettingsData
         {
             VanillaKeys = useVanillaKeys,
-            DzhakeHelperKeysNone = settings == "",
+            DzhakeHelperKeysNone = settings is null,
             DzhakeHelperKeysAll = settings == "*",
             DzhakeHelperKeyGroup = groupSpecified ? dzhakeHelperKeyGroup : null
         };

@@ -7,7 +7,7 @@ public class FlagCustomCoreMessage : Entity
     private readonly string text;
 
     private readonly float startFadeRadius, endFadeRadius;
-    private readonly string appearFlag, stayFlag;
+    private readonly ConditionHelper.Condition appearFlag, stayFlag;
     private readonly float flagFadeTime;
     private readonly bool useRawDeltaTime;
     private float appearAlpha, playerAlpha, stayAlpha;
@@ -25,7 +25,7 @@ public class FlagCustomCoreMessage : Entity
     public FlagCustomCoreMessage(Vector2 position,
         string dialogID, int lineNumber,
         float startFadeRadius, float endFadeRadius,
-        string appearFlag, string stayFlag, float flagFadeTime, bool useRawDeltaTime,
+        ConditionHelper.Condition appearFlag, ConditionHelper.Condition stayFlag, float flagFadeTime, bool useRawDeltaTime,
         Color textColor, bool hasOutline, Color outlineColor, float outlineThickness,
         float scale, Vector2 parallax,
         bool hideOnHeartCollect)
@@ -33,10 +33,11 @@ public class FlagCustomCoreMessage : Entity
     {
         Tag = TagsExt.SubHUD;
 
-        text = Dialog.Clean(dialogID)
-                     .Split((char[])['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
-                     .ElementAtOrDefault(lineNumber)
-            ?? $"{{{dialogID}, line {lineNumber}}}";
+        text = dialogID is null
+            ? "{null}"
+            : Dialog.Clean(dialogID)
+                .Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
+                .ElementAtOrDefault(lineNumber) ?? $"{{{dialogID}, line {lineNumber}}}";
 
         this.startFadeRadius = startFadeRadius;
         this.endFadeRadius = endFadeRadius;
@@ -59,9 +60,9 @@ public class FlagCustomCoreMessage : Entity
     
     public FlagCustomCoreMessage(EntityData data, Vector2 offset)
         : this(data.Position + offset,
-            data.Attr("dialogID"), data.Int("lineNumber"),
+            data.String("dialogID"), data.Int("lineNumber"),
             data.Float("startFadeRadius", 96f), data.Float("endFadeRadius", 128f),
-            data.Attr("appearFlag"), data.Attr("stayFlag"), data.Float("flagFadeTime", 0.4f), data.Bool("useRawDeltaTime"),
+            data.Condition("appearFlag"), data.Condition("stayFlag", false), data.Float("flagFadeTime", 0.4f), data.Bool("useRawDeltaTime"),
             data.HexColor("textColor", Color.White), data.Bool("hasOutline", true), data.HexColor("outlineColor", Color.Black), data.Float("outlineThickness", 2f),
             data.Float("scale", 1.25f), new Vector2(data.Float("parallaxX", 0.2f), data.Float("parallaxY", 0.2f)),
             data.Bool("hideOnHeartCollect", true))
@@ -71,14 +72,16 @@ public class FlagCustomCoreMessage : Entity
     {
         base.Update();
 
-        if (Scene.Tracker.GetEntity<Player>() is not { } player)
+        Level level = SceneAs<Level>();
+        if (level.Tracker.GetEntity<Player>() is not { } player)
             return;
 
-        bool appear = string.IsNullOrEmpty(appearFlag) || SceneAs<Level>().Session.GetFlag(appearFlag);
-        bool stay = !string.IsNullOrEmpty(stayFlag) && SceneAs<Level>().Session.GetFlag(stayFlag);
+        bool appear = appearFlag.Check(level);
+        bool stay = stayFlag.Check(level);
+        float deltaTime = useRawDeltaTime ? Engine.RawDeltaTime : Engine.DeltaTime;
         
-        appearAlpha = Calc.Approach(appearAlpha, appear ? 1f : 0f, (useRawDeltaTime ? Engine.RawDeltaTime : Engine.DeltaTime) / flagFadeTime);
-        stayAlpha = Calc.Approach(stayAlpha, stay ? 1f : 0f, (useRawDeltaTime ? Engine.RawDeltaTime : Engine.DeltaTime) / flagFadeTime);
+        appearAlpha = Calc.Approach(appearAlpha, appear ? 1f : 0f, deltaTime / flagFadeTime);
+        stayAlpha = Calc.Approach(stayAlpha, stay ? 1f : 0f, deltaTime / flagFadeTime);
         playerAlpha = Calc.ClampedMap(Vector2.Distance(player.Position, Position), startFadeRadius, endFadeRadius, 1f, 0f);
         alpha = Ease.CubeInOut(appearAlpha * MathF.Max(stayAlpha, playerAlpha));
     }

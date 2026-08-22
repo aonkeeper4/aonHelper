@@ -54,9 +54,9 @@ public class GlassLockBlock : BaseLockBlock
 
     public GlassLockBlock(EntityData data, Vector2 offset, EntityID id)
         : this(id, data.Position + offset,
-            data.Attr("spritePath"),
-            data.Attr("unlockSfx"), data.Bool("stepMusicProgress"),
-            ParseOpeningSettings(data.Bool("useVanillaKeys", true), data.Attr("dzhakeHelperKeySettings")),
+            data.String("spritePath"),
+            data.String("unlockSfx"), data.Bool("stepMusicProgress"),
+            ParseOpeningSettings(data.Bool("useVanillaKeys", true), data.String("dzhakeHelperKeySettings")),
             data.Bool("behindFgTiles"))
     { }
 

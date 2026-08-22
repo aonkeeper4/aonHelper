@@ -2,11 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/FlingBirdNoSkipController", "global")]
 [Tracked]
-public class FlingBirdNoSkipController(string condition)
+public class FlingBirdNoSkipController(ConditionHelper.Condition condition)
     : ConditionalController<FlingBirdNoSkipController>(condition)
 {
     public FlingBirdNoSkipController(EntityData data, Vector2 offset)
-        : this(data.Attr("flag"))
+        : this(data.Condition("flag"))
     { }
 
     #region Hooks

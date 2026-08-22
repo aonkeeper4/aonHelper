@@ -2,11 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/DreamDashThroughTransitionController", "global")]
 [Tracked]
-public class DreamDashThroughTransitionController(string condition)
+public class DreamDashThroughTransitionController(ConditionHelper.Condition condition)
     : ConditionalController<DreamDashThroughTransitionController>(condition)
 {
     public DreamDashThroughTransitionController(EntityData data, Vector2 offset)
-        : this(data.Attr("flag"))
+        : this(data.Condition("flag"))
     { }
     
     #region Hooks

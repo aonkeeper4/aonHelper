@@ -2,13 +2,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
 [GlobalHelper.GlobalEntity("aonHelper/FeatherBounceScamController", "global")]
 [Tracked]
-public class FeatherBounceScamController(float featherBounceScamThreshold, string condition)
+public class FeatherBounceScamController(float featherBounceScamThreshold, ConditionHelper.Condition condition)
     : ConditionalController<FeatherBounceScamController>(condition)
 {
     private readonly float featherBounceScamThreshold = featherBounceScamThreshold;
 
     public FeatherBounceScamController(EntityData data, Vector2 offset)
-        : this(data.Float("featherBounceScamThreshold"), data.Attr("flag"))
+        : this(data.Float("featherBounceScamThreshold"), data.Condition("flag"))
     { }
 
     #region Hooks

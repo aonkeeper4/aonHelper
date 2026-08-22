@@ -11,35 +11,34 @@ public class ParallaxFadeTrigger(EntityData data, Vector2 offset) : Trigger(data
 	
     private readonly PositionModes positionMode = data.Enum("positionMode", PositionModes.LeftToRight);
 
-    private readonly string tagToAffect = data.Attr("tagToAffect") is var t && !string.IsNullOrEmpty(t) ? t : null;
-    private List<Parallax> allParallaxes;
+    private readonly string tagToAffect = data.String("tagToAffect");
+    private Parallax[] affectedParallaxes;
 
-    private readonly ConditionHelper.Condition condition = ConditionHelper.Create(data.Attr("flag"));
+    private readonly ConditionHelper.Condition condition = data.Condition("flag");
 
     public override void Awake(Scene scene)
     {
         base.Awake(scene);
 
         Level level = SceneAs<Level>();
-        allParallaxes = level.Foreground.Backdrops.Concat(level.Background.Backdrops)
-                                                  .Where(b => b is Parallax parallax && (tagToAffect is null || parallax.Tags.Contains(tagToAffect)))
-                                                  .Cast<Parallax>()
-                                                  .ToList();
+        affectedParallaxes = level.Foreground.Backdrops
+            .Concat(level.Background.Backdrops)
+            .Where(b => b is Parallax parallax && (tagToAffect is null || parallax.Tags.Contains(tagToAffect)))
+            .Cast<Parallax>()
+            .ToArray();
     }
 
     public override void OnStay(Player player)
     {
-	    Parallax[] affected = allParallaxes.Where(parallax => parallax is not null).ToArray();
-
 	    if (!condition.Check(SceneAs<Level>()))
 		    return;
 	    
 	    if (colorFrom is { } cFrom && colorTo is { } cTo)
-		    foreach (Parallax parallax in affected)
+		    foreach (Parallax parallax in affectedParallaxes)
 				parallax.Color = Color.Lerp(cFrom, cTo, GetPositionLerp(player, positionMode));
 	    
 	    if (alphaFrom is { } aFrom && alphaTo is { } aTo)
-		    foreach (Parallax parallax in affected)
+		    foreach (Parallax parallax in affectedParallaxes)
 			    parallax.Alpha = Calc.LerpClamp(aFrom, aTo, GetPositionLerp(player, positionMode));
     }
 }

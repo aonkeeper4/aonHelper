@@ -7,7 +7,7 @@ public class FgStylegroundBloomController(string bloomTag) : Controller<FgStyleg
     private readonly string bloomTag = bloomTag;
     
     public FgStylegroundBloomController(EntityData data, Vector2 offset)
-        : this(data.Attr("bloomTag"))
+        : this(data.String("bloomTag"))
     { }
 
     #region Hooks
@@ -28,10 +28,7 @@ public class FgStylegroundBloomController(string bloomTag) : Controller<FgStyleg
         => AfterForegroundRender -= action;
 
     public static string GetCurrentBloomTag(Level level)
-        => TryGetController(level, out FgStylegroundBloomController controller)
-            && !string.IsNullOrEmpty(controller.bloomTag)
-                ? controller.bloomTag
-                : null;
+        => TryGetController(level, out FgStylegroundBloomController controller) ? controller.bloomTag : null;
 
     private static void RenderForeground(Level level, bool applyBloom)
     {

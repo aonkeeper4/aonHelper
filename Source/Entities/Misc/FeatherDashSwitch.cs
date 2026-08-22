@@ -33,15 +33,15 @@ public class FeatherDashSwitch : DashSwitch
         this.featherActivated = featherActivated;
 
         this.refillBehavior = refillBehavior;
-        
-        this.flagOnPress = string.IsNullOrEmpty(flagOnPress) ? null : flagOnPress;
+
+        this.flagOnPress = flagOnPress;
         
         Vector2 spritePos = sprite.Position;
         float spriteRot = sprite.Rotation;
         sprite.Stop();
         Remove(sprite);
         
-        sprite = string.IsNullOrEmpty(spritePath)
+        sprite = spritePath is null
             ? aonHelperGFX.SpriteBank.Create("featherDashSwitch")
             : BuildSprite(spritePath);
         sprite.Position = spritePos;
@@ -74,9 +74,9 @@ public class FeatherDashSwitch : DashSwitch
     public FeatherDashSwitch(EntityData data, Vector2 offset, EntityID id)
         : this(id, data.Position + offset, data.Enum("side", Sides.Up),
             data.Bool("dashActivated"), data.Bool("holdableActivated"), data.Bool("featherActivated", true),
-            data.Enum("refillBehavior", RefillBehavior.None), data.Attr("flagOnPress"),
+            data.Enum("refillBehavior", RefillBehavior.None), data.String("flagOnPress"),
             data.Bool("persistent"), data.Bool("allGates"),
-            data.Attr("spriteDir"), data.HexColor("particleColor1", Calc.HexToColor("ff8000")), data.HexColor("particleColor2", Calc.HexToColor("ffd65c")))
+            data.String("spritePath"), data.HexColor("particleColor1", Calc.HexToColor("ff8000")), data.HexColor("particleColor2", Calc.HexToColor("ffd65c")))
     { }
 
     private static Sprite BuildSprite(string spritePath)

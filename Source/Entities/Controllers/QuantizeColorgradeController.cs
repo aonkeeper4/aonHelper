@@ -17,7 +17,7 @@ public class QuantizeColorgradeController(
     
     public QuantizeColorgradeController(EntityData data, Vector2 offset)
         : this(
-            data.Attr("affectedColorgrades", "*"),
+            data.String("affectedColorgrades", "*"),
             data.Bool("quantize", data.Int("mode") is 0 or 2), data.Bool("normalize", data.Int("mode") is 1 or 2))
     { }
 

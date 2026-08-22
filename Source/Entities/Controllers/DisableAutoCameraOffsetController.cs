@@ -3,14 +3,14 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 [GlobalHelper.GlobalEntity("aonHelper/DisableAutoCameraOffsetController", "global")]
 [Tracked]
 public class DisableAutoCameraOffsetController(
-    string condition,
+    ConditionHelper.Condition condition,
     bool disableAutoCameraOffset, bool disableCameraUpdate)
     : ConditionalController<DisableAutoCameraOffsetController>(condition)
 {
     private readonly bool disableAutoCameraOffset = disableAutoCameraOffset, disableCameraUpdate = disableCameraUpdate;
     
     public DisableAutoCameraOffsetController(EntityData data, Vector2 offset)
-        : this(data.Attr("flag"),
+        : this(data.Condition("flag"),
             data.Bool("disableAutoCameraOffset", true), data.Bool("disableCameraUpdate"))
     { }
 

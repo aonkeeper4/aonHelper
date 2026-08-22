@@ -117,7 +117,8 @@ public class TaikoDrum : Solid
 
     private readonly bool fragile;
 
-    private readonly string doNotLoadFlag, flagOnBreak;
+    private readonly ConditionHelper.Condition doNotLoadFlag;
+    private readonly string flagOnBreak;
     private bool broken;
     
     private const float HitCooldownTime = 0.2f;
@@ -135,7 +136,7 @@ public class TaikoDrum : Solid
     
     public TaikoDrum(Vector2 position, int width, int height,
         Axes axes, bool fragile,
-        string doNotLoadFlag, string flagOnBreak,
+        ConditionHelper.Condition doNotLoadFlag, string flagOnBreak,
         string spriteDir, int surfaceIndex, Color activateParticleColor)
         : base(position, width, height, true)
     {
@@ -145,14 +146,14 @@ public class TaikoDrum : Solid
 
         this.fragile = fragile;
 
-        this.doNotLoadFlag = string.IsNullOrEmpty(doNotLoadFlag) ? null : doNotLoadFlag;
-        this.flagOnBreak = string.IsNullOrEmpty(flagOnBreak) ? null : flagOnBreak;
+        this.doNotLoadFlag = doNotLoadFlag;
+        this.flagOnBreak = flagOnBreak;
         
         OnDashCollide = OnDashCollision;
         Add(new SoundWaveCollider(OnSoundWaveCollision));
         Add(new ExplosionCollider(OnExplosionCollision));
 
-        BuildSprite(string.IsNullOrEmpty(spriteDir) ? "objects/aonHelper/taikoDrum" : spriteDir);
+        BuildSprite(spriteDir ?? "objects/aonHelper/taikoDrum");
         
         if (Width > 32f)
             scaleStrength.X = Width / 32f;
@@ -172,8 +173,8 @@ public class TaikoDrum : Solid
     public TaikoDrum(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height,
             data.Enum("axes", Axes.Horizontal), data.Bool("fragile"),
-            data.Attr("doNotLoadFlag"), data.Attr("flagOnBreak"),
-            data.Attr("spriteDir"), data.Int("surfaceIndex", SurfaceIndex.ResortWood), data.HexColor("activateParticleColor", Calc.HexToColor("f1dbc7")))
+            data.Condition("doNotLoadFlag"), data.String("flagOnBreak"),
+            data.String("spriteDir"), data.Int("surfaceIndex", SurfaceIndex.ResortWood), data.HexColor("activateParticleColor", Calc.HexToColor("f1dbc7")))
     { }
 
     private void BuildSprite(string spriteDir)
@@ -264,7 +265,7 @@ public class TaikoDrum : Solid
         base.Added(scene);
 
         Level level = SceneAs<Level>();
-        if (doNotLoadFlag is not null && level.Session.GetFlag(doNotLoadFlag))
+        if (doNotLoadFlag.Check(level))
         {
             RemoveSelf();
             return;

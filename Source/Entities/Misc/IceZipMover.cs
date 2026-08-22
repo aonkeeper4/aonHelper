@@ -245,7 +245,7 @@ public class IceZipMover : Solid
 
 		this.breakEarly = breakEarly;
 		
-		this.spriteDir = string.IsNullOrEmpty(spriteDir) ? "objects/aonHelper/iceZipMover" : spriteDir;
+		this.spriteDir = spriteDir ?? "objects/aonHelper/iceZipMover";
 		BuildImages(GFX.Game[this.spriteDir + "/block"]);
 		BuildSprite(this.spriteDir + "/center");
 		this.ropeColor = ropeColor;
@@ -268,9 +268,9 @@ public class IceZipMover : Solid
 	public IceZipMover(EntityData data, Vector2 offset)
 		: this(data.Position + offset, data.Width, data.Height,
 			data.Nodes[0] + offset, data.Bool("breakEarly", false),
-			data.Attr("spriteDir", ""), data.HexColor("ropeColor", Calc.HexToColor("663931")), data.HexColor("ropeLightColor", Calc.HexToColor("9b6157")),
+			data.String("spriteDir"), data.HexColor("ropeColor", Calc.HexToColor("663931")), data.HexColor("ropeLightColor", Calc.HexToColor("9b6157")),
 			data.HexColor("sparkParticleColor", Calc.HexToColor("fff538")), data.HexColor("breakParticleColor", Calc.HexToColor("33ffe7")), data.HexColor("breakParticleFadeColor", Calc.HexToColor("0151d0")),
-			data.Int("surfaceIndex", 8), data.Attr("moveSfx", SFX.game_01_zipmover), data.Attr("breakSfx", SFX.game_09_iceblock_touch), data.Attr("respawnSfx", SFX.game_09_iceblock_reappear))
+			data.Int("surfaceIndex", 8), data.String("moveSfx", SFX.game_01_zipmover), data.String("breakSfx", SFX.game_09_iceblock_touch), data.String("respawnSfx", SFX.game_09_iceblock_reappear))
 	{ }
 	
 	private void BuildImages(MTexture source)

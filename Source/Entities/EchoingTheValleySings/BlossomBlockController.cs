@@ -24,7 +24,7 @@ public class BlossomBlockController(
     public readonly float MinSwirlRadius = minSwirlRadius, MaxSwirlRadius = maxSwirlRadius, MinSwirlSpeed = minSwirlSpeed, MaxSwirlSpeed = maxSwirlSpeed;
 
     public BlossomBlockController(EntityData data, Vector2 offset)
-        : this(data.Attr("spritePath", DefaultSpritePath), data.Int("surfaceIndex", DefaultSurfaceIndex),
+        : this(data.String("spritePath", DefaultSpritePath), data.Int("surfaceIndex", DefaultSurfaceIndex),
             data.HexColor("particleColor1", DefaultParticleColor1), data.HexColor("particleColor2", DefaultParticleColor2), data.Float("ambientParticleDirection", DefaultAmbientParticleDirection) * Calc.DegToRad,
             data.Float("minSwirlRadius", 0f), data.Float("maxSwirlRadius", 2f), data.Float("minSwirlSpeed", 60f) * Calc.DegToRad, data.Float("maxSwirlSpeed", 120f) * Calc.DegToRad,
             data.Int("affectedDepth", DefaultDepth))

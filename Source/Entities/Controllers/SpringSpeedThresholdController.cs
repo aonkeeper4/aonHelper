@@ -3,13 +3,13 @@ namespace Celeste.Mod.aonHelper.Entities.Controllers;
 // threshold by sungazer reference
 [GlobalHelper.GlobalEntity("aonHelper/SpringSpeedThresholdController", "global")]
 [Tracked]
-public class SpringSpeedThresholdController(float thresholdX, float thresholdY, string condition)
+public class SpringSpeedThresholdController(float thresholdX, float thresholdY, ConditionHelper.Condition condition)
     : ConditionalController<SpringSpeedThresholdController>(condition)
 {
     private readonly Vector2 threshold = new(thresholdX, thresholdY);
     
     public SpringSpeedThresholdController(EntityData data, Vector2 offset)
-        : this(data.Float("thresholdX", data.Float("threshold", 240f)), data.Float("thresholdY"), data.Attr("flag"))
+        : this(data.Float("thresholdX", data.Float("threshold", 240f)), data.Float("thresholdY"), data.Condition("flag"))
     { }
     
     #region Hooks

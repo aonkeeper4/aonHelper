@@ -9,7 +9,7 @@ public class LightOcclusionFixController(char[] noOcclusionTileTypes) : Controll
 	private readonly char[] noOcclusionTileTypes = noOcclusionTileTypes; 
 	
     public LightOcclusionFixController(EntityData data, Vector2 offset)
-        : this(data.Attr("noOcclusionTiletypes").ToCharArray())
+        : this(data.String("noOcclusionTiletypes")?.ToCharArray() ?? [])
     { }
     
     #region Hooks
