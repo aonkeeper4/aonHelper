@@ -98,12 +98,12 @@ public class DreamLockBlock : BaseLockBlock
         [OnLoad]
         public static void Load()
         {
-            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_Activate, m_DreamBlock_Activate, On_DreamBlock_Activate);
-            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_FastActivate, m_DreamBlock_FastActivate, On_DreamBlock_FastActivate);
-            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_ActivateNoRoutine, m_DreamBlock_ActivateNoRoutine, On_DreamBlock_ActivateNoRoutine);
-            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_Deactivate, m_DreamBlock_Deactivate, On_DreamBlock_Deactivate);
-            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_FastDeactivate, m_DreamBlock_FastDeactivate, On_DreamBlock_FastDeactivate);
-            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_DeactivateNoRoutine, m_DreamBlock_DeactivateNoRoutine, On_DreamBlock_DeactivateNoRoutine);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_Activate, m_DreamBlock_Activate, DoNothingIfDummy);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_FastActivate, m_DreamBlock_FastActivate, DoNothingIfDummy);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_ActivateNoRoutine, m_DreamBlock_ActivateNoRoutine, DoNothingIfDummy);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_Deactivate, m_DreamBlock_Deactivate, DoNothingIfDummyCoroutine);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_FastDeactivate, m_DreamBlock_FastDeactivate, DoNothingIfDummyCoroutine);
+            HookHelper.HookEnsuringNoInlining(ref on_DreamBlock_DeactivateNoRoutine, m_DreamBlock_DeactivateNoRoutine, DoNothingIfDummyCoroutine);
             
             IL.Celeste.DreamBlock.Added += IL_DreamBlock_Added;
 
@@ -144,15 +144,7 @@ public class DreamLockBlock : BaseLockBlock
                 => self is not DreamBlockDummy dummy ? orig : dummy.CanDashThrough;
         }
 
-        private static IEnumerator On_DreamBlock_Activate(On.Celeste.DreamBlock.orig_Activate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
-        private static IEnumerator On_DreamBlock_FastActivate(On.Celeste.DreamBlock.orig_FastActivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
-        private static void On_DreamBlock_ActivateNoRoutine(On.Celeste.DreamBlock.orig_ActivateNoRoutine orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, true);
-
-        private static IEnumerator On_DreamBlock_Deactivate(On.Celeste.DreamBlock.orig_Deactivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
-        private static IEnumerator On_DreamBlock_FastDeactivate(On.Celeste.DreamBlock.orig_FastDeactivate orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
-        private static void On_DreamBlock_DeactivateNoRoutine(On.Celeste.DreamBlock.orig_DeactivateNoRoutine orig, DreamBlock self) => DoNothingIfDummy(() => orig(self), self, false);
-
-        private static void DoNothingIfDummy(Action callOrig, DreamBlock self, bool canDashThrough)
+        private static void DoNothingIfDummy(Action<DreamBlock> orig, DreamBlock self, bool canDashThrough)
         {
             if (self is DreamBlockDummy dummy)
             {
@@ -162,9 +154,9 @@ public class DreamLockBlock : BaseLockBlock
                 dummy.CanDashThrough = canDashThrough;
             }
             
-            callOrig();
+            orig(self);
         }
-        private static IEnumerator DoNothingIfDummy(Func<IEnumerator> callOrig, DreamBlock self, bool canDashThrough)
+        private static IEnumerator DoNothingIfDummyCoroutine(Func<DreamBlock, IEnumerator> orig, DreamBlock self, bool canDashThrough)
         {
             if (self is DreamBlockDummy dummy)
             {
@@ -174,7 +166,7 @@ public class DreamLockBlock : BaseLockBlock
                 dummy.CanDashThrough = canDashThrough;
             }
             
-            yield return new SwapImmediately(callOrig());
+            yield return new SwapImmediately(orig(self));
         }
 
         private static void IL_Player_DreamDashCheck(ILContext il)

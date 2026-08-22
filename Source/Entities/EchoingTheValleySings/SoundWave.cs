@@ -124,7 +124,7 @@ public class SoundWave : Entity
         {
             bool hasBeenReflected = false, hasBeenDestroyed = false, hasBeenDestroyedQuietly = false;
 
-            // collect the colliding components beforehand so no side effects from `OnCollide` will affect which components activate
+            // collect the colliding components beforehand so no side effects from their `OnCollide` will affect which components are checked
             SoundWaveCollider[] components = level.Tracker
                 .GetComponents<SoundWaveCollider>()
                 .Cast<SoundWaveCollider>()
@@ -364,15 +364,21 @@ public class SoundWave : Entity
 
         public override void Update()
         {
+            base.Update();
+
+            // i loooove writing state machines
             switch (state)
             {
                 case TriggerState.Waiting:
+                    // we're only moving if we move from the initial trigger position
                     if (triggerPosition is not null && Entity.Position != triggerPosition)
                         state = TriggerState.Moving;
                     
                     break;
                 
                 case TriggerState.Moving:
+                    // untrigger if we return to the initial trigger position after moving
+                    // this isn't foolproof but it works for what i need it to
                     if (Entity.Position == triggerPosition)
                     {
                         state = TriggerState.Waiting;
@@ -399,14 +405,25 @@ public class SoundWave : Entity
             triggerPosition = Entity.Position;
         }
     }
-    
+
+    // relationship ended with type safety. code reuse is my new best friend
+    private static readonly Type t_Solid = typeof(Solid);
+    private static readonly MethodInfo
+        m_Solid_GetPlayerClimbing = t_Solid.GetMethod("GetPlayerClimbing", HookHelper.Bind.PublicInstance)!,
+        m_Solid_GetPlayerOnTop = t_Solid.GetMethod("GetPlayerOnTop", HookHelper.Bind.PublicInstance)!,
+        m_Solid_GetPlayerRider = t_Solid.GetMethod("GetPlayerRider", HookHelper.Bind.PublicInstance)!;
+    private static Hook
+        on_Solid_GetPlayerClimbing,
+        on_Solid_GetPlayerOnTop,
+        on_Solid_GetPlayerRider;
+
     [OnLoad]
     internal static void Load()
     {
         On.Celeste.Solid.Awake += On_Solid_Awake;
-        On.Celeste.Solid.GetPlayerClimbing += On_Solid_GetPlayerClimbing;
-        On.Celeste.Solid.GetPlayerOnTop += On_Solid_GetPlayerOnTop;
-        On.Celeste.Solid.GetPlayerRider += On_Solid_GetPlayerRider;
+        on_Solid_GetPlayerClimbing = new Hook(m_Solid_GetPlayerClimbing, SoundWaveActivationCheck);
+        on_Solid_GetPlayerOnTop = new Hook(m_Solid_GetPlayerOnTop, SoundWaveActivationCheck);
+        on_Solid_GetPlayerRider = new Hook(m_Solid_GetPlayerRider, SoundWaveActivationCheck);
 
         On.Celeste.StaticMover.TriggerPlatform += On_StaticMover_TriggerPlatform;
     }
@@ -415,9 +432,9 @@ public class SoundWave : Entity
     internal static void Unload()
     {
         On.Celeste.Solid.Awake -= On_Solid_Awake;
-        On.Celeste.Solid.GetPlayerClimbing -= On_Solid_GetPlayerClimbing;
-        On.Celeste.Solid.GetPlayerOnTop -= On_Solid_GetPlayerOnTop;
-        On.Celeste.Solid.GetPlayerRider -= On_Solid_GetPlayerRider;
+        HookHelper.DisposeAndSetNull(ref on_Solid_GetPlayerClimbing);
+        HookHelper.DisposeAndSetNull(ref on_Solid_GetPlayerOnTop);
+        HookHelper.DisposeAndSetNull(ref on_Solid_GetPlayerRider);
         
         On.Celeste.StaticMover.TriggerPlatform -= On_StaticMover_TriggerPlatform;
     }
@@ -434,22 +451,20 @@ public class SoundWave : Entity
             self.AddAt(new SoundWaveTriggerable(), 0); // fixes activating a frame late due to component update order
     }
 
-    private static Player On_Solid_GetPlayerClimbing(On.Celeste.Solid.orig_GetPlayerClimbing orig, Solid self) => SoundWaveActivationCheck(() => orig(self), self);
-    private static Player On_Solid_GetPlayerOnTop(On.Celeste.Solid.orig_GetPlayerOnTop orig, Solid self) => SoundWaveActivationCheck(() => orig(self), self);
-    private static Player On_Solid_GetPlayerRider(On.Celeste.Solid.orig_GetPlayerRider orig, Solid self) => SoundWaveActivationCheck(() => orig(self), self);
-
-    private static Player SoundWaveActivationCheck(Func<Player> callOrig, Solid self)
+    private static Player SoundWaveActivationCheck(Func<Solid, Player> orig, Solid self)
     {
         if (self.Get<SoundWaveTriggerable>() is not { } triggerable)
-            return callOrig();
+            return orig(self);
 
         if (self.CollideCheck<SoundWave>())
             triggerable.Trigger();
 
+        // only activate the platform on the frame it becomes triggered
+        // this minimizes weirdness such as telepathic move block steering, but it also means we need to untrigger the component which is its own can of worms
         return (triggerable.PreviouslyTriggered, triggerable.Triggered) switch {
             (_, false) => null,
             (false, true) => self.Scene.Tracker.GetEntity<Player>(),
-            (true, true) => callOrig()
+            (true, true) => orig(self)
         };
     }
 
@@ -468,31 +483,37 @@ public class SoundWave : Entity
 
 public static class SoundWaveDirectionsExtensions
 {
-    public static Vector2 ToVector(this SoundWave.Directions direction)
-        => direction switch {
-            SoundWave.Directions.Left => -Vector2.UnitX,
-            SoundWave.Directions.Right => Vector2.UnitX,
-            SoundWave.Directions.Up => -Vector2.UnitY,
-            SoundWave.Directions.Down => Vector2.UnitY,
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    
-    public static SoundWave.Directions Reverse(this SoundWave.Directions direction)
-        => direction switch {
-            SoundWave.Directions.Left => SoundWave.Directions.Right,
-            SoundWave.Directions.Right => SoundWave.Directions.Left,
-            SoundWave.Directions.Up => SoundWave.Directions.Down,
-            SoundWave.Directions.Down => SoundWave.Directions.Up,
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-    public static SoundWave.Directions ToDirection(this Vector2 direction)
+    extension(SoundWave.Directions direction)
     {
-        if (direction == -Vector2.UnitX) return SoundWave.Directions.Left;
-        if (direction == Vector2.UnitX) return SoundWave.Directions.Right;
-        if (direction == -Vector2.UnitY) return SoundWave.Directions.Up;
-        if (direction == Vector2.UnitY) return SoundWave.Directions.Down;
+        public Vector2 ToVector()
+            => direction switch {
+                SoundWave.Directions.Left => -Vector2.UnitX,
+                SoundWave.Directions.Right => Vector2.UnitX,
+                SoundWave.Directions.Up => -Vector2.UnitY,
+                SoundWave.Directions.Down => Vector2.UnitY,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
-        throw new ArgumentOutOfRangeException();
+        public SoundWave.Directions Reverse()
+            => direction switch {
+                SoundWave.Directions.Left => SoundWave.Directions.Right,
+                SoundWave.Directions.Right => SoundWave.Directions.Left,
+                SoundWave.Directions.Up => SoundWave.Directions.Down,
+                SoundWave.Directions.Down => SoundWave.Directions.Up,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+    }
+
+    extension(Vector2 direction)
+    {
+        public SoundWave.Directions ToDirection()
+        {
+            if (direction == -Vector2.UnitX) return SoundWave.Directions.Left;
+            if (direction == Vector2.UnitX) return SoundWave.Directions.Right;
+            if (direction == -Vector2.UnitY) return SoundWave.Directions.Up;
+            if (direction == Vector2.UnitY) return SoundWave.Directions.Down;
+
+            throw new ArgumentOutOfRangeException();
+        }
     }
 }

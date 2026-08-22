@@ -72,8 +72,8 @@
     <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
         <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Ahorn\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso" />
     </ItemGroup>
-    <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="@(ZippedFiles)" Outputs="..\aonHelper.zip" Condition="'$(Configuration)' == 'Release'">
-        <PackageMod Files="@(ZippedFiles)" OutputPath="..\aonHelper.zip" />
+    <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="@(ZippedFiles)" Outputs="..\$(AssemblyName).zip" Condition="'$(Configuration)' == 'Release'">
+        <PackageMod Files="@(ZippedFiles)" OutputPath="..\$(AssemblyName).zip" />
     </Target>
     <UsingTask TaskName="PackageMod" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
         <ParameterGroup>
