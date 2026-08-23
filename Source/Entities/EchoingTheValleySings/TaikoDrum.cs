@@ -173,7 +173,7 @@ public class TaikoDrum : Solid
     public TaikoDrum(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height,
             data.Enum("axes", Axes.Horizontal), data.Bool("fragile"),
-            data.Condition("doNotLoadFlag"), data.String("flagOnBreak"),
+            data.Condition("doNotLoadFlag", false), data.String("flagOnBreak"),
             data.String("spriteDir"), data.Int("surfaceIndex", SurfaceIndex.ResortWood), data.HexColor("activateParticleColor", Calc.HexToColor("f1dbc7")))
     { }
 

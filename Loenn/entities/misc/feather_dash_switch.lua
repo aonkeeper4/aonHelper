@@ -60,7 +60,7 @@ for dir, side in pairs(directionsOptions) do
             flagOnPress = "",
             persistent = false,
             allGates = false,
-            spriteDir = "",
+            spritePath = "",
             particleColor1 = "ff8000",
             particleColor2 = "ffd65c",
         }
@@ -72,7 +72,7 @@ featherDashSwitch.fieldOrder = {
     "dashActivated", "holdableActivated", "featherActivated",
     "refillBehavior", "flagOnPress",
     "persistent", "allGates",
-    "spriteDir", "particleColor1", "particleColor2"
+    "spritePath", "particleColor1", "particleColor2"
 }
 featherDashSwitch.fieldInformation = {
     side = {
@@ -92,7 +92,8 @@ featherDashSwitch.fieldInformation = {
 }
 
 function featherDashSwitch.sprite(room, entity)
-    local sprite = drawableSprite.fromTexture("objects/aonHelper/featherDashSwitch/00", entity)
+    local texture = (entity.spritePath or "") ~= "" and (entity.spritePath .. "00") or "objects/aonHelper/featherDashSwitch/00"
+    local sprite = drawableSprite.fromTexture(texture, entity)
     local side = entity.side or directions.up
 
     local options = spriteOptions[side]

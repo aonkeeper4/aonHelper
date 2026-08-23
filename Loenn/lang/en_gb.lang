@@ -29,7 +29,6 @@ entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_left=
 entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_left=A Dash Switch that can be activated by feather bounces.
 entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_right=Feather Dash Switch (Right)
 entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_right=A Dash Switch that can be activated by feather bounces.
-entities.aonHelper/FeatherDashSwitchV2.attributes.name.spriteDir=Sprite Path
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.side=The orientation of this Feather Dash Switch.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.holdableActivated=Whether this Feather Dash Switch should activate when a holdable is thrown into it.
@@ -38,7 +37,7 @@ entities.aonHelper/FeatherDashSwitchV2.attributes.description.refillBehavior=Des
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.flagOnPress=The flag to set when this Feather Dash Switch is activated.\nNote that if Persistent is enabled, the flag will not be unset on room reload; otherwise, it will.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.persistent=Whether once this Feather Dash Switch is activated, it should stay activated, even if the room is reloaded.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.allGates=Whether this Feather Dash Switch should open all temple gates instead of opening only the closest one.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.spriteDir=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
+entities.aonHelper/FeatherDashSwitchV2.attributes.description.spritePath=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The primary color of particles emitted when this Feather Dash Switch is activated.
 entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
 
@@ -293,7 +292,7 @@ entities.aonHelper/TaikoDrum.placements.name.taiko_drum_both=Taiko Drum (Both)
 entities.aonHelper/TaikoDrum.placements.description.taiko_drum_both=A drum that will send out Sound Waves when dashed into, which can interact with other entities.
 entities.aonHelper/TaikoDrum.attributes.description.axes=The sides this Taiko Drum should be able to be activated from.
 entities.aonHelper/TaikoDrum.attributes.description.fragile=Whether this Taiko Drum should break upon being activated.
-entities.aonHelper/TaikoDrum.attributes.description.doNotLoadFlag=The session flag that will cause this Taiko Drum not to load.
+entities.aonHelper/TaikoDrum.attributes.description.doNotLoadFlag=The session flag that will cause this Taiko Drum not to load.\nUse an exclamation point before the flag (e.g. !myFlag) to prevent loading when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Taiko Drum will not load when this expression evaluates to true. 
 entities.aonHelper/TaikoDrum.attributes.description.flagOnBreak=The session flag this Taiko Drum should set when it is broken.\nDoes nothing if "Fragile" is not enabled.
 entities.aonHelper/TaikoDrum.attributes.description.spriteDir=A path to custom sprites to use for this Taiko Drum, relative to Graphics/Atlases/Gameplay.\nMust contain images named horizontal.png, horizontal_fragile.png, vertical.png, vertical_fragile.png, both.png, both_fragile.png and debris00.png.
 entities.aonHelper/TaikoDrum.attributes.description.surfaceIndex=The surface index to use for this Taiko Drum.
@@ -323,14 +322,14 @@ entities.aonHelper/SoundWaveReflector.attributes.description.spriteDir=A path to
 # Sound Wave Barrier
 entities.aonHelper/SoundWaveBarrier.placements.name.sound_wave_barrier=Sound Wave Barrier
 entities.aonHelper/SoundWaveBarrier.placements.description.sound_wave_barrier=An invisible entity that will destroy incoming Sound Waves.
-entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy Sound Waves. Leave empty for it to always destroy Sound Waves.
+entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy Sound Waves. Leave empty for it to always destroy Sound Waves.\nUse an exclamation point before the flag (e.g. !myFlag) to destroy Sound Waves when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and Sound Waves will be destroyed when this expression evaluates to true. 
 entities.aonHelper/SoundWaveBarrier.attributes.description.attachToSolids=Whether this Sound Wave Barrier should attach to solids.
 
 # Blossom Block
 entities.aonHelper/BlossomBlock.placements.name.blossom_block=Blossom Block
 entities.aonHelper/BlossomBlock.placements.description.blossom_block=A block that will be destroyed by incoming Sound Waves.
 entities.aonHelper/BlossomBlock.attributes.description.depth=The depth of this Blossom Block. Lower values will put this block more in the foreground.
-entities.aonHelper/BlossomBlock.attributes.description.doNotLoadFlag=The session flag that will cause this Blossom Block not to load.
+entities.aonHelper/BlossomBlock.attributes.description.doNotLoadFlag=The session flag that will cause this Blossom Block not to load.\nUse an exclamation point before the flag (e.g. !myFlag) to prevent loading when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Blossom Block will not load when this expression evaluates to true. 
 entities.aonHelper/BlossomBlock.attributes.description.flagOnBreak=The session flag this Blossom Block should set when it is broken.
 
 # Blossom Block Controller
@@ -354,8 +353,8 @@ entities.aonHelper/FlagCustomCoreMessage.attributes.description.dialogID=The ID 
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.lineNumber=The line of dialog to display, starting from 0.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.startFadeRadius=The radius to the player at which this Flag Custom Core Message will start to fade out.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.endFadeRadius=The radius to the player at which this Flag Custom Core Message will have faded out completely.
-entities.aonHelper/FlagCustomCoreMessage.attributes.description.appearFlag=This Flag Custom Core Message can only be visible while this flag is set.
-entities.aonHelper/FlagCustomCoreMessage.attributes.description.stayFlag=When this flag is active, this Flag Custom Core Message will not respond to the player's position and will always be visible.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.appearFlag=This Flag Custom Core Message can only be visible while this flag is set.\nUse an exclamation point before the flag (e.g. !myFlag) for this Flag Custom Core Message to only be visible when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Flag Custom Core Message will only be visible when this expression evaluates to true. 
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.stayFlag=When this flag is active, this Flag Custom Core Message will not respond to the player's position and will always be visible.\nUse an exclamation point before the flag (e.g. !myFlag) for this Flag Custom Core Message to always be visible when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Flag Custom Core Message will always be visible when this expression evaluates to true. 
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.flagFadeTime=The time it takes for this Flag Custom Core Message to fade in and out in seconds.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.useRawDeltaTime=Whether this Flag Custom Core Message ignores the current time rate when fading in and out.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.textColor=The text color of this Flag Custom Core Message.
@@ -384,4 +383,4 @@ triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The star
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaTo=The end alpha of the affected stylegrounds. Leave empty to not affect the alpha of the affected stylegrounds.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.positionMode=Determines how the styleground attributes fade as the player moves across the trigger.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.flag=This Parallax Fade only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.flag=This Parallax Fade only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this Parallax Fade when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Parallax Fade will be enabled when this expression evaluates to true. 

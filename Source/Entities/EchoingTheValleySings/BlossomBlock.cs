@@ -60,7 +60,7 @@ public class BlossomBlock : Solid
 
     public BlossomBlock(EntityData data, Vector2 offset)
         : this(data.Position + offset, data.Width, data.Height,
-            data.Int("depth", BlossomBlockController.DefaultDepth), data.Condition("doNotLoadFlag"), data.String("flagOnBreak"))
+            data.Int("depth", BlossomBlockController.DefaultDepth), data.Condition("doNotLoadFlag", false), data.String("flagOnBreak"))
     { }
 
     public override void Added(Scene scene)
