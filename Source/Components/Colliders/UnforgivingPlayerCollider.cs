@@ -74,7 +74,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         cursor.EmitLdloc(l_checkPosition);
         cursor.EmitLdarg1();
         cursor.EmitLdcI4(horizontal ? 1 : 0);
-        cursor.EmitDelegate(CheckForUnforgivingPLayerColliders);
+        cursor.EmitDelegate(CheckForUnforgivingPlayerColliders);
         cursor.EmitBrfalse(afterRet);
         
         cursor.EmitLdcI4(0); // return false since we didn't collide with a solid
@@ -83,7 +83,7 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
         
         return;
 
-        static bool CheckForUnforgivingPLayerColliders(Actor actor, Vector2 checkPosition, int moveAmount, bool horizontal)
+        static bool CheckForUnforgivingPlayerColliders(Actor actor, Vector2 checkPosition, int moveAmount, bool horizontal)
         {
             if (actor is not Player player)
                 return false;
@@ -93,9 +93,10 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
             Collider collider = player.Collider;
             player.Collider = player.hurtbox;
             
+            // this logic should be correct
             if (player.Scene.Tracker.GetComponents<UnforgivingPlayerCollider>()
                                     .Cast<UnforgivingPlayerCollider>()
-                                    .Any(upc => upc.Check(player, moveDir)))
+                                    .Any(upc => upc.Check(player, moveDir) && player.Dead))
             {
                 player.Collider = collider;
                 return true;

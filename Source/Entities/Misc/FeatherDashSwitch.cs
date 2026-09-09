@@ -46,7 +46,6 @@ public class FeatherDashSwitch : DashSwitch
             : BuildSprite(spritePath);
         sprite.Position = spritePos;
         sprite.Rotation = spriteRot;
-        sprite.Play("idle");
         Add(sprite);
         
         P_PressA = new ParticleType
@@ -90,6 +89,9 @@ public class FeatherDashSwitch : DashSwitch
         // <Anim id="push" path="" delay="0.07" frames="21-27" goto="pushed"/>
         sprite.Add("push", "", 0.07f, "pushed", Enumerable.Range(21, 7).ToArray());
         
+        // <Justify x="0.5" y="0.5"/>
+        sprite.JustifyOrigin(Vector2.One * 0.5f);
+        sprite.Play("idle");
         return sprite;
     }
 

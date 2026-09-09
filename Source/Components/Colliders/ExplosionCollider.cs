@@ -72,10 +72,13 @@ public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2>
 
     private static void TriggerExplosionColliders(Entity entity, ExplosionTypes type)
     {
-        foreach (ExplosionCollider collider in entity.SceneAs<Level>().Tracker
+        // collect the colliding components beforehand so no side effects from their `OnCollide` will affect which components are checked
+        ExplosionCollider[] colliders = entity.SceneAs<Level>().Tracker
             .GetComponents<ExplosionCollider>()
             .Cast<ExplosionCollider>()
-            .Where(c => c.Check(entity)))
+            .Where(c => c.Check(entity))
+            .ToArray();
+        foreach (ExplosionCollider collider in colliders)
         {
             Collider c = collider.Collider;
             Vector2 toEntity = c.Center - entity.Position;
