@@ -50,7 +50,7 @@
         <EffectFiles Include="..\Effects\**\*.fx" />
     </ItemGroup>
     <PropertyGroup>
-        <EffectCompilerPath>..\Effects\aonHelper\lib\fxc.exe</EffectCompilerPath>
+        <EffectCompilerPath>\home\aonkeeper4\.wine\drive_c\Program Files\Microsoft DirectX SDK (June 2010)\Utilities\bin\x86\fxc.exe</EffectCompilerPath>
     </PropertyGroup>
     <Target Name="GetWineStatus" Condition="Exists('$(EffectCompilerPath)')" BeforeTargets="Build">
         <Exec Command="wine --version" IgnoreExitCode="true">
@@ -70,7 +70,7 @@
 
     <!-- package the mod when building in release -->
     <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
-        <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Ahorn\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso" />
+        <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso" />
     </ItemGroup>
     <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="@(ZippedFiles)" Outputs="..\$(AssemblyName).zip" Condition="'$(Configuration)' == 'Release'">
         <PackageMod Files="@(ZippedFiles)" OutputPath="..\$(AssemblyName).zip" />
