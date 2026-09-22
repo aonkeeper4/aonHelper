@@ -33,6 +33,8 @@ public class aonHelperModule : EverestModule
         
         LifecycleMethods.OnLoad();
         
+        HookHelper.HookLazyLoadingManager.LateLoad();
+        
         aonHelperExports.Load();
     }
     

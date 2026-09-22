@@ -94,7 +94,7 @@ public static class HookHelper
         : Exception($"Hook application failed: {message}", inner)
     {
         public HookException(ILContext il, string message, Exception inner = null)
-            : this($"ILHook application on method {il.Method.FullName} failed: {message}", inner)
+            : this($"ILHook application on method {il.Method.FullName ?? "<unknown>"} failed: {message}", inner)
         { }
     }
 
@@ -116,9 +116,16 @@ public static class HookHelper
             public readonly LazyUnloadHandler LazyUnload = lazyUnload;
         }
         private static readonly Dictionary<string, HookHandler> Hooks = new();
-        
+
+        private static bool locked;
+
         public static void Register(string tag, ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler load, LazyUnloadHandler unload)
-            => Hooks.Add(tag, new HookHandler(shouldLazyLoad, load, unload));
+        {
+            if (locked)
+                throw new InvalidOperationException("Cannot register lazily loaded hooks after `Load`!");
+            
+            Hooks.Add(tag, new HookHandler(shouldLazyLoad, load, unload));
+        }
         
         private static void UpdateHooks(Session session)
         {
@@ -132,13 +139,30 @@ public static class HookHelper
                 {
                     handler.LazyLoad();
                     handler.Loaded = true;
-                    Logger.Info(LogID, $"Lazily loaded hooks for {tag}.");
+                    Logger.Info(LogID, $"Lazily loaded hooks for `{tag}`.");
                 }
                 else
                 {
                     handler.LazyUnload();
                     handler.Loaded = false;
-                    Logger.Info(LogID, $"Lazily unloaded hooks for {tag}.");
+                    Logger.Info(LogID, $"Lazily unloaded hooks for `{tag}`.");
+                }
+            }
+        }
+
+        private static void ForceUpdateHooks(bool load)
+        {
+            foreach ((string tag, HookHandler handler) in Hooks)
+            {
+                if (load)
+                {
+                    handler.LazyLoad();
+                    Logger.Info(LogID, $"Eagerly loaded hooks for `{tag}`.");
+                }
+                else
+                {
+                    handler.LazyUnload();
+                    Logger.Info(LogID, $"Eagerly unloaded hooks for `{tag}`.");
                 }
             }
         }
@@ -146,36 +170,57 @@ public static class HookHelper
         #region Hooks
     
         // we need to make sure these are loaded *before* any other hooks are loaded and *after* all other hooks are unloaded, so we don't use the mod lifecycle attributes
+        // we also don't lazily load/unload hooks when running in headless mode so the ilhook database knows about our hooks
+        
         internal static void Load()
         {
+            locked = false;
             Hooks.Clear();
             
             // i'm not sure whether we could be using everest events but applying hooks on a different thread (in `LevelLoader`'s case) doesn't sound like a good idea
             On.Celeste.LevelLoader.ctor += On_LevelLoader_ctor;
             On.Celeste.OverworldLoader.ctor += On_OverworldLoader_ctor;
         }
+        
+        internal static void LateLoad()
+        {
+            locked = true;
+
+            if (Everest.Flags.IsHeadless)
+            {
+                Logger.Info(LogID, "Everest is running in headless mode; eagerly loading hooks.");
+                ForceUpdateHooks(true);
+            }
+        }
 
         internal static void Unload()
         {
-            UpdateHooks(null);
+            if (Everest.Flags.IsHeadless)
+            {
+                Logger.Info(LogID, "Everest is running in headless mode; eagerly unloading hooks.");
+                ForceUpdateHooks(false);
+            }
+            else
+                UpdateHooks(null);
             
             On.Celeste.LevelLoader.ctor -= On_LevelLoader_ctor;
             On.Celeste.OverworldLoader.ctor -= On_OverworldLoader_ctor;
         }
         
-        private static void On_LevelLoader_ctor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startposition)
+        private static void On_LevelLoader_ctor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition)
         {
-            orig(self, session, startposition);
+            orig(self, session, startPosition);
 
-            UpdateHooks(session);
+            if (!Everest.Flags.IsHeadless)
+                UpdateHooks(session);
         }
         
-        private static void On_OverworldLoader_ctor(On.Celeste.OverworldLoader.orig_ctor orig, OverworldLoader self, Overworld.StartMode startmode, HiresSnow snow)
+        private static void On_OverworldLoader_ctor(On.Celeste.OverworldLoader.orig_ctor orig, OverworldLoader self, Overworld.StartMode startMode, HiresSnow snow)
         {
-            orig(self, startmode, snow);
+            orig(self, startMode, snow);
 
             // i assume this is for collabutils2 support?
-            if (startmode is not (Overworld.StartMode) (-1))
+            if (!Everest.Flags.IsHeadless && startMode is not (Overworld.StartMode) (-1))
                 UpdateHooks(null);
         }
         
