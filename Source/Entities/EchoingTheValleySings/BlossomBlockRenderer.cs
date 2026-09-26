@@ -25,10 +25,7 @@ public class BlossomBlockRenderer(int depth) :
         public static void QueryBuffers(int depth, out BlossomBlockBuffers glassLockBlockBuffers)
         {
             if (!Buffers.TryGetValue(depth, out BlossomBlockBuffers buffers))
-            {
                 buffers = new BlossomBlockBuffers();
-                Logger.Info(LogID, $"Created new Blossom Block buffer at depth {depth}.");
-            }
 
             string bufferIDPrefix = $"{nameof(aonHelper)}/{nameof(BlossomBlockRenderer)}:{depth}";
             RenderTargetHelper.CreateOrResizeGameplayTarget(ref buffers.Blocks, bufferIDPrefix + "_blocks");
@@ -45,14 +42,12 @@ public class BlossomBlockRenderer(int depth) :
             aonHelperGFX.OnDisposeBuffers += DisposeBuffers;
         }
 
-        private static void DisposeBuffers(ref int buffersDisposed)
+        private static void DisposeBuffers()
         {
             foreach (int depth in Buffers.Keys)
             {
                 BlossomBlockBuffers buffers = Buffers[depth];
                 RenderTargetHelper.DisposeAndSetNull(ref buffers.Blocks);
-
-                buffersDisposed++;
             }
 
             Buffers.Clear();

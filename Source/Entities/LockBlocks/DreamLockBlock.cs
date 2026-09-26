@@ -12,7 +12,6 @@ public class DreamLockBlock : BaseLockBlock
     internal class DreamBlockDummy(Vector2 position, DreamLockBlock parent, bool below, bool ignoreInventory)
         : DreamBlock(position, 32, 32, null, false, false, below)
     {
-
         private const float ChargeUpDuration = 0.6f, UnlockDuration = 0.25f, ChargeDownDuration = 0.1f;
 
         private bool CanDashThrough

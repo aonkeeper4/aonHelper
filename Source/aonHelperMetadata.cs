@@ -2,6 +2,8 @@ namespace Celeste.Mod.aonHelper;
 
 public class aonHelperMetadata
 {
+    private const string LogID = $"{nameof(aonHelper)}/{nameof(aonHelperMetadata)}";
+    
     private static readonly Dictionary<string, aonHelperMetadata> CachedMetadata = new();
     
     #region Metadata Properties
@@ -10,24 +12,6 @@ public class aonHelperMetadata
     {
         public aonHelperMetadata aonHelperMetadata { get; set; } = new();
     }
-
-    public class PostcardInfo
-    {
-        public string DialogID { get; set; }
-        
-        public enum Sides
-        {
-            Front,
-            Back
-        }
-        public Sides StartingSide { get; set; } = Sides.Front;
-        public bool CanFlip { get; set; } = true;
-
-        public string FrontTexture { get; set; } = "postcard";
-        public string BackTexture { get; set; }
-    }
-    [Helpers.YamlHelper.NoNullItems]
-    public PostcardInfo[] Postcards { get; set; } = [];
     
     #endregion
 
@@ -35,20 +19,22 @@ public class aonHelperMetadata
     {
         metadata = null;
         
-        if (CachedMetadata.TryGetValue(areaKey.SID, out metadata)) return metadata is not null;
+        if (CachedMetadata.TryGetValue(areaKey.SID, out metadata))
+            return metadata is not null;
 
         string filename = AreaData.Get(areaKey).Mode[(int) areaKey.Mode].Path;
-        if (!Everest.Content.TryGet<AssetTypeYaml>($"Maps/{filename}.meta", out ModAsset asset)) goto fail;
-
-        if (asset is null) goto fail;
-        if (!asset.PathVirtual.StartsWith("Maps")) goto fail;
-        if (!asset.TryValidatingDeserialize(out aonHelperYaml meta)) goto fail;
-        if (meta?.aonHelperMetadata is not { } deserialized) goto fail;
+        if (Everest.Content.TryGet<AssetTypeYaml>($"Maps/{filename}.meta", out ModAsset asset)
+            && asset is not null
+            && asset.PathVirtual.StartsWith("Maps")
+            && asset.TryValidatingDeserialize(out aonHelperYaml meta)
+            && meta?.aonHelperMetadata is { } deserialized)
+        {
+            Logger.Info(LogID, $"Cached aon helper metadata for '{areaKey.SID}' from 'Maps/{filename}.meta.yaml'.");
+            metadata = CachedMetadata[areaKey.SID] = deserialized;
+            return true;
+        }
         
-        metadata = CachedMetadata[areaKey.SID] = deserialized;
-        return true;
-        
-    fail:
+        Logger.Info(LogID, $"No aon helper metadata found for '{areaKey.SID}' in 'Maps/{filename}.meta.yaml'.");
         CachedMetadata[areaKey.SID] = null;
         return false;
     }
@@ -57,15 +43,15 @@ public class aonHelperMetadata
 
     internal static void Load()
     {
-        Everest.Content.OnUpdate += OnUpdate;
+        Everest.Content.OnUpdate += OnUpdateContent;
     }
     
     internal static void Unload()
     {
-        Everest.Content.OnUpdate -= OnUpdate;
+        Everest.Content.OnUpdate -= OnUpdateContent;
     }
     
-    private static void OnUpdate(ModAsset old, ModAsset _)
+    private static void OnUpdateContent(ModAsset old, ModAsset _)
     {
         // maybe a bit overkill
         if (old is not null

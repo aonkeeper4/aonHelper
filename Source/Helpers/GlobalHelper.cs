@@ -38,7 +38,7 @@ public static class GlobalHelper
     private static readonly Type[] globalEntityConstructorSignature3 = [typeof(Vector2)];
     private static readonly Type[] globalEntityConstructorSignature4 = Type.EmptyTypes;
     
-    public static void ProcessGlobalEntityAttributes(Type type, ref int attributesProcessed)
+    public static void ProcessGlobalEntityAttributes(Type type)
     {
         foreach (GlobalEntityAttribute attribute in type.GetCustomAttributes<GlobalEntityAttribute>())
         {
@@ -151,9 +151,6 @@ public static class GlobalHelper
                 if (fromConstructor)
                     RegisterSidToTypeConnection(entitySID, type);
                 GlobalEntityLoaders[entitySID] = entityLoader;
-                
-                Logger.Info(LogID, $"Registered global entity with SID '{entitySID}' in type `{type.FullName}`.");
-                attributesProcessed++;
             }
         }
     }

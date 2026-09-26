@@ -118,7 +118,7 @@ public static class HookHelper
         private static readonly Dictionary<string, HookHandler> Hooks = new();
 
         private static bool locked;
-
+ 
         public static void Register(string tag, ShouldLazyLoadHandler shouldLazyLoad, LazyLoadHandler load, LazyUnloadHandler unload)
         {
             if (locked)
@@ -139,13 +139,13 @@ public static class HookHelper
                 {
                     handler.LazyLoad();
                     handler.Loaded = true;
-                    Logger.Info(LogID, $"Lazily loaded hooks for `{tag}`.");
+                    Logger.Info(LogID, $"Lazily loaded hooks for {tag}.");
                 }
                 else
                 {
                     handler.LazyUnload();
                     handler.Loaded = false;
-                    Logger.Info(LogID, $"Lazily unloaded hooks for `{tag}`.");
+                    Logger.Info(LogID, $"Lazily unloaded hooks for {tag}.");
                 }
             }
         }
@@ -157,12 +157,12 @@ public static class HookHelper
                 if (load)
                 {
                     handler.LazyLoad();
-                    Logger.Info(LogID, $"Eagerly loaded hooks for `{tag}`.");
+                    Logger.Info(LogID, $"Eagerly loaded hooks for {tag}.");
                 }
                 else
                 {
                     handler.LazyUnload();
-                    Logger.Info(LogID, $"Eagerly unloaded hooks for `{tag}`.");
+                    Logger.Info(LogID, $"Eagerly unloaded hooks for {tag}.");
                 }
             }
         }

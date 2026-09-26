@@ -18,7 +18,7 @@ public static class aonHelperGFX
     
     #region Buffers
 
-    public delegate void DisposeBuffersHandler(ref int buffersDisposed);
+    public delegate void DisposeBuffersHandler();
     public static event DisposeBuffersHandler OnDisposeBuffers;
     
     #endregion
@@ -38,8 +38,6 @@ public static class aonHelperGFX
         EffectHelper.DisposeAndSetNull(ref quantizedColorgradeEffect);
         EffectHelper.DisposeAndSetNull(ref swirlDisplacementEffect);
 
-        int buffersDisposed = 0;
-        OnDisposeBuffers?.Invoke(ref buffersDisposed);
-        Logger.Info(LogID, $"Disposed all buffers ({buffersDisposed} buffers disposed).");
+        OnDisposeBuffers?.Invoke();
     }
 }

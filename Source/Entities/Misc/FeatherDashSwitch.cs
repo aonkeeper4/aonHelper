@@ -217,7 +217,7 @@ public class FeatherDashSwitch : DashSwitch
     }
 
     // ensure only our code can activate feather dash switches
-    private static new DashCollisionResults OnDashed(Player player, Vector2 dir)
+    private new static DashCollisionResults OnDashed(Player player, Vector2 dir)
         => DashCollisionResults.NormalCollision;
     
     #region Hooks
@@ -228,10 +228,8 @@ public class FeatherDashSwitch : DashSwitch
         On.Celeste.DashSwitch.OnDashed += On_DashSwitch_OnDashed;
 
         On.Celeste.Glider.OnCollideH += On_Glider_OnCollideH;
-
         On.Celeste.TheoCrystal.OnCollideH += On_TheoCrystal_OnCollideH;
         On.Celeste.TheoCrystal.OnCollideV += On_TheoCrystal_OnCollideV;
-
         On.Celeste.Seeker.SlammedIntoWall += On_Seeker_SlammedIntoWall;
         
         IL.Celeste.Player.OnCollideH += IL_Player_OnCollideHV;
@@ -244,10 +242,8 @@ public class FeatherDashSwitch : DashSwitch
         On.Celeste.DashSwitch.OnDashed -= On_DashSwitch_OnDashed;
         
         On.Celeste.Glider.OnCollideH -= On_Glider_OnCollideH;
-
         On.Celeste.TheoCrystal.OnCollideH -= On_TheoCrystal_OnCollideH;
         On.Celeste.TheoCrystal.OnCollideV -= On_TheoCrystal_OnCollideV;
-
         On.Celeste.Seeker.SlammedIntoWall -= On_Seeker_SlammedIntoWall;
         
         IL.Celeste.Player.OnCollideH -= IL_Player_OnCollideHV;
@@ -259,14 +255,13 @@ public class FeatherDashSwitch : DashSwitch
     private static DashCollisionResults On_DashSwitch_OnDashed(On.Celeste.DashSwitch.orig_OnDashed orig, DashSwitch self, Player player, Vector2 direction)
         => self is FeatherDashSwitch ? OnDashed(player, direction) : orig(self, player, direction);
     
+    // yes i know these cause like 10 billion allocations but i don't want to write the same hook 4 times
     private static void On_Glider_OnCollideH(On.Celeste.Glider.orig_OnCollideH orig, Glider self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.holdableActivated);
-    
     private static void On_TheoCrystal_OnCollideH(On.Celeste.TheoCrystal.orig_OnCollideH orig, TheoCrystal self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.holdableActivated);
     private static void On_TheoCrystal_OnCollideV(On.Celeste.TheoCrystal.orig_OnCollideV orig, TheoCrystal self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitY, featherDashSwitch => featherDashSwitch.holdableActivated);
-    
     private static void On_Seeker_SlammedIntoWall(On.Celeste.Seeker.orig_SlammedIntoWall orig, Seeker self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.dashActivated);
 

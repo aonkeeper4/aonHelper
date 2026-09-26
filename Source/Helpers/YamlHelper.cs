@@ -17,7 +17,7 @@ public static class YamlHelper
                 null => false,
                 IDictionary dictionary => dictionary.Keys.Cast<object>().All(key => key is not null && dictionary[key] is not null),
                 IEnumerable enumerable => enumerable.Cast<object>().All(item => item is not null),
-                _ => throw new NotImplementedException($"Non-null item validation for type {value.GetType()} is not implemented.")
+                _ => throw new NotImplementedException($"Non-null item validation for type `{value.GetType()}` is not implemented.")
             };
     }
 
@@ -67,7 +67,7 @@ public static class YamlHelper
             }
             catch (YamlException e)
             {
-                Logger.Warn(LogID, $"Failed to deserialize mod asset {asset.PathVirtual}.yaml!");
+                Logger.Warn(LogID, $"Failed to deserialize mod asset with path '{asset.PathVirtual}.yaml'!");
                 Logger.LogDetailed(e, LogID);
                 goto fail;
             }

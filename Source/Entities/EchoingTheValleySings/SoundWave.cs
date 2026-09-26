@@ -443,8 +443,7 @@ public class SoundWave : Entity
     {
         orig(self, scene);
         
-        TaikoDrumController controller = self.Scene.Tracker.GetEntity<TaikoDrumController>();
-        if (controller is null)
+        if (self.Scene.Tracker.GetEntity<TaikoDrumController>() is not { } controller)
             return;
 
         if (controller.AffectAll || controller.AffectedTypes.Contains(self.GetType()))

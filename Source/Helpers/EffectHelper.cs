@@ -13,11 +13,11 @@ public static class EffectHelper
 
         if (Everest.Content.TryGet(path, out ModAsset effect))
         {
-            Logger.Info(LogID, $"Loaded effect from {path}.");
+            Logger.Info(LogID, $"Loaded effect from path '{path}'.");
             return new Effect(Engine.Graphics.GraphicsDevice, effect.Data);
         }
 
-        Logger.Error(LogID, $"Failed to find effect at {path}!");
+        Logger.Warn(LogID, $"Failed to find effect at path '{path}'!");
         return null;
     }
 
@@ -42,7 +42,7 @@ public static class EffectHelper
             return atlas;
         }
         
-        Logger.Error(LogID, $"Failed to find atlas data file at {path}!");
+        Logger.Warn(LogID, $"Failed to find atlas data file at {path}!");
         return null;
     }
 
@@ -51,10 +51,9 @@ public static class EffectHelper
         foreach (XmlElement tex in xml["atlas"])
         {
             string sourcePath = Path.Combine(directory, tex.GetAttribute("n")).Replace('\\', '/');
-
             if (!Everest.Content.TryGet(sourcePath, out ModAsset asset))
             {
-                Logger.Error(LogID, $"Failed to find atlas source image at {sourcePath}, skipping!");
+                Logger.Warn(LogID, $"Failed to find atlas source image at {sourcePath}, skipping!");
                 continue;
             }
             
