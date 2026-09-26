@@ -26,7 +26,7 @@ public class DarkerMatter : Entity
             Start = start;
             End = end;
         }
-        
+
         public Color Color(Level level, int cycleOffset)
         => type switch
             {
@@ -34,17 +34,17 @@ public class DarkerMatter : Entity
                 EdgeType.Warp => parent.ColorCycle(parent.warpColors, level, cycleOffset),
                 _ => throw new Exception($"invalid edge type: {type}")
             };
-        
+
         public void Draw(uint seed, Color color)
         {
             seed += (uint)(Start.GetHashCode() + End.GetHashCode());
-        
+
             float length = (End - Start).Length();
             Vector2 dir = (End - Start) / length;
             Vector2 offsetDir = dir.TurnRight();
             Vector2 offsetA = parent.Position + Start + offsetDir;
             Vector2 offsetB = parent.Position + End + offsetDir;
-        
+
             Vector2 currentLineStart = offsetA;
             int offsetSign = PseudoRand(ref seed) % 2u != 0 ? 1 : -1;
             float drawnEdgeLength = 0f;
@@ -54,19 +54,19 @@ public class DarkerMatter : Entity
                 float currentLineEndOffset = PseudoRandRange(ref seed, 0f, 4f);
                 drawnEdgeLength += 4f + currentLineEndOffset;
                 Vector2 currentLineEnd = offsetA + dir * drawnEdgeLength;
-            
+
                 if (drawnEdgeLength < length)
                     currentLineEnd += offsetSign * offsetDir * currentLineEndOffset - offsetDir;
                 else
                     currentLineEnd = offsetB;
-            
+
                 Monocle.Draw.Line(currentLineStart, currentLineEnd, color, 1f);
                 currentLineStart = currentLineEnd;
                 offsetSign = -offsetSign;
             }
             while (drawnEdgeLength < length);
         }
-        
+
         private static uint PseudoRand(ref uint seed)
         {
             seed ^= seed << 13;
@@ -77,7 +77,7 @@ public class DarkerMatter : Entity
         private static float PseudoRandRange(ref uint seed, float min, float max)
             => min + (PseudoRand(ref seed) & 0x3FFu) / 1024f * (max - min);
     }
-    
+
     private readonly float speedThreshold, speedLimit;
     private readonly bool warpHorizontal, warpVertical;
     private readonly bool refillDash;
@@ -85,11 +85,11 @@ public class DarkerMatter : Entity
     private readonly Color[] colors, warpColors;
     private readonly float centerAlpha, edgeAlpha, particleAlpha;
     private readonly ParticleType P_DarkerMatter;
-    
+
     private readonly bool lonely;
     private List<Edge> edges;
     private uint edgeSeed;
-    
+
     private float totalTime;
 
     public DarkerMatter(Vector2 position, int width, int height, int depth,
@@ -100,14 +100,14 @@ public class DarkerMatter : Entity
         Tag = Tags.TransitionUpdate;
         Depth = depth;
         Collider = new Hitbox(width, height);
-        
+
         this.speedThreshold = speedThreshold;
         this.speedLimit = speedLimit;
         this.warpHorizontal = warpHorizontal;
         this.warpVertical = warpVertical;
         this.refillDash = refillDash;
         lonely = this.warpHorizontal || this.warpVertical;
-        
+
         this.colors = colors;
         this.warpColors = warpColors;
         this.centerAlpha = centerAlpha;
@@ -118,7 +118,7 @@ public class DarkerMatter : Entity
             Color = colors[0] * this.particleAlpha,
             Color2 = colors[colors.Length / 2] * this.particleAlpha * 0.6f
         };
-        
+
         Add(new PlayerCollider(OnPlayer));
         Add(new CustomBloom(OnRenderBloom));
     }
@@ -161,12 +161,12 @@ public class DarkerMatter : Entity
                 currentEdge = null;
             }
         }
-        
+
         if (currentEdge is not null)
             builtEdges.Add(currentEdge);
         return builtEdges;
     }
-    
+
     private bool CheckForDarkerMatter(Vector2 pos)
         => !lonely && Scene.Tracker.GetEntities<DarkerMatter>()
                                    .Cast<DarkerMatter>()
@@ -175,11 +175,11 @@ public class DarkerMatter : Entity
     public override void Update()
     {
         base.Update();
-        
+
         totalTime += Engine.DeltaTime;
         if (!Scene.OnInterval(0.1f))
             return;
-        
+
         edgeSeed = (uint)Calc.Random.Next();
         if (particleAlpha > 0f)
         {
@@ -194,11 +194,11 @@ public class DarkerMatter : Entity
 
         Level level = SceneAs<Level>();
         Camera camera = level.Camera;
-        
+
         Rectangle view = new((int) camera.Left - 4, (int) camera.Top - 4, (int) (camera.Right - camera.Left) + 8, (int) (camera.Bottom - camera.Top) + 8);
         if (!Collider.Bounds.Intersects(view))
             return;
-        
+
         Draw.Rect(Collider, ColorCycle(colors, level, 0) * centerAlpha);
         foreach (Edge edge in edges)
         {
@@ -206,7 +206,7 @@ public class DarkerMatter : Entity
             edge.Draw(edgeSeed + 1, edge.Color(level, 5) * edgeAlpha);
         }
     }
-    
+
     private Color ColorCycle(Color[] colorCycle, Level level, int offset)
     {
         float time = (totalTime + offset) % 10;
@@ -215,7 +215,7 @@ public class DarkerMatter : Entity
             ? Color.Lerp(colorCycle[timeInt % colorCycle.Length], colorCycle[(timeInt + 1) % colorCycle.Length], time % 1f)
             : default;
     }
-    
+
     private void OnPlayer(Player player)
     {
         if (player.Speed.Length() >= speedThreshold && player.StateMachine.State != StDarkerMatter)
@@ -224,15 +224,15 @@ public class DarkerMatter : Entity
 
     private void OnRenderBloom()
         => Draw.Rect(Collider, Color.White * 0.1f);
-    
+
     #region States
-    
+
     public static int StDarkerMatter { get; private set; } = -1;
 
     private class DarkerMatterComponent() : TypeRestrictedComponent<Player>(false, false)
     {
         protected override string Name => nameof(DarkerMatterComponent);
-        
+
         public DarkerMatter LastDarkerMatter;
 
         public const float StopGraceThreshold = 0.01f;
@@ -241,7 +241,7 @@ public class DarkerMatter : Entity
 
         public Vector2 PreviousExactPosition;
         public Vector2 LastNonZeroSpeed;
-        
+
         public Sprite WarpSprite;
         public static readonly Vector2 WarpSpriteOffset = new(16f, 24f);
     }
@@ -252,7 +252,7 @@ public class DarkerMatter : Entity
         {
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
-            
+
             Vector2 playerVelocity = (player.ExactPosition - darkerMatterComponent.PreviousExactPosition) / Engine.DeltaTime;
 
             darkerMatterComponent.LastDarkerMatter = player.CollideFirst<DarkerMatter>();
@@ -265,7 +265,7 @@ public class DarkerMatter : Entity
         {
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
-            
+
             if (darkerMatterComponent.LastDarkerMatter?.refillDash ?? false)
                 player.RefillDash();
 
@@ -307,7 +307,7 @@ public class DarkerMatter : Entity
                 else
                     player.Die(Vector2.Zero);
             }
-            
+
             if (player.Speed.Length() < DarkerMatterComponent.StopGraceThreshold)
                 darkerMatterComponent.StopGraceTimer -= Engine.DeltaTime;
             else
@@ -320,28 +320,28 @@ public class DarkerMatter : Entity
             float magnitude = last.speedLimit >= 0 ? Math.Clamp(speed.Length(), 0f, last.speedLimit) : speed.Length();
             Vector2 direction = speed.SafeNormalize();
             player.Speed = direction * magnitude;
-            
+
             darkerMatterComponent.LastDarkerMatter = last;
-            
+
             return StDarkerMatter;
         }
-        
+
         private static void DarkerMatterAssistBounce(Player player) {
             if (player.Get<DarkerMatterComponent>() is not { } darkerMatterComponent)
                 return;
-            
+
             player.Speed = darkerMatterComponent.LastNonZeroSpeed * -1f;
             player.Play(SFX.game_assist_dreamblockbounce);
         }
     }
 
     #endregion
-    
+
     #region Hooks
 
     private static ILHook il_Player_orig_Update;
     private static ILHook il_Player_orig_UpdateSprite;
-    
+
     [OnLoad]
     internal static void Load()
     {
@@ -353,7 +353,7 @@ public class DarkerMatter : Entity
 
         // player hooks
         On.Celeste.Player.UnderwaterMusicCheck += On_Player_UnderwaterMusicCheck;
-        
+
         il_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, IL_Player_orig_Update);
         il_Player_orig_UpdateSprite = new ILHook(typeof(Player).GetMethod("orig_UpdateSprite", HookHelper.Bind.NonPublicInstance)!, IL_Player_orig_UpdateSprite);
     }
@@ -365,9 +365,9 @@ public class DarkerMatter : Entity
         Everest.Events.Player.OnSpawn -= Event_Player_OnSpawn;
         Everest.Events.Player.OnAfterUpdate -= Event_Player_OnAfterUpdate;
         Everest.Events.AssetReload.OnBeforeReload -= Event_AssetReload_OnBeforeReload;
-        
+
         On.Celeste.Player.UnderwaterMusicCheck -= On_Player_UnderwaterMusicCheck;
-        
+
         HookHelper.DisposeAndSetNull(ref il_Player_orig_Update);
         HookHelper.DisposeAndSetNull(ref il_Player_orig_UpdateSprite);
     }
@@ -376,11 +376,11 @@ public class DarkerMatter : Entity
 
     private static bool IsInDarkerMatterState(Player player)
         => player.StateMachine.State == StDarkerMatter;
-    
+
     #endregion
-    
+
     #region Events
-    
+
     private static void Event_Player_OnRegisterStates(Player player)
     {
         StDarkerMatter = player.AddState("DarkerMatter", DarkerMatterState.DarkerMatterUpdate, null, DarkerMatterState.DarkerMatterBegin, DarkerMatterState.DarkerMatterEnd);
@@ -390,18 +390,18 @@ public class DarkerMatter : Entity
     {
         if (player.Get<DarkerMatterComponent>() is not null)
             return;
-        
+
         DarkerMatterComponent darkerMatterComponent = new()
         {
             WarpSprite = aonHelperGFX.SpriteBank.Create("darkerMatterWarp")
         };
         darkerMatterComponent.WarpSprite.Visible = false;
         darkerMatterComponent.WarpSprite.Origin = DarkerMatterComponent.WarpSpriteOffset;
-        
+
         player.Add(darkerMatterComponent);
         player.Add(darkerMatterComponent.WarpSprite);
     }
-    
+
     private static void Event_Player_OnAfterUpdate(Player player)
     {
         if (player.Get<DarkerMatterComponent>() is { } darkerMatterComponent)
@@ -413,16 +413,18 @@ public class DarkerMatter : Entity
         if (Engine.Scene?.Tracker?.GetEntity<Player>() is { } player)
             player.Remove(player.Get<DarkerMatterComponent>());
     }
-    
+
     #endregion
-    
+
     #region Player
 
     private static bool On_Player_UnderwaterMusicCheck(On.Celeste.Player.orig_UnderwaterMusicCheck orig, Player self)
         => orig(self) || self.StateMachine.State == StDarkerMatter;
 
-    private static void IL_Player_orig_Update(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, IsInDarkerMatterState);
-    private static void IL_Player_orig_UpdateSprite(ILContext il) => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, IsInDarkerMatterState);
+    private static void IL_Player_orig_Update(ILContext il)
+        => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StHitSquash, false, false, IsInDarkerMatterState);
+    private static void IL_Player_orig_UpdateSprite(ILContext il)
+        => HookHelper.ModifyStateCheck(new ILCursor(il), Player.StCassetteFly, false, false, IsInDarkerMatterState);
 
     #endregion
 

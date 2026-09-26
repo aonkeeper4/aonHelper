@@ -367,7 +367,3 @@ Audio/
 # Referenced DLLs / tools
 Source/lib/
 Source/lib-stripped/
-Effects/aonHelper/lib/
-
-# EditorConfig files
-.editorconfig

@@ -1,7 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Misc;
 
-// i really hate to do this but i don't know how to preserve the legacy behaviour + it's been used in too many maps to just  fix the bugs
-[CustomEntity("aonHelper/FeatherDashSwitchV2")]
+[CustomEntity("aonHelper/FeatherDashSwitch")]
 [TrackedAs(typeof(DashSwitch))]
 public class FeatherDashSwitch : DashSwitch
 {
@@ -16,7 +15,7 @@ public class FeatherDashSwitch : DashSwitch
         TwoDashRefill
     }
     private readonly RefillBehavior refillBehavior;
-    
+
     private readonly string flagOnPress;
 
     public FeatherDashSwitch(EntityID id, Vector2 position, Sides side,
@@ -27,7 +26,7 @@ public class FeatherDashSwitch : DashSwitch
         : base(position, side, persistent, allGates, id, "default")
     {
         OnDashCollide = OnDashed;
-        
+
         this.dashActivated = dashActivated;
         this.holdableActivated = holdableActivated;
         this.featherActivated = featherActivated;
@@ -35,19 +34,19 @@ public class FeatherDashSwitch : DashSwitch
         this.refillBehavior = refillBehavior;
 
         this.flagOnPress = flagOnPress;
-        
+
         Vector2 spritePos = sprite.Position;
         float spriteRot = sprite.Rotation;
         sprite.Stop();
         Remove(sprite);
-        
+
         sprite = spritePath is null
             ? aonHelperGFX.SpriteBank.Create("featherDashSwitch")
             : BuildSprite(spritePath);
         sprite.Position = spritePos;
         sprite.Rotation = spriteRot;
         Add(sprite);
-        
+
         P_PressA = new ParticleType
         {
             Color = particleColor1,
@@ -81,14 +80,14 @@ public class FeatherDashSwitch : DashSwitch
     private static Sprite BuildSprite(string spritePath)
     {
         Sprite sprite = new(GFX.Game, spritePath);
-            
+
         // <Loop id="idle" path="" delay="0.08" frames="0-20"/>
         sprite.AddLoop("idle", "", 0.08f, Enumerable.Range(0, 21).ToArray());
         // <Loop id="pushed" path="" delay="0.08" frames="27"/>
         sprite.AddLoop("pushed", "", 0.08f, 27);
         // <Anim id="push" path="" delay="0.07" frames="21-27" goto="pushed"/>
         sprite.Add("push", "", 0.07f, "pushed", Enumerable.Range(21, 7).ToArray());
-        
+
         // <Justify x="0.5" y="0.5"/>
         sprite.JustifyOrigin(Vector2.One * 0.5f);
         sprite.Play("idle");
@@ -97,25 +96,26 @@ public class FeatherDashSwitch : DashSwitch
 
     [MonoModLinkTo("Monocle.Entity", "System.Void Awake(Monocle.Scene)")]
     private extern void base_Awake(Scene scene);
-    
+
     public override void Awake(Scene scene)
     {
         base_Awake(scene);
 
         if (!SceneAs<Level>().Session.GetFlag(flagOnPress ?? FlagName))
             return;
-        
+
         if (persistent)
         {
             sprite.Play("pushed");
             Position = pressedTarget - pressDirection * 2f;
             Collidable = false;
             pressed = true;
-            
+
             if (allGates)
-                foreach (TempleGate entity in Scene.Tracker.GetEntities<TempleGate>()
-                                                   .Cast<TempleGate>()
-                                                   .Where(entity => entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level))
+                foreach (TempleGate entity in Scene.Tracker
+                             .GetEntities<TempleGate>()
+                             .Cast<TempleGate>()
+                             .Where(entity => entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level))
                     entity.StartOpen();
             else
                 GetGate()?.StartOpen();
@@ -130,12 +130,12 @@ public class FeatherDashSwitch : DashSwitch
     public override void Update()
     {
         base_Update();
-        
+
         if (pressed
             || side is not Sides.Down
             || !dashActivated && !holdableActivated)
             return;
-        
+
         if (GetPlayerOnTop() is { } player)
         {
             if (holdableActivated && player.Holding is not null)
@@ -146,7 +146,7 @@ public class FeatherDashSwitch : DashSwitch
                     speedY = 0f;
                 speedY = Calc.Approach(speedY, 70f, 200f * Engine.DeltaTime);
                 MoveTowardsY(startY + 2f, speedY * Engine.DeltaTime);
-                
+
                 if (!playerWasOn)
                     Audio.Play(SFX.game_05_gatebutton_depress, Position);
             }
@@ -159,7 +159,7 @@ public class FeatherDashSwitch : DashSwitch
                 speedY = 0f;
             speedY = Calc.Approach(speedY, -150f, 200f * Engine.DeltaTime);
             MoveTowardsY(startY, (0f - speedY) * Engine.DeltaTime);
-            
+
             if (playerWasOn)
                 Audio.Play(SFX.game_05_gatebutton_return, Position);
 
@@ -169,12 +169,12 @@ public class FeatherDashSwitch : DashSwitch
 
     private void Press(Player player, Vector2 direction)
     {
-        if (pressed || direction != pressDirection) 
+        if (pressed || direction != pressDirection)
             return;
-        
+
         Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
         Audio.Play(SFX.game_05_gatebutton_activate, Position);
-            
+
         sprite.Play("push");
         MoveTo(pressedTarget);
         Position -= pressDirection * 2f;
@@ -191,24 +191,25 @@ public class FeatherDashSwitch : DashSwitch
         {
             case RefillBehavior.None:
                 break;
-            
+
             case RefillBehavior.Refill when player?.UseRefill(false) ?? false:
                 Audio.Play(SFX.game_gen_diamond_touch, Position);
                 break;
-            
+
             case RefillBehavior.TwoDashRefill when player?.UseRefill(true) ?? false:
                 Audio.Play(SFX.game_10_pinkdiamond_touch, Position);
                 break;
         }
-        
+
         if (allGates)
-            foreach (TempleGate entity in Scene.Tracker.GetEntities<TempleGate>()
-                                                       .Cast<TempleGate>()
-                                                       .Where(entity => entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level))
+            foreach (TempleGate entity in Scene.Tracker
+                         .GetEntities<TempleGate>()
+                         .Cast<TempleGate>()
+                         .Where(entity => entity.Type == TempleGate.Types.NearestSwitch && entity.LevelID == id.Level))
                 entity.SwitchOpen();
         else
             GetGate()?.SwitchOpen();
-        
+
         if (flagOnPress is not null || persistent)
             SceneAs<Level>().Session.SetFlag(flagOnPress ?? FlagName);
 
@@ -217,11 +218,11 @@ public class FeatherDashSwitch : DashSwitch
     }
 
     // ensure only our code can activate feather dash switches
-    private new static DashCollisionResults OnDashed(Player player, Vector2 dir)
+    private static new DashCollisionResults OnDashed(Player player, Vector2 dir)
         => DashCollisionResults.NormalCollision;
-    
+
     #region Hooks
-    
+
     [OnLoad]
     internal static void Load()
     {
@@ -231,7 +232,7 @@ public class FeatherDashSwitch : DashSwitch
         On.Celeste.TheoCrystal.OnCollideH += On_TheoCrystal_OnCollideH;
         On.Celeste.TheoCrystal.OnCollideV += On_TheoCrystal_OnCollideV;
         On.Celeste.Seeker.SlammedIntoWall += On_Seeker_SlammedIntoWall;
-        
+
         IL.Celeste.Player.OnCollideH += IL_Player_OnCollideHV;
         IL.Celeste.Player.OnCollideV += IL_Player_OnCollideHV;
     }
@@ -240,12 +241,12 @@ public class FeatherDashSwitch : DashSwitch
     internal static void Unload()
     {
         On.Celeste.DashSwitch.OnDashed -= On_DashSwitch_OnDashed;
-        
+
         On.Celeste.Glider.OnCollideH -= On_Glider_OnCollideH;
         On.Celeste.TheoCrystal.OnCollideH -= On_TheoCrystal_OnCollideH;
         On.Celeste.TheoCrystal.OnCollideV -= On_TheoCrystal_OnCollideV;
         On.Celeste.Seeker.SlammedIntoWall -= On_Seeker_SlammedIntoWall;
-        
+
         IL.Celeste.Player.OnCollideH -= IL_Player_OnCollideHV;
         IL.Celeste.Player.OnCollideV -= IL_Player_OnCollideHV;
     }
@@ -254,7 +255,7 @@ public class FeatherDashSwitch : DashSwitch
     // not sure if anyone actually calls this? but better to be safe than sorry
     private static DashCollisionResults On_DashSwitch_OnDashed(On.Celeste.DashSwitch.orig_OnDashed orig, DashSwitch self, Player player, Vector2 direction)
         => self is FeatherDashSwitch ? OnDashed(player, direction) : orig(self, player, direction);
-    
+
     // yes i know these cause like 10 billion allocations but i don't want to write the same hook 4 times
     private static void On_Glider_OnCollideH(On.Celeste.Glider.orig_OnCollideH orig, Glider self, CollisionData data)
         => PressFeatherDashSwitch(() => orig(self, data), data, () => self.Speed, Vector2.UnitX, featherDashSwitch => featherDashSwitch.holdableActivated);
@@ -272,11 +273,11 @@ public class FeatherDashSwitch : DashSwitch
 
         callOrig();
     }
-    
+
     private static void IL_Player_OnCollideHV(ILContext il)
     {
         ILCursor cursor = new(il);
-        
+
         /*
          * IL_0007: ldarg.0
          * IL_0008: ldfld class Monocle.StateMachine Celeste.Player::StateMachine
@@ -295,7 +296,7 @@ public class FeatherDashSwitch : DashSwitch
         cursor.EmitLdarg0();
         cursor.EmitLdarg1();
         cursor.EmitDelegate(PressFeatherDashSwitchOnFeather);
-        
+
         // we don't use `OnDashCollide` because other places call that :disappointed_relieved: so we hook where it would be called instead
         /*
          * IL_00c5: ldarg.1
@@ -315,19 +316,19 @@ public class FeatherDashSwitch : DashSwitch
         cursor.EmitDelegate(PressFeatherDashSwitchOnDash);
 
         return;
-        
+
         static void PressFeatherDashSwitchOnFeather(Player player, CollisionData data)
         {
             if (data.Hit is FeatherDashSwitch { featherActivated: true } featherDashSwitch)
                 featherDashSwitch.Press(player, data.Direction);
         }
-        
+
         static void PressFeatherDashSwitchOnDash(Player player, CollisionData data)
         {
             if (data.Hit is FeatherDashSwitch { dashActivated: true } featherDashSwitch)
                 featherDashSwitch.Press(player, data.Direction);
         }
     }
-    
+
     #endregion
 }

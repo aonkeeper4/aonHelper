@@ -33,18 +33,18 @@ local spriteOptions = {
     [directions.left] = { position = { x = 0, y = 8 }, rotation = math.pi },
     [directions.right] = { position = { x = 8, y = 8 }, rotation = 0 },
 }
-local selections = function(x, y) 
+local selections = function(x, y)
     return {
         [directions.up] = utils.rectangle(x - 1, y - 2, 18, 12),
         [directions.down] = utils.rectangle(x - 1, y - 2, 18, 12),
         [directions.left] = utils.rectangle(x - 2, y - 1, 12, 18),
         [directions.right] = utils.rectangle(x - 2, y - 1, 12, 18)
-    } 
+    }
 end
 
 local featherDashSwitch = {}
 
-featherDashSwitch.name = "aonHelper/FeatherDashSwitchV2"
+featherDashSwitch.name = "aonHelper/FeatherDashSwitch"
 featherDashSwitch.depth = -9000
 featherDashSwitch.placements = {}
 
@@ -108,7 +108,7 @@ end
 function featherDashSwitch.rectangle(room, entity)
     local x, y = entity.x or 0, entity.y or 0
     local side = entity.side or directions.up
-    
+
     return selections(x, y)[side]
 end
 
@@ -136,7 +136,7 @@ function featherDashSwitch.flip(room, entity, horizontal, vertical)
             side = directions.up
         end
     end
-    
+
     entity.side = side
 end
 
