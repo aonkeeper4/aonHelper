@@ -1,6 +1,7 @@
 namespace Celeste.Mod.aonHelper.Entities.Controllers;
 
-[GlobalHelper.GlobalEntity("aonHelper/DreamDashThroughTransitionController", "global")]
+// makes sense for these to default to being global because they work "between rooms"
+[GlobalHelper.GlobalEntity("aonHelper/DreamDashThroughTransitionController", "global", true)]
 [Tracked]
 public class DreamDashThroughTransitionController(ConditionHelper.Condition condition)
     : ConditionalController<DreamDashThroughTransitionController>(condition)
@@ -8,22 +9,22 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
     public DreamDashThroughTransitionController(EntityData data, Vector2 offset)
         : this(data.Condition("flag"))
     { }
-    
+
     #region Hooks
 
     private static ILHook il_Player_orig_Update;
-    
+
     [OnLoad]
     internal static void Load()
     {
         On.Celeste.Player.OnBoundsH += On_Player_OnBoundsH;
         On.Celeste.Player.OnBoundsV += On_Player_OnBoundsV;
-        
+
         IL.Celeste.Player.BeforeUpTransition += IL_Player_BeforeUpTransition;
         IL.Celeste.Player.BeforeDownTransition += IL_Player_BeforeDownTransition;
         IL.Celeste.Player.TransitionTo += IL_Player_TransitionTo;
         il_Player_orig_Update = new ILHook(typeof(Player).GetMethod("orig_Update", HookHelper.Bind.PublicInstance)!, IL_Player_orig_Update);
-        
+
         IL.Celeste.Level.EnforceBounds += IL_Level_EnforceBounds;
     }
 
@@ -32,12 +33,12 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
     {
         On.Celeste.Player.OnBoundsH -= On_Player_OnBoundsH;
         On.Celeste.Player.OnBoundsV -= On_Player_OnBoundsV;
-        
+
         IL.Celeste.Player.BeforeUpTransition -= IL_Player_BeforeUpTransition;
         IL.Celeste.Player.BeforeDownTransition -= IL_Player_BeforeDownTransition;
         IL.Celeste.Player.TransitionTo -= IL_Player_TransitionTo;
         HookHelper.DisposeAndSetNull(ref il_Player_orig_Update);
-        
+
         IL.Celeste.Level.EnforceBounds -= IL_Level_EnforceBounds;
     }
 
@@ -45,10 +46,10 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
 
     private static bool ShouldAffectStateCheck(Player player)
         => TryGetController(player?.SceneAs<Level>(), out _);
-    
+
     private static bool IsAffectedAndDreamDashing(Player player)
         => (player?.StateMachine.State ?? -1) == Player.StDreamDash && ShouldAffectStateCheck(player);
-    
+
     private static void DreamDashDie(Player player, Vector2 previousPos, bool evenIfInvincible = false)
     {
         if (!evenIfInvincible && SaveData.Instance.Assists.Invincible)
@@ -60,7 +61,7 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
 
         player.Die(Vector2.Zero, evenIfInvincible);
     }
-    
+
     private static void UseInsteadIfDreamDashing<T>(ILCursor cursor, T cb) where T : Delegate
     {
         ILLabel normalCall = cursor.DefineLabel();
@@ -75,11 +76,11 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
         cursor.Index++; // normal method call would be here
         cursor.MarkLabel(afterNormalCall);
     }
-    
+
     #endregion
-    
+
     #region Player
-    
+
     private static void On_Player_OnBoundsH(On.Celeste.Player.orig_OnBoundsH orig, Player self)
     {
         if (IsAffectedAndDreamDashing(self))
@@ -101,7 +102,7 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
 
         orig(self);
     }
-    
+
     private static void IL_Player_BeforeUpTransition(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -125,14 +126,14 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
         if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchCall<Actor>("MoveTowardsX")))
             throw new HookHelper.HookException(il, "Unable to find call to `Actor.MoveTowardsX`.");
         UseInsteadIfDreamDashing(cursor, NaiveMoveTowardsX);
-        
+
         // IL_002b: call instance void Celeste.Actor::MoveTowardsY(float32, float32, class Celeste.Collision)
         if (!cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchCall<Actor>("MoveTowardsY")))
             throw new HookHelper.HookException(il, "Unable to find call to `Actor.MoveTowardsY`.");
         UseInsteadIfDreamDashing(cursor, NaiveMoveTowardsY);
-        
+
         return;
-        
+
         static void NaiveMoveTowardsX(Player player, float targetX, float maxAmount, Collision _)
         {
             float toX = Calc.Approach(player.ExactPosition.X, targetX, maxAmount);
@@ -151,7 +152,7 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
     private static void IL_Player_orig_Update(ILContext il)
     {
         ILCursor cursor = new(il);
-        
+
         /*
          * IL_11c6: ldarg.0
          * IL_11c7: ldfld class Monocle.StateMachine Celeste.Player::StateMachine
@@ -172,23 +173,23 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
             instr => instr.MatchLdfld<Player>("EnforceLevelBounds"),
             instr => instr.MatchBrfalse(out _)))
             throw new HookHelper.HookException(il, "Unable to find state check for `Player.StDreamDash`.");
-        
+
         ILLabel nextCondition = cursor.DefineLabel();
 
         cursor.EmitLdarg0();
         cursor.EmitDelegate(ShouldAffectStateCheck);
         cursor.EmitBrtrue(nextCondition);
-        
+
         if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchBeq(out _)))
             throw new HookHelper.HookException("Unable to find check for `Player.EnforceLevelBounds`.");
 
         cursor.MarkLabel(nextCondition);
     }
-    
+
     #endregion
 
     #region Other
-    
+
     private static void IL_Level_EnforceBounds(ILContext il)
     {
         ILCursor cursor = new(il);
@@ -224,7 +225,7 @@ public class DreamDashThroughTransitionController(ConditionHelper.Condition cond
         cursor.GotoNext(MoveType.After, instr => instr.MatchBrtrue(out _));
         cursor.MarkLabel(skipCheck);
     }
-    
+
     #endregion
 
     #endregion

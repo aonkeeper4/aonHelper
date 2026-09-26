@@ -21,31 +21,31 @@ entities.aonHelper/ResizableHeart.attributes.description.isFake=Whether the Resi
 entities.aonHelper/ResizableHeart.attributes.description.disableGhost=Whether to not lighten the color and sprite of this Resizable Heart if it has already been collected.
 
 # Feather Dash Switch
-entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_down=Feather Dash Switch (Down)
-entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_down=A Dash Switch that can be activated by feather bounces.
-entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_up=Feather Dash Switch (Up)
-entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_up=A Dash Switch that can be activated by feather bounces.
-entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_left=Feather Dash Switch (Left)
-entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_left=A Dash Switch that can be activated by feather bounces.
-entities.aonHelper/FeatherDashSwitchV2.placements.name.feather_dash_switch_right=Feather Dash Switch (Right)
-entities.aonHelper/FeatherDashSwitchV2.placements.description.feather_dash_switch_right=A Dash Switch that can be activated by feather bounces.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.side=The orientation of this Feather Dash Switch.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.holdableActivated=Whether this Feather Dash Switch should activate when a holdable is thrown into it.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.featherActivated=Whether this Feather Dash Switch should activate when bumped into in feather state.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.refillBehavior=Describes how this Feather Dash Switch should refill the player's dash when activated.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.flagOnPress=The flag to set when this Feather Dash Switch is activated.\nNote that if Persistent is enabled, the flag will not be unset on room reload; otherwise, it will.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.persistent=Whether once this Feather Dash Switch is activated, it should stay activated, even if the room is reloaded.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.allGates=Whether this Feather Dash Switch should open all temple gates instead of opening only the closest one.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.spritePath=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor1=The primary color of particles emitted when this Feather Dash Switch is activated.
-entities.aonHelper/FeatherDashSwitchV2.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
+entities.aonHelper/FeatherDashSwitch.placements.name.feather_dash_switch_down=Feather Dash Switch (Down)
+entities.aonHelper/FeatherDashSwitch.placements.description.feather_dash_switch_down=A Dash Switch that can be activated by feather bounces.
+entities.aonHelper/FeatherDashSwitch.placements.name.feather_dash_switch_up=Feather Dash Switch (Up)
+entities.aonHelper/FeatherDashSwitch.placements.description.feather_dash_switch_up=A Dash Switch that can be activated by feather bounces.
+entities.aonHelper/FeatherDashSwitch.placements.name.feather_dash_switch_left=Feather Dash Switch (Left)
+entities.aonHelper/FeatherDashSwitch.placements.description.feather_dash_switch_left=A Dash Switch that can be activated by feather bounces.
+entities.aonHelper/FeatherDashSwitch.placements.name.feather_dash_switch_right=Feather Dash Switch (Right)
+entities.aonHelper/FeatherDashSwitch.placements.description.feather_dash_switch_right=A Dash Switch that can be activated by feather bounces.
+entities.aonHelper/FeatherDashSwitch.attributes.description.side=The orientation of this Feather Dash Switch.
+entities.aonHelper/FeatherDashSwitch.attributes.description.dashActivated=Whether this Feather Dash Switch should activate when dashed into.
+entities.aonHelper/FeatherDashSwitch.attributes.description.holdableActivated=Whether this Feather Dash Switch should activate when a holdable is thrown into it.
+entities.aonHelper/FeatherDashSwitch.attributes.description.featherActivated=Whether this Feather Dash Switch should activate when bumped into in feather state.
+entities.aonHelper/FeatherDashSwitch.attributes.description.refillBehavior=Describes how this Feather Dash Switch should refill the player's dash when activated.
+entities.aonHelper/FeatherDashSwitch.attributes.description.flagOnPress=The flag to set when this Feather Dash Switch is activated.\nNote that if Persistent is enabled, the flag will not be unset on room reload; otherwise, it will.
+entities.aonHelper/FeatherDashSwitch.attributes.description.persistent=Whether once this Feather Dash Switch is activated, it should stay activated, even if the room is reloaded.
+entities.aonHelper/FeatherDashSwitch.attributes.description.allGates=Whether this Feather Dash Switch should open all temple gates instead of opening only the closest one.
+entities.aonHelper/FeatherDashSwitch.attributes.description.spritePath=A path to custom sprites to use for this Feather Dash Switch, relative to Graphics/Atlases/Gameplay.
+entities.aonHelper/FeatherDashSwitch.attributes.description.particleColor1=The primary color of particles emitted when this Feather Dash Switch is activated.
+entities.aonHelper/FeatherDashSwitch.attributes.description.particleColor2=The secondary color of particles emitted when this Feather Dash Switch is activated.
 
 # Feather Bounce Scam Controller
 entities.aonHelper/FeatherBounceScamController.placements.name.feather_bounce_scam_controller=Feather Bounce Scam Controller
 entities.aonHelper/FeatherBounceScamController.placements.description.feather_bounce_scam_controller=A controller that prevents feather bounces from being cancelled when the player's feather timer is low enough.
 entities.aonHelper/FeatherBounceScamController.attributes.description.featherBounceScamThreshold=The time in seconds such that when the player's feather timer is below this amount, any feather bounces attempted will fail. If negative, this will not happen.
-entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This Feather Bounce Scam Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/FeatherBounceScamController.attributes.description.flag=This Feather Bounce Scam Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/FeatherBounceScamController.attributes.description.global=Whether this Feather Bounce Scam Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Rebound Modify Controller
@@ -68,13 +68,13 @@ entities.aonHelper/ReboundModifyController.attributes.description.topYMode=Wheth
 entities.aonHelper/ReboundModifyController.attributes.description.topXModifier=Either a multiplier to the player's current X speed or a value to set it to, depending on the Top Collision X Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.topYModifier=Either a multiplier to the player's current Y speed or a value to set it to, depending on the Top Collision Y Mode.
 entities.aonHelper/ReboundModifyController.attributes.description.refillDash=Whether to refill dash on rebound.
-entities.aonHelper/ReboundModifyController.attributes.description.flag=This Modify Rebound Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/ReboundModifyController.attributes.description.flag=This Modify Rebound Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/ReboundModifyController.attributes.description.global=Whether this Modify Rebound Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.name.fling_bird_no_skip_controller=Fling Bird No Skip Controller
 entities.aonHelper/FlingBirdNoSkipController.placements.description.fling_bird_no_skip_controller=A controller that prevents Fling Birds' positions from being skipped when the player is too far ahead of them.
-entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This Fling Bird No Skip Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/FlingBirdNoSkipController.attributes.description.flag=This Fling Bird No Skip Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/FlingBirdNoSkipController.attributes.description.global=Whether this Fling Bird No Skip Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Fg Styleground Bloom Controller
@@ -155,7 +155,7 @@ entities.aonHelper/ClampLightColorController.attributes.description.global=Wheth
 # Darker Matter
 entities.aonHelper/DarkerMatter.placements.name.darker_matter=Darker Matter
 entities.aonHelper/DarkerMatter.placements.description.darker_matter=A field through which the player will continue moving at the speed they entered, similar to a Dream Block.
-entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the Darker Matter when exiting horizontally. 
+entities.aonHelper/DarkerMatter.attributes.description.warpHorizontal=Whether the player should be teleported to the other side of the Darker Matter when exiting horizontally.
 entities.aonHelper/DarkerMatter.attributes.description.warpVertical=Whether the player should be teleported to the other side of the Darker Matter when exiting vertically.
 entities.aonHelper/DarkerMatter.attributes.description.refillDash=Whether the player's dash should be refilled on exit.
 entities.aonHelper/DarkerMatter.attributes.description.speedThreshold=The speed threshold for entering the Darker Matter state.
@@ -170,7 +170,7 @@ entities.aonHelper/DarkerMatter.attributes.description.particleAlpha=The alpha (
 entities.aonHelper/LightningCornerboostController.placements.name.lightning_cornerboost_controller=Lightning Wallbounce Controller
 entities.aonHelper/LightningCornerboostController.placements.description.lightning_cornerboost_controller=A controller that grants Fire/Ice Barrier-like solid hitboxes to Lightning.
 entities.aonHelper/LightningCornerboostController.attributes.description.always=Whether Lightning's solid hitboxes should be active always or active only while the player is dashing.
-entities.aonHelper/LightningCornerboostController.attributes.description.flag=This Lightning Wallbounce Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/LightningCornerboostController.attributes.description.flag=This Lightning Wallbounce Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/LightningCornerboostController.attributes.description.global=Whether this Lightning Wallbounce Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Seamless Lightning Controller
@@ -181,7 +181,7 @@ entities.aonHelper/SeamlessLightningController.placements.description.seamless_l
 entities.aonHelper/IntroFacingController.placements.name.intro_facing_controller=Intro Facing Controller
 entities.aonHelper/IntroFacingController.placements.description.intro_facing_controller=A controller that allows for the map intro animation to face in either direction.
 entities.aonHelper/IntroFacingController.attributes.description.facing=The direction to make the player face during the map intro animation. Also affects the temple fall animation.
-entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro Facing Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/IntroFacingController.attributes.description.flag=This Intro Facing Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/IntroFacingController.attributes.description.global=Whether this Intro Facing Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Colorgrade Tweaks Controller
@@ -194,19 +194,19 @@ entities.aonHelper/QuantizeColorgradeController.attributes.description.global=Wh
 
 # Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dream_dash_through_transition_controller=Dream Dash Through Transition Controller
-entities.aonHelper/DreamDashThroughTransitionController.placements.description.dream_dash_through_transition_controller=A controller that lets screen transitions occur while the player is dashing through a Dream Block.
-entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/DreamDashThroughTransitionController.placements.description.dream_dash_through_transition_controller=A controller that lets screen transitions occur while the player is dashing through a Dream Block.\nNote that if this controller does not have "Global" enabled, it must be active in both rooms the player transitions between to work correctly.
+entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/DreamDashThroughTransitionController.attributes.description.global=Whether this Dream Dash Through Transition Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Glass Lock Block
 entities.aonHelper/GlassLockBlock.placements.name.glass_lock_block=Glass Lock Block
 entities.aonHelper/GlassLockBlock.placements.description.glass_lock_block=A customizable Lock Block with the look and visual effects of Glass Blocks.
-entities.aonHelper/GlassLockBlock.attributes.description.spritePath=The path to use for the lock sprites of this Glass Lock Block, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the ones in this mod.\nDefaults to objects/aonHelper/lockBlocks/lock.
+entities.aonHelper/GlassLockBlock.attributes.description.spritePath=The path to use for the lock sprites of this Glass Lock Block, relative to Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the ones in this mod.
 entities.aonHelper/GlassLockBlock.attributes.description.unlockSfx=The event that will play when this Glass Lock Block is unlocked. Defaults to event:/game/03_resort/key_unlock.
 entities.aonHelper/GlassLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this Glass Lock Block is unlocked.
 entities.aonHelper/GlassLockBlock.attributes.description.behindFgTiles=Whether this Glass Lock Block will render behind foreground tiles.
 entities.aonHelper/GlassLockBlock.attributes.description.useVanillaKeys=Whether this Glass Lock Block can be unlocked by vanilla keys.
-entities.aonHelper/GlassLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key Groups (if any) this Glass Lock Block can be unlocked by.\nLeft empty: this Glass Lock Block cannot be unlocked by Dzhake Helper keys.\n*: this Glass Lock Block can be unlocked by any Dzhake Helper key.\nAny integer: this Glass Lock Block can only be unlocked by a Dzhake Helper key with the specified Group. 
+entities.aonHelper/GlassLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key Groups (if any) this Glass Lock Block can be unlocked by.\nLeft empty: this Glass Lock Block cannot be unlocked by Dzhake Helper keys.\n*: this Glass Lock Block can be unlocked by any Dzhake Helper key.\nAny integer: this Glass Lock Block can only be unlocked by a Dzhake Helper key with the specified Group.
 
 # Glass Lock Block Controller
 entities.aonHelper/GlassLockBlockController.placements.name.controller=Glass Lock Block Controller
@@ -224,13 +224,13 @@ entities.aonHelper/GlassLockBlockController.attributes.description.global=Whethe
 # Dream Lock Block
 entities.aonHelper/DreamLockBlock.placements.name.dream_lock_block=Dream Lock Block
 entities.aonHelper/DreamLockBlock.placements.description.dream_lock_block=A customizable Lock Block with the look and visual effects of Dream Blocks.
-entities.aonHelper/DreamLockBlock.attributes.description.spritePath=The path to use for the lock sprites of this Dream Lock Block, starting from Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the vanilla ones.\nDefaults to objects/aonHelper/lockBlocks/lock.
+entities.aonHelper/DreamLockBlock.attributes.description.spritePath=The path to use for the lock sprites of this Dream Lock Block, relative to Graphics/Atlases/Gameplay. The images this path points to must be in the same format as the ones in this mod.
 entities.aonHelper/DreamLockBlock.attributes.description.unlockSfx=The event that will play when this Dream Lock Block is unlocked. Defaults to event:/MoreLockBlocks/game/lockblocks/dreamlockblock_key_unlock.
 entities.aonHelper/DreamLockBlock.attributes.description.stepMusicProgress=Whether to increment the current music progress by 1 when this Dream Lock Block is unlocked.
 entities.aonHelper/DreamLockBlock.attributes.description.below=Whether this Dream Lock Block will render behind foreground tiles.
 entities.aonHelper/DreamLockBlock.attributes.description.ignoreInventory=Whether this Dream Lock Block is able to be dream dashed through while unlocked even if the player's inventory (for example the OldSite inventory) forbids it.
 entities.aonHelper/DreamLockBlock.attributes.description.useVanillaKeys=Whether this Dream Lock Block can be unlocked by vanilla keys.
-entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key Groups (if any) this Dream Lock Block can be unlocked by.\nLeft empty: this Dream Lock Block cannot be unlocked by Dzhake Helper keys.\n*: this Dream Lock Block can be unlocked by any Dzhake Helper key.\nAny integer: this Dream Lock Block can only be unlocked by a Dzhake Helper key with the specified Group. 
+entities.aonHelper/DreamLockBlock.attributes.description.dzhakeHelperKeySettings=Describes which Dzhake Helper Custom Key Groups (if any) this Dream Lock Block can be unlocked by.\nLeft empty: this Dream Lock Block cannot be unlocked by Dzhake Helper keys.\n*: this Dream Lock Block can be unlocked by any Dzhake Helper key.\nAny integer: this Dream Lock Block can only be unlocked by a Dzhake Helper key with the specified Group.
 
 # Foreground Tile Light Occlusion Controller
 entities.aonHelper/LightOcclusionFixController.placements.name.light_occlusion_fix_controller=Foreground Tile Light Occlusion Controller
@@ -243,7 +243,7 @@ entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_aut
 entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller can disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster, or disable the camera updating entirely.
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.disableAutoCameraOffset=Whether to disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster.
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.disableCameraUpdate=Whether to disable the camera updating entirely, locking the camera in place unless the camera is moved externally, for example by a cutscene.
-entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Camera Tweaks Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Camera Tweaks Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.global=Whether this Camera Tweaks Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Formation Backdrop Color Controller
@@ -255,7 +255,7 @@ entities.aonHelper/FormationBackdropColorController.attributes.description.globa
 # JumpThrus Apply LiftSpeed Controller
 entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.name.jumpthrus_apply_liftspeed_controller=JumpThrus Apply LiftSpeed Controller
 entities.aonHelper/JumpThrusApplyLiftSpeedController.placements.description.jumpthrus_apply_liftspeed_controller=A controller that makes moving Jump Through-like entities apply liftboost the same way moving solids do.
-entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This JumpThrus Apply LiftSpeed Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.flag=This JumpThrus Apply LiftSpeed Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/JumpThrusApplyLiftSpeedController.attributes.description.global=Whether this JumpThrus Apply LiftSpeed Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Spring Speed Threshold Controller
@@ -263,7 +263,7 @@ entities.aonHelper/SpringSpeedThresholdController.placements.name.spring_speed_t
 entities.aonHelper/SpringSpeedThresholdController.placements.description.spring_speed_threshold_controller=A controller that changes the speed threshold required to activate springs facing the same way as the player is moving.
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresholdX=The maximum value for the player's X speed where they will activate sideways springs that are pointing the same direction as they are moving. If negative, this will never happen.\nDefaults to 240.
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.thresholdY=The minimum value for the player's Y speed where they will activate upwards springs.\nDefaults to 0.
-entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This Spring Speed Threshold Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/SpringSpeedThresholdController.attributes.description.flag=This Spring Speed Threshold Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/SpringSpeedThresholdController.attributes.description.global=Whether this Spring Speed Threshold Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 # Ice Zip Mover
@@ -292,7 +292,7 @@ entities.aonHelper/TaikoDrum.placements.name.taiko_drum_both=Taiko Drum (Both)
 entities.aonHelper/TaikoDrum.placements.description.taiko_drum_both=A drum that will send out Sound Waves when dashed into, which can interact with other entities.
 entities.aonHelper/TaikoDrum.attributes.description.axes=The sides this Taiko Drum should be able to be activated from.
 entities.aonHelper/TaikoDrum.attributes.description.fragile=Whether this Taiko Drum should break upon being activated.
-entities.aonHelper/TaikoDrum.attributes.description.doNotLoadFlag=The session flag that will cause this Taiko Drum not to load.\nUse an exclamation point before the flag (e.g. !myFlag) to prevent loading when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Taiko Drum will not load when this expression evaluates to true. 
+entities.aonHelper/TaikoDrum.attributes.description.doNotLoadFlag=The session flag that will cause this Taiko Drum not to load.\nUse an exclamation point before the flag (e.g. !myFlag) to prevent loading when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Taiko Drum will not load when this expression evaluates to true.
 entities.aonHelper/TaikoDrum.attributes.description.flagOnBreak=The session flag this Taiko Drum should set when it is broken.\nDoes nothing if "Fragile" is not enabled.
 entities.aonHelper/TaikoDrum.attributes.description.spriteDir=A path to custom sprites to use for this Taiko Drum, relative to Graphics/Atlases/Gameplay.\nMust contain images named horizontal.png, horizontal_fragile.png, vertical.png, vertical_fragile.png, both.png, both_fragile.png and debris00.png.
 entities.aonHelper/TaikoDrum.attributes.description.surfaceIndex=The surface index to use for this Taiko Drum.
@@ -322,14 +322,14 @@ entities.aonHelper/SoundWaveReflector.attributes.description.spriteDir=A path to
 # Sound Wave Barrier
 entities.aonHelper/SoundWaveBarrier.placements.name.sound_wave_barrier=Sound Wave Barrier
 entities.aonHelper/SoundWaveBarrier.placements.description.sound_wave_barrier=An invisible entity that will destroy incoming Sound Waves.
-entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy Sound Waves. Leave empty for it to always destroy Sound Waves.\nUse an exclamation point before the flag (e.g. !myFlag) to destroy Sound Waves when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and Sound Waves will be destroyed when this expression evaluates to true. 
+entities.aonHelper/SoundWaveBarrier.attributes.description.flag=The flag that should be active for this Sound Wave Barrier to destroy Sound Waves. Leave empty for it to always destroy Sound Waves.\nUse an exclamation point before the flag (e.g. !myFlag) to destroy Sound Waves when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and Sound Waves will be destroyed when this expression evaluates to true.
 entities.aonHelper/SoundWaveBarrier.attributes.description.attachToSolids=Whether this Sound Wave Barrier should attach to solids.
 
 # Blossom Block
 entities.aonHelper/BlossomBlock.placements.name.blossom_block=Blossom Block
 entities.aonHelper/BlossomBlock.placements.description.blossom_block=A block that will be destroyed by incoming Sound Waves.
 entities.aonHelper/BlossomBlock.attributes.description.depth=The depth of this Blossom Block. Lower values will put this block more in the foreground.
-entities.aonHelper/BlossomBlock.attributes.description.doNotLoadFlag=The session flag that will cause this Blossom Block not to load.\nUse an exclamation point before the flag (e.g. !myFlag) to prevent loading when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Blossom Block will not load when this expression evaluates to true. 
+entities.aonHelper/BlossomBlock.attributes.description.doNotLoadFlag=The session flag that will cause this Blossom Block not to load.\nUse an exclamation point before the flag (e.g. !myFlag) to prevent loading when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Blossom Block will not load when this expression evaluates to true.
 entities.aonHelper/BlossomBlock.attributes.description.flagOnBreak=The session flag this Blossom Block should set when it is broken.
 
 # Blossom Block Controller
@@ -353,8 +353,8 @@ entities.aonHelper/FlagCustomCoreMessage.attributes.description.dialogID=The ID 
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.lineNumber=The line of dialog to display, starting from 0.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.startFadeRadius=The radius to the player at which this Flag Custom Core Message will start to fade out.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.endFadeRadius=The radius to the player at which this Flag Custom Core Message will have faded out completely.
-entities.aonHelper/FlagCustomCoreMessage.attributes.description.appearFlag=This Flag Custom Core Message can only be visible while this flag is set.\nUse an exclamation point before the flag (e.g. !myFlag) for this Flag Custom Core Message to only be visible when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Flag Custom Core Message will only be visible when this expression evaluates to true. 
-entities.aonHelper/FlagCustomCoreMessage.attributes.description.stayFlag=When this flag is active, this Flag Custom Core Message will not respond to the player's position and will always be visible.\nUse an exclamation point before the flag (e.g. !myFlag) for this Flag Custom Core Message to always be visible when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Flag Custom Core Message will always be visible when this expression evaluates to true. 
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.appearFlag=This Flag Custom Core Message can only be visible while this flag is set.\nUse an exclamation point before the flag (e.g. !myFlag) for this Flag Custom Core Message to only be visible when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Flag Custom Core Message will only be visible when this expression evaluates to true.
+entities.aonHelper/FlagCustomCoreMessage.attributes.description.stayFlag=When this flag is active, this Flag Custom Core Message will not respond to the player's position and will always be visible.\nUse an exclamation point before the flag (e.g. !myFlag) for this Flag Custom Core Message to always be visible when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Flag Custom Core Message will always be visible when this expression evaluates to true.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.flagFadeTime=The time it takes for this Flag Custom Core Message to fade in and out in seconds.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.useRawDeltaTime=Whether this Flag Custom Core Message ignores the current time rate when fading in and out.
 entities.aonHelper/FlagCustomCoreMessage.attributes.description.textColor=The text color of this Flag Custom Core Message.
@@ -369,7 +369,7 @@ entities.aonHelper/FlagCustomCoreMessage.attributes.description.hideOnHeartColle
 # Don't Lose Seeds Underwater Controller
 entities.aonHelper/DontLoseSeedsUnderwaterController.placements.name.dont_lose_seeds_underwater_controller=Don't Lose Seeds Underwater Controller
 entities.aonHelper/DontLoseSeedsUnderwaterController.placements.description.dont_lose_seeds_underwater_controller=A controller that prevents Strawberry seeds from being lost when the player touches the ground underwater.
-entities.aonHelper/DontLoseSeedsUnderwaterController.attributes.description.flag=This Don't Lose Seeds Underwater Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true. 
+entities.aonHelper/DontLoseSeedsUnderwaterController.attributes.description.flag=This Don't Lose Seeds Underwater Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
 entities.aonHelper/DontLoseSeedsUnderwaterController.attributes.description.global=Whether this Don't Lose Seeds Underwater Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
 
 ### Triggers
@@ -383,4 +383,4 @@ triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaFrom=The star
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaTo=The end alpha of the affected stylegrounds. Leave empty to not affect the alpha of the affected stylegrounds.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.positionMode=Determines how the styleground attributes fade as the player moves across the trigger.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
-triggers.aonHelper/ParallaxFadeTrigger.attributes.description.flag=This Parallax Fade only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this Parallax Fade when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Parallax Fade will be enabled when this expression evaluates to true. 
+triggers.aonHelper/ParallaxFadeTrigger.attributes.description.flag=This Parallax Fade only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this Parallax Fade when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Parallax Fade will be enabled when this expression evaluates to true.

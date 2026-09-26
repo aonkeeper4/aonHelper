@@ -71,7 +71,7 @@ public class FeatherDashSwitch : DashSwitch
 
     public FeatherDashSwitch(EntityData data, Vector2 offset, EntityID id)
         : this(id, data.Position + offset, data.Enum("side", Sides.Up),
-            data.Bool("dashActivated"), data.Bool("holdableActivated"), data.Bool("featherActivated", true),
+            data.Bool("dashActivated"), data.Bool("holdableActivated", true /* for legacy reasons */), data.Bool("featherActivated", true),
             data.Enum("refillBehavior", RefillBehavior.None), data.String("flagOnPress"),
             data.Bool("persistent"), data.Bool("allGates"),
             data.String("spritePath"), data.HexColor("particleColor1", Calc.HexToColor("ff8000")), data.HexColor("particleColor2", Calc.HexToColor("ffd65c")))

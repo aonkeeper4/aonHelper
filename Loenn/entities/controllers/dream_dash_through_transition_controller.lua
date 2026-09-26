@@ -9,7 +9,7 @@ dreamDashThroughTransitionController.placements = {
         name = "dream_dash_through_transition_controller",
         data = {
             flag = "",
-            global = false
+            global = true
         }
     }
 }
@@ -19,4 +19,4 @@ dreamDashThroughTransitionController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(dreamDashThroughTransitionController)
+return aonHelper.controllerify(dreamDashThroughTransitionController, aonHelper.globalByDefault)
