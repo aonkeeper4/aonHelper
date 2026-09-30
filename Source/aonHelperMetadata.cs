@@ -1,24 +1,41 @@
+using Celeste.Mod.aonHelper.ScreenWipes;
+
 namespace Celeste.Mod.aonHelper;
 
 public class aonHelperMetadata
 {
     private const string LogID = $"{nameof(aonHelper)}/{nameof(aonHelperMetadata)}";
-    
+
     private static readonly Dictionary<string, aonHelperMetadata> CachedMetadata = new();
-    
+
     #region Metadata Properties
-    
+
+    // parent class containing the entire `.meta.yaml` structure
+    // only used for deserialization
     private class aonHelperYaml
     {
         public aonHelperMetadata aonHelperMetadata { get; set; } = new();
     }
-    
+
+    // settings for curve wipes
+    public class CurveWipeSettingsData
+    {
+        public int Resolution { get; set; } = CurveWipe.DefaultResolution;
+
+        [Helpers.YamlHelper.NoNullItems]
+        public Vector2[] Points { get; set; } = CurveWipe.DefaultPoints;
+
+        public float FromHeight { get; set; } = CurveWipe.DefaultFromHeight;
+        public float ToHeight { get; set; } = CurveWipe.DefaultToHeight;
+    }
+    public CurveWipeSettingsData CurveWipeSettings { get; set; } = CurveWipe.DefaultSettings;
+
     #endregion
 
     public static bool TryGetMetadata(AreaKey areaKey, out aonHelperMetadata metadata)
     {
         metadata = null;
-        
+
         if (CachedMetadata.TryGetValue(areaKey.SID, out metadata))
             return metadata is not null;
 
@@ -33,24 +50,24 @@ public class aonHelperMetadata
             metadata = CachedMetadata[areaKey.SID] = deserialized;
             return true;
         }
-        
+
         Logger.Info(LogID, $"No aon helper metadata found for '{areaKey.SID}' in 'Maps/{filename}.meta.yaml'.");
         CachedMetadata[areaKey.SID] = null;
         return false;
     }
-    
+
     #region Hooks
 
     internal static void Load()
     {
         Everest.Content.OnUpdate += OnUpdateContent;
     }
-    
+
     internal static void Unload()
     {
         Everest.Content.OnUpdate -= OnUpdateContent;
     }
-    
+
     private static void OnUpdateContent(ModAsset old, ModAsset _)
     {
         // maybe a bit overkill
@@ -60,6 +77,6 @@ public class aonHelperMetadata
             && old.PathVirtual.EndsWith(".meta"))
             CachedMetadata.Clear();
     }
-    
+
     #endregion
 }

@@ -1,5 +1,3 @@
-using ModInteropImportGenerator;
-
 namespace Celeste.Mod.aonHelper.Imports;
 
 [GenerateImports("FrostHelper", RequiredDependency = false)]
@@ -10,7 +8,7 @@ public static partial class FrostHelper
 
     public static partial object GetSessionExpressionValue(object expression, Session session);
     public static partial object GetSessionExpressionValue(object expression, Session session, object userdata);
-    
+
     public static partial Type GetSessionExpressionReturnedType(object expression);
 
     public static partial int GetIntSessionExpressionValue(object expression, Session session);

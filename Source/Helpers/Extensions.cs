@@ -31,16 +31,16 @@ public static class Extensions
 
     extension(EntityData data)
     {
-        public Color? NullableHexColor(string key)
-        {
-            string value = data.Attr(key);
-            return string.IsNullOrEmpty(value) ? null : Calc.HexToColor(value);
-        }
-
         public T? Nullable<T>(string key) where T : struct, IParsable<T>
         {
             string value = data.Attr(key);
             return string.IsNullOrEmpty(value) ? null : T.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        public Color? HexColorNullable(string key)
+        {
+            string value = data.Attr(key);
+            return string.IsNullOrEmpty(value) ? null : Calc.HexToColor(value);
         }
 
         public Color[] HexColorArray(string key, Color[] defaultValue = null)
@@ -57,17 +57,17 @@ public static class Extensions
         public ConditionHelper.Condition Condition(string key, bool defaultValueIfEmpty = true)
             => ConditionHelper.Create(data.Attr(key), defaultValueIfEmpty);
     }
-    
+
     extension(Calc)
     {
         // `%`, but it behaves nicely with negative numbers (why does only python do this correctly?)
         public static float Mod(float x, float m)
             => (x % m + m) % m;
-        
+
         public static int Mod(int x, int m)
             => (x % m + m) % m;
     }
-    
+
     extension(Camera camera)
     {
         public Rectangle GetBounds()
@@ -86,7 +86,7 @@ public static class Extensions
         public bool ContainsMatchingSID(string sid)
             => mapData.Levels.SelectMany(levelData => levelData.Entities).Any(entityData => entityData.Name == sid)
                || mapData.Levels.SelectMany(levelData => levelData.Triggers).Any(entityData => entityData.Name == sid);
-        
+
         public bool ContainsMatchingSID(Func<string, bool> predicate)
             => mapData.Levels.SelectMany(levelData => levelData.Entities).Any(entityData => predicate(entityData.Name))
                || mapData.Levels.SelectMany(levelData => levelData.Triggers).Any(entityData => predicate(entityData.Name));
@@ -118,7 +118,7 @@ public static class Extensions
 
         public VariableDefinition AddVariable<T>()
             => cursor.AddVariable(typeof(T));
-        
+
         /// <summary>
         /// Go to the next match of a given IL sequence, allowing up to <paramref name="maxInstructionSpread"/> instructions of tolerance if the instructions are not sequential (i.e. if something else hooks the same sequence).
         /// </summary>
@@ -135,10 +135,10 @@ public static class Extensions
         {
             if (predicates.Length == 0)
                 throw new ArgumentException("No predicates given.");
-    
+
             if (predicates.Length == 1)
                 return cursor.TryGotoNext(moveType, predicates[0]);
-    
+
             int matchFrom = -1, matchTo = -1;
             while (cursor.TryGotoNext(MoveType.Before, predicates[0]))
             {
@@ -153,7 +153,7 @@ public static class Extensions
                         flag = false;
                         break;
                     }
-    
+
                     int instructionSpread = cursor.Index - index;
                     if (instructionSpread > maxInstructionSpread)
                     {
@@ -161,26 +161,26 @@ public static class Extensions
                         break;
                     }
                 }
-    
+
                 if (flag)
                 {
                     matchTo = cursor.Index;
                     break;
                 }
-    
+
                 cursor.Index = matchFrom + 1;
             }
-    
+
             if (matchFrom == -1 || matchTo == -1)
                 return false;
-    
+
             cursor.Index = moveType != MoveType.After ? matchFrom : matchTo;
             if (moveType == MoveType.AfterLabel)
                 cursor.MoveAfterLabels();
-    
+
             return true;
         }
-        
+
         /// <summary>
         /// Go to the previous match of a given IL sequence, allowing up to <paramref name="maxInstructionSpread"/> instructions of tolerance if the instructions are not sequential (i.e. if something else hooks the same sequence).
         /// </summary>
@@ -197,10 +197,10 @@ public static class Extensions
         {
             if (predicates.Length == 0)
                 throw new ArgumentException("No predicates given.");
-    
+
             if (predicates.Length == 1)
                 return cursor.TryGotoPrev(moveType, predicates[0]);
-    
+
             int matchFrom = -1, matchTo = -1;
             while (cursor.TryGotoPrev(MoveType.Before, predicates[0]))
             {
@@ -215,7 +215,7 @@ public static class Extensions
                         flag = false;
                         break;
                     }
-    
+
                     int instructionSpread = cursor.Index - index;
                     if (instructionSpread > maxInstructionSpread)
                     {
@@ -223,26 +223,26 @@ public static class Extensions
                         break;
                     }
                 }
-    
+
                 if (flag)
                 {
                     matchTo = cursor.Index;
                     break;
                 }
-    
+
                 cursor.Index = matchFrom;
             }
-    
+
             if (matchFrom == -1 || matchTo == -1)
                 return false;
-    
+
             cursor.Index = moveType != MoveType.After ? matchFrom : matchTo;
             if (moveType == MoveType.AfterLabel)
                 cursor.MoveAfterLabels();
-    
+
             return true;
         }
-    
+
         /// <summary>
         /// Go to the next match of a given IL sequence, allowing up to <paramref name="maxInstructionSpread"/> instructions of tolerance if the instructions are not sequential (i.e. if something else hooks the same sequence), checking the match in reverse order.
         /// </summary>
@@ -261,10 +261,10 @@ public static class Extensions
         {
             if (predicates.Length == 0)
                 throw new ArgumentException("No predicates given.");
-    
+
             if (predicates.Length == 1)
                 return cursor.TryGotoNext(moveType, predicates[0]);
-    
+
             int matchFrom = -1, matchTo = -1;
             while (cursor.TryGotoNext(MoveType.Before, predicates[^1]))
             {
@@ -279,7 +279,7 @@ public static class Extensions
                         flag = false;
                         break;
                     }
-    
+
                     int instructionSpread = index - cursor.Index;
                     if (instructionSpread > maxInstructionSpread)
                     {
@@ -287,26 +287,26 @@ public static class Extensions
                         break;
                     }
                 }
-    
+
                 if (flag)
                 {
                     matchFrom = cursor.Index;
                     break;
                 }
-    
+
                 cursor.Index = matchTo + 1;
             }
-    
+
             if (matchFrom == -1 || matchTo == -1)
                 return false;
-    
+
             cursor.Index = moveType != MoveType.After ? matchFrom : matchTo;
             if (moveType == MoveType.AfterLabel)
                 cursor.MoveAfterLabels();
-    
+
             return true;
         }
-    
+
         /// <summary>
         /// Go to the previous match of a given IL sequence, allowing up to <paramref name="maxInstructionSpread"/> instructions of tolerance if the instructions are not sequential (i.e. if something else hooks the same sequence), checking the match in reverse order.
         /// </summary>
@@ -325,10 +325,10 @@ public static class Extensions
         {
             if (predicates.Length == 0)
                 throw new ArgumentException("No predicates given.");
-    
+
             if (predicates.Length == 1)
                 return cursor.TryGotoPrev(moveType, predicates[0]);
-    
+
             int matchFrom = -1, matchTo = -1;
             while (cursor.TryGotoPrev(MoveType.Before, predicates[^1]))
             {
@@ -343,7 +343,7 @@ public static class Extensions
                         flag = false;
                         break;
                     }
-    
+
                     int instructionSpread = index - cursor.Index;
                     if (instructionSpread > maxInstructionSpread)
                     {
@@ -351,23 +351,23 @@ public static class Extensions
                         break;
                     }
                 }
-    
+
                 if (flag)
                 {
                     matchFrom = cursor.Index;
                     break;
                 }
-    
+
                 cursor.Index = matchFrom;
             }
-    
+
             if (matchFrom == -1 || matchTo == -1)
                 return false;
-    
+
             cursor.Index = moveType != MoveType.After ? matchFrom : matchTo;
             if (moveType == MoveType.AfterLabel)
                 cursor.MoveAfterLabels();
-    
+
             return true;
         }
     }

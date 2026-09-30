@@ -5,11 +5,11 @@ namespace Celeste.Mod.aonHelper.DecalRegistry;
 
 public class SwirlDisplacementHandler : DecalRegistryHandler
 {
-    public override string Name => "aonHelper_swirlDisplacement";
+    public override string Name => "aonHelper.swirlDisplacement";
 
     public override void Parse(XmlAttributeCollection xml)
-        => throw new NotImplementedException();
+    { }
 
     public override void ApplyTo(Decal decal)
-        => throw new NotImplementedException();
+    { }
 }
