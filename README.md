@@ -74,8 +74,14 @@ for all the controllers listed here, just place it in the room where you want it
 ### Triggers
 
 - Parallax Fade Trigger
-  - allows you to fade alpha/color of a parallax. note that you need to reset it after every save and quit for now
+  - allows you to fade alpha/color of a parallax. note that you need to reset it after every save and quit
+- Non-Persistent Flag Trigger
+  - allows you to set a flag that will not persist through a save and quit
 
-if you want to report any bugs or suggest any features then ping me in celestecord (@aonkeeper4)
+### Screen Wipes
 
-happy modding :glumbsup:
+- Curve Sweep
+  - a screen wipe which hides/reveals the level as a sweep along a curve
+
+if you want to report any bugs or suggest any features then ping me in celestecord (@aonkeeper4).
+you can also make a pull request to/issue on this repo and i will probably see it
