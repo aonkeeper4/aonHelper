@@ -31,9 +31,13 @@ global using Celeste.Mod.Helpers;
 global using ModInteropImportGenerator;
 global using Celeste.Mod.Roslyn.ModLifecycleAttributes;
 
-// my stuff
+// our stuff
 global using Celeste.Mod.aonHelper.Helpers;
 global using Celeste.Mod.aonHelper.Imports;
 global using Celeste.Mod.aonHelper.Components;
 global using Celeste.Mod.aonHelper.Entities;
 global using Celeste.Mod.aonHelper.Entities.Common;
+global using Celeste.Mod.aonHelper.Triggers;
+global using Celeste.Mod.aonHelper.Scenes;
+global using Celeste.Mod.aonHelper.ScreenWipes;
+global using Celeste.Mod.aonHelper.DecalRegistry;

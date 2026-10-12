@@ -1,6 +1,6 @@
 namespace Celeste.Mod.aonHelper.Entities.Misc;
 
-[CustomEntity("aonHelper/FeatherDashSwitch")]
+[CustomEntity("aonHelper/FeatherDashSwitch", "aonHelper/FeatherDashSwitchV2")]
 [TrackedAs(typeof(DashSwitch))]
 public class FeatherDashSwitch : DashSwitch
 {

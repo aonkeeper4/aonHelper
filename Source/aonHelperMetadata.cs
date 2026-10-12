@@ -40,10 +40,11 @@ public class aonHelperMetadata
             return metadata is not null;
 
         string filename = AreaData.Get(areaKey).Mode[(int) areaKey.Mode].Path;
-        if (Everest.Content.TryGet<AssetTypeYaml>($"Maps/{filename}.meta", out ModAsset asset)
-            && asset is not null
-            && asset.PathVirtual.StartsWith("Maps")
-            && asset.TryValidatingDeserialize(out aonHelperYaml meta)
+        bool hasMetaYaml = Everest.Content.TryGet<AssetTypeYaml>($"Maps/{filename}.meta", out ModAsset metaYaml);
+        if (hasMetaYaml
+            && metaYaml is not null
+            && metaYaml.PathVirtual.StartsWith("Maps")
+            && metaYaml.TryValidatingDeserialize(out aonHelperYaml meta)
             && meta?.aonHelperMetadata is { } deserialized)
         {
             Logger.Info(LogID, $"Cached aon helper metadata for '{areaKey.SID}' from 'Maps/{filename}.meta.yaml'.");
@@ -51,7 +52,10 @@ public class aonHelperMetadata
             return true;
         }
 
-        Logger.Info(LogID, $"No aon helper metadata found for '{areaKey.SID}' in 'Maps/{filename}.meta.yaml'.");
+        if (hasMetaYaml)
+            Logger.Info(LogID, $"No aon helper metadata found for '{areaKey.SID}' in 'Maps/{filename}.meta.yaml'.");
+        else
+            Logger.Info(LogID, $"No '.meta.yaml' found for '{areaKey.SID}' (checked 'Maps/{filename}.meta.yaml').");
         CachedMetadata[areaKey.SID] = null;
         return false;
     }

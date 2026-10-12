@@ -384,3 +384,10 @@ triggers.aonHelper/ParallaxFadeTrigger.attributes.description.alphaTo=The end al
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.positionMode=Determines how the styleground attributes fade as the player moves across the trigger.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.tagToAffect=The trigger will affect all parallax stylegrounds with the specified tag. Leave empty to affect all parallax stylegrounds.
 triggers.aonHelper/ParallaxFadeTrigger.attributes.description.flag=This Parallax Fade only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this Parallax Fade when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this Parallax Fade will be enabled when this expression evaluates to true.
+
+# Non-Persistent Flag
+triggers.aonHelper/NonPersistentFlagTrigger.placements.name.non_persistent_flag=Non-Persistent Flag
+triggers.aonHelper/NonPersistentFlagTrigger.placements.description.non_persistent_flag=A trigger that sets a flag that will be unset when the level is exited.
+triggers.aonHelper/NonPersistentFlagTrigger.attributes.description.flag=The flag to set. If left empty, this trigger will do nothing.
+triggers.aonHelper/NonPersistentFlagTrigger.attributes.description.state=Enabling this will cause the flag to be set; otherwise, the flag will be unset.
+triggers.aonHelper/NonPersistentFlagTrigger.attributes.description.oneUse=Whether this trigger should disable itself after being activated.

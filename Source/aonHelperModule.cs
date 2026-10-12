@@ -41,7 +41,7 @@ public class aonHelperModule : EverestModule
 
     private static void LoadDecalRegistryHandlers()
     {
-        Mod.DecalRegistry.AddPropertyHandler<DecalRegistry.SwirlDisplacementHandler>();
+        Mod.DecalRegistry.AddPropertyHandler<SwirlDisplacementHandler>();
     }
 
     public override void LoadContent(bool firstLoad)
