@@ -1,5 +1,3 @@
-using Celeste.Mod.aonHelper.Scenes;
-
 namespace Celeste.Mod.aonHelper;
 
 public static class aonHelperCommands

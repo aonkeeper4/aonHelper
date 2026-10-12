@@ -1,5 +1,3 @@
-using Celeste.Mod.aonHelper.ScreenWipes;
-
 namespace Celeste.Mod.aonHelper;
 
 public class aonHelperMetadata

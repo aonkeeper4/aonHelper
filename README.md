@@ -82,6 +82,31 @@ for all the controllers listed here, just place it in the room where you want it
 
 - Curve Sweep
   - a screen wipe which hides/reveals the level as a sweep along a curve
+  - in-game editor coming soon
+  - example .meta.yaml:
+    ```yaml
+    # you can place this after any existing stuff
+    aonHelperMetadata: # contains all metadata relevant to aon helper
+      CurveWipeSettings: # contains the settings for the Curve Sweep wipe, any of these can be omitted and the default will be used instead
+        Resolution: 16 # how many polygons make up each curve segment, default is 16
+        Points: # list of (x, y) points to form the curve as a cubic bezier spline ((0, 0) is the top-left of the screen, (1920, 1080) is the bottom-right of the screen), default forms a sideways S path
+          - X: -300
+            Y: 540
+          - X: 150
+            Y: 750
+          - X: 650
+            Y: 750
+          - X: 960
+            Y: 540
+          - X: 1270
+            Y: 330
+          - X: 1770
+            Y: 330
+          - X: 2220
+            Y: 540
+        FromHeight: 0 # the initial thickness of the curve, default is 0
+        ToHeight: 500 # the final thickness of the curve before it expands to completely cover the screen, default is 500
+    ```
 
 if you want to report any bugs or suggest any features then ping me in celestecord (@aonkeeper4).
 you can also make a pull request to/issue on this repo and i will probably see it
