@@ -1,10 +1,25 @@
 -- big shoutouts μ for being awesomesauce
 
 local drawableSprite = require("structs.drawable_sprite")
-local entities = require("entities")
 local utils = require("utils")
 
 local aonHelper = {}
+
+-- compat
+
+aonHelper.inLoenn = (_MAP_VIEWER == nil) and true or false
+aonHelper.inRysy = (_MAP_VIEWER and _MAP_VIEWER.name == "rysy") or false
+aonHelper.inSnowberry = (_MAP_VIEWER and _MAP_VIEWER.name == "snowberry") or false
+
+local function tryRequireExists(lib)
+    local success, ret = utils.tryrequire(lib, false)
+    if success then return ret else return nil end
+end
+local function tryRequireDoesntExist(lib)
+    local success, ret = pcall(require, lib)
+    if success then return ret else return nil end
+end
+aonHelper.tryRequire = utils.tryrequire and tryRequireExists or tryRequireDoesntExist
 
 -- validators
 
@@ -29,10 +44,13 @@ function aonHelper.mod(x, m)
     return math.fmod(math.fmod(x, m) + m, m)
 end
 
+local entities = aonHelper.tryRequire("entities") -- doesn't exist in snowberry
 function aonHelper.getAllSIDs()
+    local registeredEntities = entities and entities.registeredEntities or {}
+
     local ret = {}
     local amt = 0
-    for k, _ in pairs(entities.registeredEntities) do
+    for k, _ in pairs(registeredEntities) do
         table.insert(ret, k)
         amt = amt + 1
     end
@@ -53,11 +71,11 @@ end
 local function isEntityGlobal(entity, options)
     if options and options.global then
         if type(options.global) == "boolean" then return true end
-        
+
         local attrName, attrDefault = options.global.attributeName, options.global.attributeDefault
         return attrDefault and (entity[attrName] ~= false) or (entity[attrName] or false)
     end
-    
+
     return false
 end
 
@@ -89,7 +107,7 @@ function aonHelper.controllerify(handler, options)
             return utils.rectangle(x - 12, y - 12, 24, 24)
         end
     end
-    
+
     local origHandlerSprite = handler.sprite
 
     -- i think there's more to add here but #whatever
@@ -98,7 +116,7 @@ function aonHelper.controllerify(handler, options)
             local x, y = entity.x or 0, entity.y or 0
             local texture = utils.callIfFunction(handler.texture, room, entity)
             local scale = utils.callIfFunction(handler.scale, room, entity) or { 1.0, 1.0 }
-            
+
             local sprite = drawableSprite.fromTexture(texture, { x = x, y = y })
             sprite:setScale(scale)
             return sprite
@@ -121,23 +139,23 @@ function aonHelper.controllerify(handler, options)
                         valid = false
                     end
                 end
-                
+
                 sprites = valid and handlerSprites or {}
             end
         end
-        
+
         if isEntityGlobal(entity, options) then
             local selectionRect = handler.selection(room, entity)
             local globalX, globalY = selectionRect.x + selectionRect.width / 2, selectionRect.y
-            
+
             local globalSprite = drawableSprite.fromTexture(globalTextTexture, { x = globalX, y = globalY })
             globalSprite:setJustification({ 0.5, 1.0 })
             table.insert(sprites, globalSprite)
         end
-        
+
         return sprites
     end
-    
+
     return handler
 end
 
