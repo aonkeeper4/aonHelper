@@ -19,4 +19,4 @@ dontLoseSeedsUnderwaterController.fieldOrder = {
     "flag", "global"
 }
 
-return aonHelper.controllerify(springSpeedThresholdController)
+return aonHelper.controllerify(dontLoseSeedsUnderwaterController)
