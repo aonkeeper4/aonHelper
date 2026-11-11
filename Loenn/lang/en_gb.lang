@@ -196,7 +196,7 @@ entities.aonHelper/QuantizeColorgradeController.attributes.description.global=Wh
 entities.aonHelper/DreamDashThroughTransitionController.placements.name.dream_dash_through_transition_controller=Dream Dash Through Transition Controller
 entities.aonHelper/DreamDashThroughTransitionController.placements.description.dream_dash_through_transition_controller=A controller that lets screen transitions occur while the player is dashing through a Dream Block.\nNote that if this controller does not have "Global" enabled, it must be active in both rooms the player transitions between to work correctly.
 entities.aonHelper/DreamDashThroughTransitionController.attributes.description.flag=This controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
-entities.aonHelper/DreamDashThroughTransitionController.attributes.description.global=Whether this Dream Dash Through Transition Controller should be loaded map-wide, having an effect even outside rooms it's placed in.
+entities.aonHelper/DreamDashThroughTransitionController.attributes.description.global=Whether this Dream Dash Through Transition Controller should be loaded map-wide, having an effect even outside rooms it's placed in.\nNote that if this is not enabled, a controller must be active in both rooms the player transitions between for the transition to work correctly.
 
 # Glass Lock Block
 entities.aonHelper/GlassLockBlock.placements.name.glass_lock_block=Glass Lock Block
@@ -240,7 +240,7 @@ entities.aonHelper/LightOcclusionFixController.attributes.description.global=Whe
 
 # Camera Tweaks Controller
 entities.aonHelper/DisableAutoCameraOffsetController.placements.name.disable_auto_camera_offset_controller=Camera Tweaks Controller
-entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller can disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster, or disable the camera updating entirely.
+entities.aonHelper/DisableAutoCameraOffsetController.placements.description.disable_auto_camera_offset_controller=A controller that can disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster, or disable the camera updating entirely.
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.disableAutoCameraOffset=Whether to disable the automatic camera offset applied when the player is in certain states, such as in a Feather or Red Booster.
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.disableCameraUpdate=Whether to disable the camera updating entirely, locking the camera in place unless the camera is moved externally, for example by a cutscene.
 entities.aonHelper/DisableAutoCameraOffsetController.attributes.description.flag=This Camera Tweaks Controller only has an effect if this flag is set. Leave empty for it to be active always.\nUse an exclamation point before the flag (e.g. !myFlag) to activate this controller when the flag is unset instead.\nIf Frost Helper is enabled, Session Expressions will be supported in this field and this controller will be enabled when this expression evaluates to true.
