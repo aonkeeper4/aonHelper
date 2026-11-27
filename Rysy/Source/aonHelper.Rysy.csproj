@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- assembly metadata -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <AssemblyName>aonHelper.Rysy</AssemblyName>
+        <RootNamespace>Celeste.Mod.aonHelper.Rysy</RootNamespace>
+        <LangVersion>14.0</LangVersion>
+        <PathMap>$(MSBuildProjectDirectory)=aonHelper/Rysy/</PathMap>
+    </PropertyGroup>
+
+    <!-- references from nuget -->
+    <ItemGroup>
+        <PackageReference Include="Rysy" Private="false" Version="0.0.16" />
+    </ItemGroup>
+
+    <!-- copy files to output directory after building -->
+    <Target Name="CopyFiles" AfterTargets="Build" Inputs="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\$(AssemblyName).pdb" Outputs="..\bin\$(AssemblyName).dll;..\bin\$(AssemblyName).pdb">
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="..\bin" />
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).pdb" DestinationFolder="..\bin" />
+    </Target>
+</Project>

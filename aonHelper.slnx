@@ -1,0 +1,9 @@
+<Solution>
+    <!-- helper -->
+    <Project Path="Source/aonHelper.csproj">
+        <BuildDependency Project="Rysy/Source/aonHelper.Rysy.csproj"/>
+    </Project>
+    
+    <!-- rysy plugin -->
+    <Project Path="Rysy/Source/aonHelper.Rysy.csproj" />
+</Solution>
