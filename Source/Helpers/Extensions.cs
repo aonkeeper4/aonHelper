@@ -72,11 +72,7 @@ public static class Extensions
     {
         public Rectangle GetBounds()
         {
-            int top = (int) camera.Top;
-            int bottom = (int) camera.Bottom;
-            int left = (int) camera.Left;
-            int right = (int) camera.Right;
-
+            int top = (int) camera.Top, bottom = (int) camera.Bottom, left = (int) camera.Left, right = (int) camera.Right;
             return new Rectangle(left, top, right - left, bottom - top);
         }
     }
@@ -95,7 +91,7 @@ public static class Extensions
     extension(Type type)
     {
         public bool IsOrIsSubclassOf(Type potentialBase)
-            => type.IsSubclassOf(potentialBase) || type == potentialBase;
+            => type == potentialBase || type.IsSubclassOf(potentialBase);
     }
 
     extension(Entity entity)

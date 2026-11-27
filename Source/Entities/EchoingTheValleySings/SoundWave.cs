@@ -123,18 +123,9 @@ public class SoundWave : Entity
         while (moveVector != Vector2.Zero)
         {
             bool hasBeenReflected = false, hasBeenDestroyed = false, hasBeenDestroyedQuietly = false;
-
-            // collect the colliding components beforehand so no side effects from their `OnCollide` will affect which components are checked
-            SoundWaveCollider[] components = level.Tracker
-                .GetComponents<SoundWaveCollider>()
-                .Cast<SoundWaveCollider>()
-                .Where(c => Collidable && c.Entity.Collidable && c.Check(this, Position + moveDir))
-                .ToArray();
-            foreach (SoundWaveCollider soundWaveCollider in components)
+            foreach (SoundWaveCollider soundWaveCollider in SoundWaveCollider.GetCollidingColliders(level, this, Position + moveDir))
             {
-                SoundWaveCollider.SoundWaveCollisionResults result = soundWaveCollider.OnCollide?.Invoke(moveDir)
-                    ?? SoundWaveCollider.SoundWaveCollisionResults.None;
-
+                SoundWaveCollider.SoundWaveCollisionResults result = soundWaveCollider.OnCollide(moveDir);
                 hasBeenReflected |= result is SoundWaveCollider.SoundWaveCollisionResults.Reflect;
                 hasBeenDestroyed |= result is SoundWaveCollider.SoundWaveCollisionResults.Destroy;
                 hasBeenDestroyedQuietly |= result is SoundWaveCollider.SoundWaveCollisionResults.DestroyQuietly;

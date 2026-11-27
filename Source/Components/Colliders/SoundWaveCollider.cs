@@ -1,10 +1,8 @@
-using Celeste.Mod.aonHelper.Entities.EchoingTheValleySings;
-
 namespace Celeste.Mod.aonHelper.Components.Colliders;
 
 [Tracked]
-public class SoundWaveCollider(Func<Vector2, SoundWaveCollider.SoundWaveCollisionResults> onCollide, Collider collider = null)
-    : Component(false, false)
+public class SoundWaveCollider(SoundWaveCollider.CollisionHandler onCollide, Collider collider = null)
+    : ColliderComponent<SoundWaveCollider, SoundWaveCollider.CollisionHandler>(onCollide, collider)
 {
     public enum SoundWaveCollisionResults
     {
@@ -13,23 +11,9 @@ public class SoundWaveCollider(Func<Vector2, SoundWaveCollider.SoundWaveCollisio
         Destroy,
         DestroyQuietly
     }
+    public delegate SoundWaveCollisionResults CollisionHandler(Vector2 direction);
 
-    public readonly Func<Vector2, SoundWaveCollisionResults> OnCollide = onCollide;
-    public Collider Collider => collider ?? Entity.Collider;
-
-    public bool Check(SoundWave wave, Vector2 at)
-    {
-        Vector2 position = wave.Position;
-
-        wave.Position = at;
-        bool result = Collider.Collide(wave);
-        wave.Position = position;
-
-        return result;
-    }
-    
-    public override void DebugRender(Camera camera)
-        => Collider.Render(camera, Color.Gold * (Entity?.Collidable ?? false ? 1f : 0.5f));
+    public override Color Color => Color.Gold;
     
     #region Hooks
 

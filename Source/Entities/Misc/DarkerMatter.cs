@@ -15,9 +15,7 @@ public class DarkerMatter : Entity
             Warp
         }
         private readonly EdgeType type;
-
-        public Vector2 Start;
-        public Vector2 End;
+        public Vector2 Start, End;
 
         public Edge(DarkerMatter parent, EdgeType type, Vector2 start, Vector2 end)
         {
@@ -28,11 +26,10 @@ public class DarkerMatter : Entity
         }
 
         public Color Color(Level level, int cycleOffset)
-        => type switch
-            {
+            => type switch {
                 EdgeType.Normal => parent.ColorCycle(parent.colors, level, cycleOffset),
                 EdgeType.Warp => parent.ColorCycle(parent.warpColors, level, cycleOffset),
-                _ => throw new Exception($"invalid edge type: {type}")
+                _ => throw new ArgumentOutOfRangeException()
             };
 
         public void Draw(uint seed, Color color)

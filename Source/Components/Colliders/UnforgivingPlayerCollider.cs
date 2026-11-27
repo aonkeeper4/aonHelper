@@ -3,26 +3,14 @@ using Celeste.Mod.aonHelper.Entities.Misc;
 namespace Celeste.Mod.aonHelper.Components.Colliders;
 
 [Tracked]
-public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandler onCollide, Collider collider = null) : Component(false, false)
+public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandler onCollide, Collider collider = null)
+    : ColliderComponent<UnforgivingPlayerCollider, UnforgivingPlayerCollider.CollisionHandler>(onCollide, collider)
 {
     private static readonly string[] EntitySIDPrefixes = [UnforgivingSpikes.EntitySIDPrefix];
 
     public delegate bool CollisionHandler(Player player, Vector2 moveDir);
 
-    public bool Check(Player player, Vector2 moveDir, Vector2? checkPosition = null)
-    {
-        Collider entityCollider = Entity.Collider;
-        if (collider is not null)
-            Entity.Collider = collider;
-        
-        bool result = checkPosition is { } position
-            ? player.CollideCheck(Entity, position)
-            : player.CollideCheck(Entity);
-        
-        Entity.Collider = entityCollider;
-        
-        return result && onCollide(player, moveDir);
-    }
+    public override Color Color => Color.Red;
     
     #region Hooks
     
@@ -95,8 +83,9 @@ public class UnforgivingPlayerCollider(UnforgivingPlayerCollider.CollisionHandle
             
             // this logic should be correct
             if (player.Scene.Tracker.GetComponents<UnforgivingPlayerCollider>()
-                                    .Cast<UnforgivingPlayerCollider>()
-                                    .Any(upc => upc.Check(player, moveDir) && player.Dead))
+                .Cast<UnforgivingPlayerCollider>()
+                .Where(upc => upc.OnCollide is not null)
+                .Any(upc => upc.Check(player) && upc.OnCollide(player, moveDir) && player.Dead))
             {
                 player.Collider = collider;
                 return true;

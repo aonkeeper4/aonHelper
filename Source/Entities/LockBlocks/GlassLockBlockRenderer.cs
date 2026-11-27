@@ -8,15 +8,6 @@ public class GlassLockBlockRenderer :
     GlassLockBlockRendererBase,
     GlassLockBlockRendererBase.IStaticMethods
 {
-    #region Static Method Implementation
-    
-    public static string Name => nameof(GlassLockBlockRenderer);
-    public static string LogID => $"{nameof(aonHelper)}/{nameof(GlassLockBlockRenderer)}";
-    
-    public static GlassLockBlockRenderer Create(int rendererDepth) => new(rendererDepth);
-    
-    #endregion
-    
     // as long as this isn't kept alive somehow by the gc i don't think it'll get cloned by srt
     // it should be cleaned up immediately?
     public struct GlassLockBlockBuffers : IBufferManager<GlassLockBlockBuffers>
@@ -101,6 +92,8 @@ public class GlassLockBlockRenderer :
     {
         Add(new DisplacementRenderHook(OnRenderDisplacement));
     }
+    
+    public static GlassLockBlockRenderer Create(int rendererDepth) => new(rendererDepth);
 
     public override void Awake(Scene scene)
     {

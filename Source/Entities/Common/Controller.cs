@@ -23,7 +23,7 @@ public class Controller<TSelf> : Entity where TSelf : Controller<TSelf>
     public override void Added(Scene scene)
     {
         if (!Tracker.StoredEntityTypes.Contains(typeof(TSelf)))
-            throw new InvalidOperationException($"Attempted to add a {nameof(Controller<>)} of type {typeof(TSelf)} without it being tracked!");
+            throw new InvalidOperationException($"Attempted to add a {nameof(Controller<>)} of type `{typeof(TSelf)}` without it being tracked!");
         
         base.Added(scene);
         

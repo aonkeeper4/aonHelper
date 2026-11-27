@@ -2,6 +2,11 @@ namespace Celeste.Mod.aonHelper.Entities.Common;
 
 // okay i kinda hate this but it's serviceable
 
+public interface IBufferManager<TBuffers>
+{
+    static abstract void QueryBuffers(int depth, out TBuffers buffers);
+}
+
 public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
     where TSelf :
         Renderer<TSelf, TRendered, TBuffers, TController>,
@@ -10,18 +15,17 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
     where TBuffers: IBufferManager<TBuffers>
     where TController : RendererController<TController>
 {
+    private static readonly string LogID = $"{nameof(aonHelper)}/{typeof(TSelf)}";
+    
     // this is so stupid
     public interface IStaticMethods
     {
-        static abstract string Name { get; }
-        static abstract string LogID { get; }
-        
         static abstract TSelf Create(int rendererDepth);
     }
     
     public class Rendered(int? overrideDepth = null, Func<Camera, bool> isVisible = null) : TypeRestrictedComponent<TRendered>(false, false)
     {
-        protected override string Name => $"{TSelf.Name}.{nameof(Rendered)}";
+        protected override string Name => $"{typeof(TSelf)}.{nameof(Rendered)}";
 
         public readonly Func<Camera, bool> IsVisible = isVisible;
         
@@ -54,7 +58,7 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
                 return renderer;
             
             Scene.Add(renderer = TSelf.Create(depth));
-            Logger.Info(TSelf.LogID, $"Created new {TSelf.Name} at depth {depth}.");
+            Logger.Info(LogID, $"Created new {typeof(TSelf)} at depth {depth}.");
             return renderer;
         }
     }
@@ -73,9 +77,9 @@ public abstract class Renderer<TSelf, TRendered, TBuffers, TController> : Entity
     public override void Added(Scene scene)
     {
         if (!Tracker.StoredEntityTypes.Contains(typeof(TSelf)))
-            throw new InvalidOperationException($"Attempted to add a {nameof(Renderer<,,,>)} of type {typeof(TSelf)} without it being tracked!");
+            throw new InvalidOperationException($"Attempted to add a {nameof(Renderer<,,,>)} of type `{typeof(TSelf)}` without it being tracked!");
         if (!Tracker.StoredEntityTypes.Contains(typeof(TController)))
-            throw new InvalidOperationException($"Attempted to add a {nameof(Renderer<,,,>)} with controller type {typeof(TController)} without it being tracked!");
+            throw new InvalidOperationException($"Attempted to add a {nameof(Renderer<,,,>)} with controller type `{typeof(TController)}` without it being tracked!");
         
         base.Added(scene);
     }

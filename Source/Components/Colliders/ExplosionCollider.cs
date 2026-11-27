@@ -1,23 +1,17 @@
 namespace Celeste.Mod.aonHelper.Components.Colliders;
 
 [Tracked]
-public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2> onCollide, Collider collider = null)
-    : Component(false, false)
+public class ExplosionCollider(ExplosionCollider.CollisionHandler onCollide, Collider collider = null)
+    : ColliderComponent<ExplosionCollider, ExplosionCollider.CollisionHandler>(onCollide, collider)
 {
     public enum ExplosionTypes
     {
         Puffer,
         Seeker
     }
+    public delegate void CollisionHandler(ExplosionTypes type, Vector2 explosionCenter);
 
-    public readonly Action<ExplosionTypes, Vector2> OnCollide = onCollide;
-    public Collider Collider => collider ?? Entity.Collider;
-
-    public bool Check(Entity other)
-        => Entity.Collidable && other.Collidable && Collider.Collide(other);
-
-    public override void DebugRender(Camera camera)
-        => Collider.Render(camera, Color.Orange * (Entity?.Collidable ?? false ? 1f : 0.5f));
+    public override Color Color => Color.Orange;
     
     #region Hooks
 
@@ -28,7 +22,7 @@ public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2>
     {
         IL.Celeste.Puffer.Explode += IL_Puffer_Explode;
 
-        il_Seeker_RegenerateCoroutine = new ILHook(typeof(Seeker).GetMethod("RegenerateCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, Seeker_RegenerateCoroutine);
+        il_Seeker_RegenerateCoroutine = new ILHook(typeof(Seeker).GetMethod("RegenerateCoroutine", HookHelper.Bind.NonPublicInstance)!.GetStateMachineTarget()!, IL_Seeker_RegenerateCoroutine);
     }
 
     [OnUnload]
@@ -54,7 +48,7 @@ public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2>
         cursor.EmitDelegate(TriggerExplosionColliders);
     }
 
-    private static void Seeker_RegenerateCoroutine(ILContext il)
+    private static void IL_Seeker_RegenerateCoroutine(ILContext il)
     {
         ILCursor cursor = new(il);
 
@@ -72,13 +66,8 @@ public class ExplosionCollider(Action<ExplosionCollider.ExplosionTypes, Vector2>
 
     private static void TriggerExplosionColliders(Entity entity, ExplosionTypes type)
     {
-        // collect the colliding components beforehand so no side effects from their `OnCollide` will affect which components are checked
-        ExplosionCollider[] colliders = entity.SceneAs<Level>().Tracker
-            .GetComponents<ExplosionCollider>()
-            .Cast<ExplosionCollider>()
-            .Where(c => c.Check(entity))
-            .ToArray();
-        foreach (ExplosionCollider collider in colliders)
+        Level level = entity.SceneAs<Level>();
+        foreach (ExplosionCollider collider in GetCollidingColliders(level, entity))
         {
             Collider c = collider.Collider;
             Vector2 toEntity = c.Center - entity.Position;

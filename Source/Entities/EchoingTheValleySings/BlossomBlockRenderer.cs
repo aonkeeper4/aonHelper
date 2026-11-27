@@ -7,15 +7,8 @@ public class BlossomBlockRenderer(int depth) :
     BlossomBlockRendererBase(depth),
     BlossomBlockRendererBase.IStaticMethods
 {
-    #region Static Method Implementation
-
-    public static string Name => nameof(BlossomBlockRenderer);
-    public static string LogID => $"{nameof(aonHelper)}/{nameof(BlossomBlockRenderer)}";
-
     public static BlossomBlockRenderer Create(int rendererDepth) => new(rendererDepth);
-
-    #endregion
-
+    
     public struct BlossomBlockBuffers : IBufferManager<BlossomBlockBuffers>
     {
         private static readonly Dictionary<int, BlossomBlockBuffers> Buffers = new();
@@ -103,43 +96,43 @@ public class BlossomBlockRenderer(int depth) :
             block.VerticesEnd = endVertexIndex;
             
             for (float x = block.Left; x < block.Right; x += 8f)
-                for (float y = block.Top; y < block.Bottom; y += 8f)
+            for (float y = block.Top; y < block.Bottom; y += 8f)
+            {
+                bool blockLeft = CheckForSame(blocks, x - 8f, y);
+                bool blockRight = CheckForSame(blocks, x + 8f, y);
+                bool blockAbove = CheckForSame(blocks, x, y - 8f);
+                bool blockBelow = CheckForSame(blocks, x, y + 8f);
+                
+                if (blockLeft && blockRight && blockAbove && blockBelow)
                 {
-                    bool blockLeft = CheckForSame(blocks, x - 8f, y);
-                    bool blockRight = CheckForSame(blocks, x + 8f, y);
-                    bool blockAbove = CheckForSame(blocks, x, y - 8f);
-                    bool blockBelow = CheckForSame(blocks, x, y + 8f);
-                    
-                    if (blockLeft && blockRight && blockAbove && blockBelow)
-                    {
-                        if (!CheckForSame(blocks, x + 8f, y - 8f))
-                            AddTexture(controller, x, y, 3, 0, ref vertexIndex);
-                        else if (!CheckForSame(blocks, x - 8f, y - 8f))
-                            AddTexture(controller, x, y, 3, 1, ref vertexIndex);
-                        else if (!CheckForSame(blocks, x + 8f, y + 8f))
-                            AddTexture(controller, x, y, 3, 2, ref vertexIndex);
-                        else if (!CheckForSame(blocks, x - 8f, y + 8f))
-                            AddTexture(controller, x, y, 3, 3, ref vertexIndex);
-                        else
-                            AddTexture(controller, x, y, 1, 1, ref vertexIndex);
-                    }
-                    else if (blockLeft && blockRight && !blockAbove && blockBelow)
-                        AddTexture(controller, x, y, 1, 0, ref vertexIndex);
-                    else if (blockLeft && blockRight && blockAbove && !blockBelow)
-                        AddTexture(controller, x, y, 1, 2, ref vertexIndex);
-                    else if (blockLeft && !blockRight && blockAbove && blockBelow)
-                        AddTexture(controller, x, y, 2, 1, ref vertexIndex);
-                    else if (!blockLeft && blockRight && blockAbove && blockBelow)
-                        AddTexture(controller, x, y, 0, 1, ref vertexIndex);
-                    else if (blockLeft && !blockRight && !blockAbove && blockBelow)
-                        AddTexture(controller, x, y, 2, 0, ref vertexIndex);
-                    else if (!blockLeft && blockRight && !blockAbove && blockBelow)
-                        AddTexture(controller, x, y, 0, 0, ref vertexIndex);
-                    else if (blockLeft && !blockRight && blockAbove && !blockBelow)
-                        AddTexture(controller, x, y, 2, 2, ref vertexIndex);
-                    else if (!blockLeft && blockRight && blockAbove && !blockBelow)
-                        AddTexture(controller, x, y, 0, 2, ref vertexIndex);
+                    if (!CheckForSame(blocks, x + 8f, y - 8f))
+                        AddTexture(controller, x, y, 3, 0, ref vertexIndex);
+                    else if (!CheckForSame(blocks, x - 8f, y - 8f))
+                        AddTexture(controller, x, y, 3, 1, ref vertexIndex);
+                    else if (!CheckForSame(blocks, x + 8f, y + 8f))
+                        AddTexture(controller, x, y, 3, 2, ref vertexIndex);
+                    else if (!CheckForSame(blocks, x - 8f, y + 8f))
+                        AddTexture(controller, x, y, 3, 3, ref vertexIndex);
+                    else
+                        AddTexture(controller, x, y, 1, 1, ref vertexIndex);
                 }
+                else if (blockLeft && blockRight && !blockAbove && blockBelow)
+                    AddTexture(controller, x, y, 1, 0, ref vertexIndex);
+                else if (blockLeft && blockRight && blockAbove && !blockBelow)
+                    AddTexture(controller, x, y, 1, 2, ref vertexIndex);
+                else if (blockLeft && !blockRight && blockAbove && blockBelow)
+                    AddTexture(controller, x, y, 2, 1, ref vertexIndex);
+                else if (!blockLeft && blockRight && blockAbove && blockBelow)
+                    AddTexture(controller, x, y, 0, 1, ref vertexIndex);
+                else if (blockLeft && !blockRight && !blockAbove && blockBelow)
+                    AddTexture(controller, x, y, 2, 0, ref vertexIndex);
+                else if (!blockLeft && blockRight && !blockAbove && blockBelow)
+                    AddTexture(controller, x, y, 0, 0, ref vertexIndex);
+                else if (blockLeft && !blockRight && blockAbove && !blockBelow)
+                    AddTexture(controller, x, y, 2, 2, ref vertexIndex);
+                else if (!blockLeft && blockRight && blockAbove && !blockBelow)
+                    AddTexture(controller, x, y, 0, 2, ref vertexIndex);
+            }
         }
 
         vertexCount = vertexIndex;

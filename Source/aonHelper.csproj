@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <AssemblyName>aonHelper</AssemblyName>
         <RootNamespace>Celeste.Mod.aonHelper</RootNamespace>
-        <LangVersion>preview</LangVersion>
+        <LangVersion>14.0</LangVersion>
         <PathMap>$(MSBuildProjectDirectory)=aonHelper/</PathMap>
     </PropertyGroup>
 
@@ -46,6 +46,7 @@
     </ItemGroup>
     
     <!-- compile all shaders before building -->
+    <!-- todo: ensure all fxc dependencies are present? -->
     <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
         <EffectFiles Include="..\Effects\**\*.fx" />
     </ItemGroup>
@@ -70,7 +71,7 @@
 
     <!-- package the mod when building in release -->
     <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
-        <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Loenn\**\*.*;..\Effects\**\*.cso" />
+        <ZippedFiles Include="..\everest.yaml;..\bin\**\*.*;..\Audio\**\*.*;..\Dialog\**\*.*;..\Graphics\**\*.*;..\Effects\**\*.cso;..\Loenn\**\*.*;..\Rysy\bin\**\*.*" />
     </ItemGroup>
     <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="@(ZippedFiles)" Outputs="..\$(AssemblyName).zip" Condition="'$(Configuration)' == 'Release'">
         <PackageMod Files="@(ZippedFiles)" OutputPath="..\$(AssemblyName).zip" />
@@ -85,44 +86,40 @@
             <Using Namespace="System.IO.Compression" />
             <Code Type="Fragment" Language="cs">
                 <![CDATA[
-                var projectDir = Path.Combine(@"$(ProjectDir)", ".."); // Go one level up, since we're inside the 'Source' directory
-                projectDir = Uri.UnescapeDataString(projectDir);
-            
-                if (File.Exists(OutputPath))
-                    File.Delete(OutputPath);
+                    string projectDir = Path.Combine(@"$(ProjectDir)", "..");
+                    projectDir = Uri.UnescapeDataString(projectDir);
 
-                using (ZipArchive zip = ZipFile.Open(OutputPath, ZipArchiveMode.Create))
-                {
-                    foreach (var file in Files)
+                    if (File.Exists(OutputPath))
+                        File.Delete(OutputPath);
+
+                    using ZipArchive zip = ZipFile.Open(OutputPath, ZipArchiveMode.Create);
+                    foreach (ITaskItem file in Files)
                     {
                         string filePath = file.GetMetadata("FullPath");
                         string entryName = GetRelativePath(projectDir, filePath);
-                        
+
                         zip.CreateEntryFromFile(filePath, entryName);
                     }
-                }
-    
-                string GetRelativePath(string fromPath, string toPath)
-                {
-                    if (string.IsNullOrEmpty(fromPath)) throw new ArgumentNullException(nameof(fromPath));
-                    if (string.IsNullOrEmpty(toPath))   throw new ArgumentNullException(nameof(toPath));
-                
-                    Uri fromUri = new Uri(fromPath);
-                    Uri toUri = new Uri(toPath);
-                
-                    if (fromUri.Scheme != toUri.Scheme) { return toPath; } // path can't be made relative.
-                
-                    Uri relativeUri = fromUri.MakeRelativeUri(toUri);
-                    string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-                
-                    if (toUri.Scheme.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+
+                    static string GetRelativePath(string fromPath, string toPath)
                     {
-                        relativePath = relativePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                        if (string.IsNullOrEmpty(fromPath))
+                            throw new ArgumentNullException(nameof(fromPath));
+                        if (string.IsNullOrEmpty(toPath))
+                            throw new ArgumentNullException(nameof(toPath));
+
+                        Uri fromUri = new(fromPath), toUri = new(toPath);
+                        if (fromUri.Scheme != toUri.Scheme)
+                            return toPath;
+
+                        Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+                        string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+                        if (toUri.Scheme.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+                            relativePath = relativePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+                        return relativePath;
                     }
-                
-                    return relativePath;
-                }
-            ]]>
+                ]]>
             </Code>
         </Task>
     </UsingTask>
