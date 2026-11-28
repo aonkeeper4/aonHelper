@@ -108,5 +108,5 @@ for all the controllers listed here, just place it in the room where you want it
         ToHeight: 500 # the final thickness of the curve before it expands to completely cover the screen, default is 500
     ```
 
-if you want to report any bugs or suggest any features then ping me in celestecord (@aonkeeper4).
+if you want to report any bugs or suggest any features then dm me on discord (`@aonkeeper4`).
 you can also make a pull request to/issue on this repo and i will probably see it
