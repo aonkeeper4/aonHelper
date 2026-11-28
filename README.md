@@ -81,7 +81,7 @@ for all the controllers listed here, just place it in the room where you want it
 ### Screen Wipes
 
 - Curve Sweep
-  - a screen wipe which hides/reveals the level as a sweep along a curve
+  - a screen wipe that hides/reveals the level as a sweep along a curve
   - in-game editor coming soon
   - example .meta.yaml:
     ```yaml
